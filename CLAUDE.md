@@ -2,6 +2,8 @@
 
 Personal PWA: capture tasks + ideas into lists. iPhone-first via Safari Add to Home Screen; no App Store, no backend, data on-device. **`SPEC.md` is the requirements contract — implement against it exactly; deviations need user approval first.**
 
+**Build proceeds phase-by-phase: see `phases/README.md`** (status table + protocol). User says "Build phase N" → read SPEC.md + that phase file fully, work its checkboxes in order, tick them as you go.
+
 ## Stack
 
 Vite + React + TypeScript · Dexie (IndexedDB) · vite-plugin-pwa · hash routing · GitHub Pages via Actions.
@@ -13,7 +15,7 @@ npm run dev       # local dev server
 npm run verify    # tsc --noEmit → eslint → vitest → playwright (ALL green before done)
 ```
 
-Until the app is scaffolded these don't exist yet — scaffolding them per SPEC.md is Exec's first task.
+Until the app is scaffolded these don't exist yet — phase 1 creates them.
 
 ## Working rules
 

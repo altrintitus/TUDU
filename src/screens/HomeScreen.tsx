@@ -5,11 +5,14 @@ import { navigate } from '../hooks/useHashRoute';
 import { TodayStrip } from '../components/TodayStrip';
 import { ListCard } from '../components/ListCard';
 import { ListEditorSheet } from '../components/ListEditorSheet';
+import { Fab } from '../components/Fab';
+import { CaptureSheet } from '../components/CaptureSheet';
 
 type Editing = { list: List | null };
 
 export function HomeScreen() {
   const [editing, setEditing] = useState<Editing | null>(null);
+  const [capturing, setCapturing] = useState(false);
 
   const model = useLiveQuery(async () => {
     const [lists, tasks, ideas] = await Promise.all([
@@ -61,6 +64,9 @@ export function HomeScreen() {
           onClose={() => setEditing(null)}
         />
       )}
+
+      <Fab onPress={() => setCapturing(true)} />
+      {capturing && <CaptureSheet open onClose={() => setCapturing(false)} />}
     </div>
   );
 }

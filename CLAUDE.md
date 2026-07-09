@@ -46,3 +46,6 @@ When something fails repeatedly or a workaround is found, add a one-line bullet 
 - StrictMode double-runs mount effects; `ensureInbox` swallows ConstraintError
 - Playwright `getByText` is substring; use `getByRole('heading')` for exact
 - Playwright `.check()` on a self-removing checkbox races detach — use `.click()`
+- `input[type=date]` exposes role=textbox; disambiguate `getByRole('textbox',{name})`
+- react-hooks lint bans setState-in-effect & ref reads in render; use lazy useState init
+- async save handlers need a re-entry ref guard (double-tap/Enter-repeat = dupes)

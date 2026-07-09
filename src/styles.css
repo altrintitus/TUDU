@@ -342,6 +342,150 @@ button { cursor: pointer; border: none; background: none; }
   animation: toast-in 0.24s var(--ease) both;
 }
 
+/* ---- list / idea screens ---- */
+.list-screen, .idea-screen {
+  padding: var(--space-5) var(--space-4) calc(env(safe-area-inset-bottom) + 96px);
+}
+.idea-screen {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.screen-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) 0 var(--space-5);
+}
+.back-btn {
+  width: var(--tap-target);
+  height: var(--tap-target);
+  margin-left: calc(var(--space-2) * -1);
+  font-size: 28px;
+  line-height: 1;
+  color: var(--muted);
+  border-radius: var(--radius-sm);
+  flex: 0 0 auto;
+}
+.back-btn:active { color: var(--text); background: var(--surface-press); }
+.screen-emoji { font-size: 22px; }
+.screen-title { font-size: 24px; font-weight: 700; letter-spacing: -0.02em; }
+
+/* ---- tabs ---- */
+.tabs {
+  display: inline-flex;
+  gap: 2px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 3px;
+  margin-bottom: var(--space-5);
+}
+.tab {
+  min-height: 38px;
+  padding: 0 var(--space-5);
+  border-radius: 999px;
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 14px;
+  transition: background 0.15s, color 0.15s;
+}
+.tab.active { background: var(--accent-weak); color: var(--accent); }
+
+/* ---- rows ---- */
+.rows { display: flex; flex-direction: column; gap: var(--space-2); }
+
+.task-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-2) var(--space-4);
+  min-height: var(--tap-target);
+}
+.task-row.overdue { border-left: 3px solid var(--danger); }
+.task-row input[type='checkbox'] {
+  width: 22px;
+  height: 22px;
+  accent-color: var(--accent);
+  flex: 0 0 auto;
+}
+.task-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  text-align: left;
+  min-height: var(--tap-target);
+}
+.task-title { flex: 1; font-weight: 500; }
+.task-row.done .task-title { color: var(--muted); text-decoration: line-through; }
+.task-due {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  background: var(--surface-2);
+  padding: 2px var(--space-2);
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.task-due.overdue { color: var(--danger); background: var(--danger-weak); }
+.task-listname { font-size: 12px; color: var(--muted); white-space: nowrap; }
+
+/* ---- done section ---- */
+.done-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: var(--space-3);
+  padding: var(--space-2) var(--space-1);
+  color: var(--faint);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.done-chevron { font-size: 14px; }
+/* collapsed: done rows stay mounted (checkbox keeps its DOM node) but hidden */
+.rows.done-collapsed .task-row.done { display: none; }
+
+/* ---- idea rows ---- */
+.idea-row {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.idea-main {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  min-height: var(--tap-target);
+  text-align: left;
+}
+.idea-title { flex: 1; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.idea-time { font-size: 12px; color: var(--faint); white-space: nowrap; }
+
+/* ---- idea editor ---- */
+.idea-editor {
+  flex: 1;
+  width: 100%;
+  resize: none;
+  background: transparent;
+  border: none;
+  padding: 0 var(--space-1);
+  line-height: 1.6;
+  font-size: 17px;
+}
+.idea-editor:focus { outline: none; }
+
+.confirm-text { color: var(--text); margin-bottom: var(--space-2); }
+
 @keyframes toast-in { from { opacity: 0; transform: translate(-50%, 8px); } to { opacity: 1; transform: translate(-50%, 0); } }
 @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 @keyframes rise-sheet { from { transform: translateY(100%); } to { transform: none; } }

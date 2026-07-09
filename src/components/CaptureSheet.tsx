@@ -6,16 +6,17 @@ import { toast } from './Toast';
 
 // Mount this fresh on open (parent renders it conditionally) so state resets
 // each time — no setState-in-effect needed.
-export function CaptureSheet({ open, onClose, fixedListId }: {
+export function CaptureSheet({ open, onClose, fixedListId, defaultType }: {
   open: boolean;
   onClose(): void;
   fixedListId?: string;
+  defaultType?: CaptureType;
 }) {
   const lists = useLiveQuery(() => db.lists.orderBy('sortOrder').toArray(), []);
   const fieldRef = useRef<HTMLTextAreaElement>(null);
   const savingRef = useRef(false);
   const [text, setText] = useState('');
-  const [type, setType] = useState<CaptureType>(() => loadCaptureDefaults().type);
+  const [type, setType] = useState<CaptureType>(() => defaultType ?? loadCaptureDefaults().type);
   const [listId, setListId] = useState<string>(() => fixedListId ?? loadCaptureDefaults().listId);
   const [due, setDue] = useState('');
 

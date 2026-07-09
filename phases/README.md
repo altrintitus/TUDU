@@ -18,7 +18,7 @@
 | 2 | [Data layer](phase-2-data-layer.md) | **done** |
 | 3 | [Home screen](phase-3-home.md) | **done** |
 | 4 | [Capture sheet](phase-4-capture.md) | **done** |
-| 5 | [List view + idea editor](phase-5-list-view.md) | pending |
+| 5 | [List view + idea editor](phase-5-list-view.md) | **done (fd8dda9)** |
 | 6 | [Settings: export/import](phase-6-settings.md) | pending |
 | 7 | [PWA + iOS polish](phase-7-pwa-polish.md) | pending |
 | 8 | [Deploy + README](phase-8-deploy.md) | pending |

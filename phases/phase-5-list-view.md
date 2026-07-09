@@ -44,7 +44,7 @@ export function useLongPress(onLongPress: () => void, ms?: number): {
 };
 ```
 
-- [ ] **`src/hooks/useLongPress.ts`** — exact implementation (500ms default; movement cancels so scrolling never triggers it):
+- [x] **`src/hooks/useLongPress.ts`** — exact implementation (500ms default; movement cancels so scrolling never triggers it):
 
 ```ts
 import { useRef } from 'react';
@@ -68,16 +68,16 @@ export function useLongPress(onLongPress: () => void, ms = 500) {
 
 ### Task 1: Behavior checklist
 
-- [ ] **Tasks tab**: open tasks sorted with `compareListTasks`; due label via `formatDue` (overdue styled danger). Check → `toggleTask`, row animates out of open section into **`Done (n)`** collapsed section at the bottom (tap header to expand/collapse; collapsed by default; hidden when n=0). Uncheck inside Done restores to open.
-- [ ] Tap task row → TaskEditSheet (title input prefilled, date input prefilled, Save via `updateTask`, Delete button with inline confirm → `deleteTask`). Long-press row → delete confirm directly (uses `useLongPress`).
-- [ ] **Ideas tab**: rows sorted `updatedAt` desc. Row = `firstLine(idea.text)` bold + relative time ("2h ago" — implement `relativeTime(ts: number, now?: number): string` in `src/logic/text.ts` with unit test: <60s "now", <1h "Nm ago", <24h "Nh ago", <7d "Nd ago", else short date). Tap → IdeaScreen. Long-press → delete confirm.
-- [ ] **IdeaScreen**: textarea autofocused at end of text; autosave debounced 500ms + flush on blur and unmount; back button returns to the list's Ideas tab. Empty text on exit → keep idea (shows "Untitled").
-- [ ] Per-list `[+]` opens CaptureSheet with `fixedListId` — no list chip, type toggle defaults to active tab (Tasks tab → task, Ideas tab → idea, overriding stored default for this entry point only).
-- [ ] Unknown list id in URL (`#/list/garbage`) → redirect home (`navigate({name:'home'})` in an effect).
+- [x] **Tasks tab**: open tasks sorted with `compareListTasks`; due label via `formatDue` (overdue styled danger). Check → `toggleTask`, row animates out of open section into **`Done (n)`** collapsed section at the bottom (tap header to expand/collapse; collapsed by default; hidden when n=0). Uncheck inside Done restores to open.
+- [x] Tap task row → TaskEditSheet (title input prefilled, date input prefilled, Save via `updateTask`, Delete button with inline confirm → `deleteTask`). Long-press row → delete confirm directly (uses `useLongPress`).
+- [x] **Ideas tab**: rows sorted `updatedAt` desc. Row = `firstLine(idea.text)` bold + relative time ("2h ago" — implement `relativeTime(ts: number, now?: number): string` in `src/logic/text.ts` with unit test: <60s "now", <1h "Nm ago", <24h "Nh ago", <7d "Nd ago", else short date). Tap → IdeaScreen. Long-press → delete confirm.
+- [x] **IdeaScreen**: textarea autofocused at end of text; autosave debounced 500ms + flush on blur and unmount; back button returns to the list's Ideas tab. Empty text on exit → keep idea (shows "Untitled").
+- [x] Per-list `[+]` opens CaptureSheet with `fixedListId` — no list chip, type toggle defaults to active tab (Tasks tab → task, Ideas tab → idea, overriding stored default for this entry point only).
+- [x] Unknown list id in URL (`#/list/garbage`) → redirect home (`navigate({name:'home'})` in an effect).
 
 ### Task 2: e2e — `e2e/list-view.spec.ts`
 
-- [ ] **Step 1: Write the spec** (same DB-wipe `beforeEach` as lists.spec.ts; seed via `__kin` bridge)
+- [x] **Step 1: Write the spec** (same DB-wipe `beforeEach` as lists.spec.ts; seed via `__kin` bridge)
 
 ```ts
 import { test, expect } from '@playwright/test';
@@ -152,9 +152,9 @@ test('garbage list id redirects home', async ({ page }) => {
 
 Accessibility hooks: tabs use `role="tab"` with names Tasks/Ideas; task checkbox `aria-label` = title; per-list add button `aria-label` = `add to <list name>`; IdeaScreen back button name "back"; TaskEditSheet title input labelled "Title".
 
-- [ ] **Step 2: Build until spec passes** — `npx playwright test e2e/list-view.spec.ts`
-- [ ] **Step 3: `npm run verify` green** (add the `relativeTime` unit test to `tests/text.test.ts`)
-- [ ] **Step 4: Reviewer agent on the diff, fix findings**
-- [ ] **Step 5: Commit** — `git commit -am "feat(list-view): tabs, task lifecycle, idea editor"`
+- [x] **Step 2: Build until spec passes** — `npx playwright test e2e/list-view.spec.ts`
+- [x] **Step 3: `npm run verify` green** (add the `relativeTime` unit test to `tests/text.test.ts`)
+- [x] **Step 4: Reviewer agent on the diff, fix findings**
+- [x] **Step 5: Commit** — `git commit -am "feat(list-view): tabs, task lifecycle, idea editor"`
 
 **Done when:** e2e green · phone check: long-press deletes don't fire while scrolling, keyboard behavior in editor comfortable, Done section animation not janky.

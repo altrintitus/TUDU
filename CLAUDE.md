@@ -49,3 +49,6 @@ When something fails repeatedly or a workaround is found, add a one-line bullet 
 - `input[type=date]` exposes role=textbox; disambiguate `getByRole('textbox',{name})`
 - react-hooks lint bans setState-in-effect & ref reads in render; use lazy useState init
 - async save handlers need a re-entry ref guard (double-tap/Enter-repeat = dupes)
+- long-press ends in a ghost click on inner button; swallow via firedRef + onPointerDownCapture reset
+- controlled checkbox from async Dexie source: `.check()` races the write; use `.click()`
+- keep open+done tasks in one container so toggling repositions the checkbox node (no remount)

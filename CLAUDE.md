@@ -43,3 +43,6 @@ When something fails repeatedly or a workaround is found, add a one-line bullet 
 - react 19: install `@types/react`, `@types/react-dom`, `@types/node` explicitly
 - eslint flat config: `scripts/*.mjs` needs node globals block (Buffer, console)
 - e2e back-button: change hash in-app; `goto('#/x')` then `goBack` exits app
+- StrictMode double-runs mount effects; `ensureInbox` swallows ConstraintError
+- Playwright `getByText` is substring; use `getByRole('heading')` for exact
+- Playwright `.check()` on a self-removing checkbox races detach — use `.click()`

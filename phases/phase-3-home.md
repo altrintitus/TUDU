@@ -35,16 +35,16 @@ export function ListEditorSheet(props: { open: boolean; list: List | null; onClo
 
 ### Task 1: Behavior (build against this checklist)
 
-- [ ] `App.tsx`: on mount `ensureInbox()`; `home` route renders `<HomeScreen />`.
-- [ ] **Today strip**: `useLiveQuery` all tasks → filter `isDueOrOverdue(t, todayStr())` → sort `compareTodayTasks`. Each row: checkbox, title, source list name (small, muted). Overdue rows visually distinct (danger accent + `formatDue` label). Checking calls `toggleTask` — row leaves the strip. Strip (incl. header "Today") entirely absent when empty.
-- [ ] **Lists section**: all lists sorted by `sortOrder`. Card = emoji, name, `N□ M💡` counts (open tasks only). Tap card → `navigate({ name: 'list', id })`. Edit affordance (e.g. ⋯ button, min 44px) → ListEditorSheet.
-- [ ] **ListEditorSheet**: name input (autofocus) + optional emoji input + Save. Edit mode adds Delete (with inline confirm step — "Delete list and its N tasks / M ideas?"). **Inbox: no delete button, name input disabled** (guards also exist in db — belt and suspenders).
-- [ ] `[+ list]` affordance at the end of the lists section → ListEditorSheet in create mode.
-- [ ] Empty DB state: only Inbox card + `[+ list]`; no Today strip; short hint text ("Capture something — tap +" — FAB itself lands in phase 4).
+- [x] `App.tsx`: on mount `ensureInbox()`; `home` route renders `<HomeScreen />`.
+- [x] **Today strip**: `useLiveQuery` all tasks → filter `isDueOrOverdue(t, todayStr())` → sort `compareTodayTasks`. Each row: checkbox, title, source list name (small, muted). Overdue rows visually distinct (danger accent + `formatDue` label). Checking calls `toggleTask` — row leaves the strip. Strip (incl. header "Today") entirely absent when empty.
+- [x] **Lists section**: all lists sorted by `sortOrder`. Card = emoji, name, `N□ M💡` counts (open tasks only). Tap card → `navigate({ name: 'list', id })`. Edit affordance (e.g. ⋯ button, min 44px) → ListEditorSheet.
+- [x] **ListEditorSheet**: name input (autofocus) + optional emoji input + Save. Edit mode adds Delete (with inline confirm step — "Delete list and its N tasks / M ideas?"). **Inbox: no delete button, name input disabled** (guards also exist in db — belt and suspenders).
+- [x] `[+ list]` affordance at the end of the lists section → ListEditorSheet in create mode.
+- [x] Empty DB state: only Inbox card + `[+ list]`; no Today strip; short hint text ("Capture something — tap +" — FAB itself lands in phase 4).
 
 ### Task 2: Dev-only test bridge (e2e seeding)
 
-- [ ] **`src/testBridge.ts`** — exact content:
+- [x] **`src/testBridge.ts`** — exact content:
 
 ```ts
 import { createList, createTask, createIdea, db } from './db';
@@ -56,11 +56,11 @@ if (import.meta.env.DEV) {
 export {};
 ```
 
-- [ ] Import it from `main.tsx`: `import './testBridge';`
+- [x] Import it from `main.tsx`: `import './testBridge';`
 
 ### Task 3: e2e — `e2e/lists.spec.ts`
 
-- [ ] **Step 1: Write the spec** (fails until UI built)
+- [x] **Step 1: Write the spec** (fails until UI built)
 
 ```ts
 import { test, expect } from '@playwright/test';
@@ -118,21 +118,23 @@ test('today strip shows due + overdue across lists, checking removes', async ({ 
     await kin.createTask('inbox', 'future', '2999-01-01');
   });
   await page.reload();
-  await expect(page.getByText('Today')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Today' })).toBeVisible();
   await expect(page.getByText('overdue report')).toBeVisible();
   await expect(page.getByText('due today')).toBeVisible();
   await expect(page.getByText('future')).toHaveCount(0);
 
-  await page.getByRole('checkbox', { name: /due today/i }).check();
+  // click, not check(): completing the task unmounts the row, so check()'s
+  // post-click "is now checked" assertion would race against the detach.
+  await page.getByRole('checkbox', { name: /due today/i }).click();
   await expect(page.getByText('due today')).toHaveCount(0);
 });
 ```
 
 Accessibility hook for the spec: ListCard's edit button needs `aria-label={"edit " + list.name}`; Today-strip checkboxes need `aria-label` = task title; create-list button accessible name matches `/new list/i`.
 
-- [ ] **Step 2: Build UI until spec passes** — `npx playwright test e2e/lists.spec.ts`
-- [ ] **Step 3: Full verify** — `npm run verify` (smoke spec may need updating if placeholder "home" text was asserted — update it to assert the real home instead)
-- [ ] **Step 4: Reviewer agent on the diff, fix findings**
-- [ ] **Step 5: Commit** — `git add -A && git commit -m "feat(home): lists CRUD + today strip"`
+- [x] **Step 2: Build UI until spec passes** — `npx playwright test e2e/lists.spec.ts`
+- [x] **Step 3: Full verify** — `npm run verify` (smoke spec may need updating if placeholder "home" text was asserted — update it to assert the real home instead)
+- [x] **Step 4: Reviewer agent on the diff, fix findings**
+- [x] **Step 5: Commit** — `git add -A && git commit -m "feat(home): lists CRUD + today strip"`
 
 **Done when:** all e2e green on iPhone profile · phone LAN check: cards ≥44px tap targets, dark theme correct, safe-areas respected.

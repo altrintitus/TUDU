@@ -16,7 +16,7 @@
 |---|---|---|
 | 1 | [Scaffold + verify harness](phase-1-scaffold.md) | **done** |
 | 2 | [Data layer](phase-2-data-layer.md) | **done** |
-| 3 | [Home screen](phase-3-home.md) | pending |
+| 3 | [Home screen](phase-3-home.md) | **done** |
 | 4 | [Capture sheet](phase-4-capture.md) | pending |
 | 5 | [List view + idea editor](phase-5-list-view.md) | pending |
 | 6 | [Settings: export/import](phase-6-settings.md) | pending |

@@ -1,16 +1,21 @@
+import { useEffect } from 'react';
 import { useHashRoute } from './hooks/useHashRoute';
+import { ensureInbox } from './db';
+import { HomeScreen } from './screens/HomeScreen';
 
 export default function App() {
   const route = useHashRoute();
+
+  useEffect(() => {
+    ensureInbox();
+  }, []);
+
   return (
     <div className="app">
-      <header className="app-header"><h1>Kin</h1></header>
-      <main>
-        {route.name === 'home' && <p className="placeholder">home</p>}
-        {route.name === 'list' && <p className="placeholder">list {route.id}</p>}
-        {route.name === 'idea' && <p className="placeholder">idea {route.id}</p>}
-        {route.name === 'settings' && <p className="placeholder">settings</p>}
-      </main>
+      {route.name === 'home' && <HomeScreen />}
+      {route.name === 'list' && <p className="placeholder">list {route.id}</p>}
+      {route.name === 'idea' && <p className="placeholder">idea {route.id}</p>}
+      {route.name === 'settings' && <p className="placeholder">settings</p>}
     </div>
   );
 }

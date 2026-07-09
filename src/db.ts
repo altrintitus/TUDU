@@ -44,8 +44,14 @@ export const db = new KinDB();
 
 export async function ensureInbox(): Promise<void> {
   const existing = await db.lists.get(INBOX_ID);
-  if (!existing) {
+  if (existing) return;
+  try {
     await db.lists.add({ id: INBOX_ID, name: 'Inbox', emoji: '📥', sortOrder: 0, createdAt: Date.now() });
+  } catch (e) {
+    // Concurrent callers (e.g. React StrictMode's double-invoked mount effect) can
+    // both pass the existence check and race to add — the loser throws ConstraintError.
+    // Inbox exists either way, so that's success.
+    if ((e as { name?: string }).name !== 'ConstraintError') throw e;
   }
 }
 

@@ -7,9 +7,9 @@ test('app shell loads with header', async ({ page }) => {
 
 test('hash routes render and back returns home', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByText('home')).toBeVisible();
+  await expect(page.getByText('Inbox')).toBeVisible();
   await page.evaluate(() => { window.location.hash = '#/settings'; });
   await expect(page.getByText('settings')).toBeVisible();
   await page.goBack();
-  await expect(page.getByText('home')).toBeVisible();
+  await expect(page.getByText('Inbox')).toBeVisible();
 });

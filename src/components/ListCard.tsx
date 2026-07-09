@@ -1,0 +1,23 @@
+import type { List } from '../db';
+
+export function ListCard({ list, openTaskCount, ideaCount, onOpen, onEdit }: {
+  list: List;
+  openTaskCount: number;
+  ideaCount: number;
+  onOpen(): void;
+  onEdit(): void;
+}) {
+  return (
+    <div className="list-card">
+      <button className="list-card-main" onClick={onOpen}>
+        <span className="list-card-emoji" aria-hidden="true">{list.emoji ?? '•'}</span>
+        <span className="list-card-name">{list.name}</span>
+        <span className="list-card-counts">
+          <span>{openTaskCount}<span className="ct-label">□</span></span>
+          <span>{ideaCount}<span className="ct-label">💡</span></span>
+        </span>
+      </button>
+      <button className="list-card-edit" aria-label={`edit ${list.name}`} onClick={onEdit}>⋯</button>
+    </div>
+  );
+}

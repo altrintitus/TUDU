@@ -1,0 +1,38 @@
+:root {
+  color-scheme: dark;
+  --bg: #0b0b0f;
+  --surface: #16161d;
+  --surface-2: #1e1e27;
+  --text: #e8e8ee;
+  --muted: #8a8a99;
+  --accent: #7c8cff;
+  --danger: #ff6b6b;
+  --radius: 12px;
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-6: 24px;
+  --tap-target: 44px;
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    color-scheme: light;
+    --bg: #f7f7f9; --surface: #ffffff; --surface-2: #eef0f4;
+    --text: #17171c; --muted: #6b6b78;
+  }
+}
+* { box-sizing: border-box; margin: 0; }
+html, body, #root { height: 100%; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.45 -apple-system, system-ui, sans-serif;
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.app {
+  min-height: 100dvh;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right)
+    calc(env(safe-area-inset-bottom) + var(--space-6)) env(safe-area-inset-left);
+  max-width: 640px;
+  margin: 0 auto;
+}
+input, textarea, select, button { font: inherit; color: inherit; }
+input, textarea, select { font-size: 16px; } /* blocks iOS focus zoom */

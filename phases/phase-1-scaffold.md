@@ -12,7 +12,7 @@
 
 ### Task 1: Package + toolchain
 
-- [ ] **Step 1: Install dependencies** (npm resolves current versions; majors expected: react 19, vite 7, vitest 3+, eslint 9 flat, dexie 4, playwright 1.5x)
+- [x] **Step 1: Install dependencies** (npm resolves current versions; majors expected: react 19, vite 7, vitest 3+, eslint 9 flat, dexie 4, playwright 1.5x)
 
 ```bash
 npm init -y
@@ -24,7 +24,7 @@ npm i -D typescript vite @vitejs/plugin-react vite-plugin-pwa \
 npx playwright install webkit chromium
 ```
 
-- [ ] **Step 2: Set `package.json` fields/scripts** (keep generated deps, replace the rest)
+- [x] **Step 2: Set `package.json` fields/scripts** (keep generated deps, replace the rest)
 
 ```json
 {
@@ -46,7 +46,7 @@ npx playwright install webkit chromium
 
 ### Task 2: Config files
 
-- [ ] **Step 1: `tsconfig.json`**
+- [x] **Step 1: `tsconfig.json`**
 
 ```json
 {
@@ -69,7 +69,7 @@ npx playwright install webkit chromium
 }
 ```
 
-- [ ] **Step 2: `vite.config.ts`** — base path split (Pages serves at `/Kin/`), PWA manifest, vitest config in one file
+- [x] **Step 2: `vite.config.ts`** — base path split (Pages serves at `/Kin/`), PWA manifest, vitest config in one file
 
 ```ts
 /// <reference types="vitest/config" />
@@ -107,7 +107,7 @@ export default defineConfig(({ mode }) => ({
 }));
 ```
 
-- [ ] **Step 3: `eslint.config.js`**
+- [x] **Step 3: `eslint.config.js`**
 
 ```js
 import js from '@eslint/js';
@@ -126,7 +126,7 @@ export default ts.config(
 );
 ```
 
-- [ ] **Step 4: `playwright.config.ts`**
+- [x] **Step 4: `playwright.config.ts`**
 
 ```ts
 import { defineConfig, devices } from '@playwright/test';
@@ -148,7 +148,7 @@ export default defineConfig({
 });
 ```
 
-- [ ] **Step 5: `index.html`** — iOS meta set from SPEC
+- [x] **Step 5: `index.html`** — iOS meta set from SPEC
 
 ```html
 <!doctype html>
@@ -170,7 +170,7 @@ export default defineConfig({
 </html>
 ```
 
-- [ ] **Step 6: `src/vite-env.d.ts`**
+- [x] **Step 6: `src/vite-env.d.ts`**
 
 ```ts
 /// <reference types="vite/client" />
@@ -188,7 +188,7 @@ export type Route =
   | { name: 'settings' };
 ```
 
-- [ ] **Step 1: Write the failing test** — `tests/useHashRoute.test.ts`
+- [x] **Step 1: Write the failing test** — `tests/useHashRoute.test.ts`
 
 ```ts
 import { describe, it, expect } from 'vitest';
@@ -223,9 +223,9 @@ describe('routeToHash', () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails** — `npx vitest run tests/useHashRoute.test.ts` → FAIL (module not found)
+- [x] **Step 2: Run test to verify it fails** — `npx vitest run tests/useHashRoute.test.ts` → FAIL (module not found)
 
-- [ ] **Step 3: Implement** — `src/hooks/useHashRoute.ts`
+- [x] **Step 3: Implement** — `src/hooks/useHashRoute.ts`
 
 ```ts
 import { useEffect, useState } from 'react';
@@ -269,8 +269,8 @@ export function useHashRoute(): Route {
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes** — `npx vitest run tests/useHashRoute.test.ts` → PASS
-- [ ] **Step 5: `tests/setup.ts`** (used by later phases' db tests; harmless now)
+- [x] **Step 4: Run test to verify it passes** — `npx vitest run tests/useHashRoute.test.ts` → PASS
+- [x] **Step 5: `tests/setup.ts`** (used by later phases' db tests; harmless now)
 
 ```ts
 import 'fake-indexeddb/auto';
@@ -278,7 +278,7 @@ import 'fake-indexeddb/auto';
 
 ### Task 4: App shell
 
-- [ ] **Step 1: `src/main.tsx`**
+- [x] **Step 1: `src/main.tsx`**
 
 ```tsx
 import { StrictMode } from 'react';
@@ -293,7 +293,7 @@ createRoot(document.getElementById('root')!).render(
 );
 ```
 
-- [ ] **Step 2: `src/App.tsx`** — route switch with placeholder screens (replaced in phases 3–6)
+- [x] **Step 2: `src/App.tsx`** — route switch with placeholder screens (replaced in phases 3–6)
 
 ```tsx
 import { useHashRoute } from './hooks/useHashRoute';
@@ -314,7 +314,7 @@ export default function App() {
 }
 ```
 
-- [ ] **Step 3: `src/styles.css`** — reset + design-token skeleton. Token NAMES are the contract; values get finalized in phase 3/7 with the frontend-design skill.
+- [x] **Step 3: `src/styles.css`** — reset + design-token skeleton. Token NAMES are the contract; values get finalized in phase 3/7 with the frontend-design skill.
 
 ```css
 :root {
@@ -359,7 +359,7 @@ input, textarea, select { font-size: 16px; } /* blocks iOS focus zoom */
 
 ### Task 5: Placeholder icons
 
-- [ ] **Step 1: `scripts/make-icons.mjs`** — zero-dep PNG writer (solid bg + accent disc). Phase 7 replaces the artwork, same output paths.
+- [x] **Step 1: `scripts/make-icons.mjs`** — zero-dep PNG writer (solid bg + accent disc). Phase 7 replaces the artwork, same output paths.
 
 ```js
 import { deflateSync } from 'node:zlib';
@@ -410,12 +410,12 @@ writeFileSync('public/icons/apple-touch-icon.png', png(180, 0.14));
 console.log('icons written to public/icons/');
 ```
 
-- [ ] **Step 2: Generate + verify** — `npm run icons && file public/icons/*.png`
+- [x] **Step 2: Generate + verify** — `npm run icons && file public/icons/*.png`
 Expected: four files, each `PNG image data, <size> x <size>, 8-bit/color RGBA`.
 
 ### Task 6: Smoke e2e + full verify
 
-- [ ] **Step 1: `e2e/smoke.spec.ts`**
+- [x] **Step 1: `e2e/smoke.spec.ts`**
 
 ```ts
 import { test, expect } from '@playwright/test';
@@ -433,10 +433,10 @@ test('hash routes render and back returns home', async ({ page }) => {
 });
 ```
 
-- [ ] **Step 2: Run full verify** — `npm run verify`
+- [x] **Step 2: Run full verify** — `npm run verify`
 Expected: tsc clean, eslint clean, 6 unit tests pass, 2 e2e pass (mobile-safari project).
-- [ ] **Step 3: Manual: phone check (optional but recommended)** — `npm run dev -- --host`, open `http://<mac-ip>:5173` in iPhone Safari: dark shell renders, no horizontal scroll, no zoom on input focus (none yet — recheck in phase 4).
-- [ ] **Step 4: Commit**
+- [x] **Step 3: Manual: phone check (optional but recommended)** — `npm run dev -- --host`, open `http://<mac-ip>:5173` in iPhone Safari: dark shell renders, no horizontal scroll, no zoom on input focus (none yet — recheck in phase 4).
+- [x] **Step 4: Commit**
 
 ```bash
 git add -A

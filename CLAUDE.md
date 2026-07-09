@@ -39,3 +39,7 @@ See SPEC.md "PWA & iOS requirements" — dvh not vh, safe-area insets, ≥16px i
 ## Applied Learning
 
 When something fails repeatedly or a workaround is found, add a one-line bullet here. Keep each under 15 words. No explanations. Only things that save time in future sessions.
+
+- react 19: install `@types/react`, `@types/react-dom`, `@types/node` explicitly
+- eslint flat config: `scripts/*.mjs` needs node globals block (Buffer, console)
+- e2e back-button: change hash in-app; `goto('#/x')` then `goBack` exits app

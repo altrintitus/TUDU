@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test('app shell loads with header', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('heading', { name: 'Kin' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'TUDU' })).toBeVisible();
 });
 
 test('hash routes render and back returns home', async ({ page }) => {

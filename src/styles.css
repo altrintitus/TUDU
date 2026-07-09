@@ -1,3 +1,10 @@
+@font-face {
+  font-family: 'Comfortaa';
+  src: url('./assets/fonts/Comfortaa.ttf') format('truetype');
+  font-weight: 300 700;
+  font-display: swap;
+}
+
 :root {
   color-scheme: dark;
   /* Nocturne — obsidian minimalism */
@@ -48,7 +55,7 @@ html, body, #root { height: 100%; }
 body {
   background: var(--bg);
   color: var(--text);
-  font: 16px/1.45 -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font: 16px/1.45 'Comfortaa', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   overscroll-behavior: none;
   -webkit-tap-highlight-color: transparent;
   -webkit-font-smoothing: antialiased;
@@ -95,10 +102,12 @@ button { cursor: pointer; border: none; background: none; }
   justify-content: space-between;
   padding: var(--space-2) var(--space-1) var(--space-6);
 }
-.wordmark {
-  font-size: 30px;
-  font-weight: 700;
-  letter-spacing: -0.03em;
+.wordmark { line-height: 0; }
+.wordmark-logo {
+  display: block;
+  height: 30px;
+  width: auto;
+  color: var(--text);
 }
 
 /* ---- today strip ---- */

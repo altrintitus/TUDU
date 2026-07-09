@@ -10,6 +10,8 @@ export default defineConfig(({ mode }) => ({
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['icons/apple-touch-icon.png'],
+      // default globs omit ttf; add it so the bundled Comfortaa font precaches for offline
+      workbox: { globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,woff,woff2,ttf}'] },
       manifest: {
         name: 'Kin',
         short_name: 'Kin',

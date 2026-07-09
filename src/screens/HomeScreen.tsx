@@ -7,6 +7,7 @@ import { ListCard } from '../components/ListCard';
 import { ListEditorSheet } from '../components/ListEditorSheet';
 import { Fab } from '../components/Fab';
 import { CaptureSheet } from '../components/CaptureSheet';
+import { Logo } from '../components/Logo';
 
 type Editing = { list: List | null };
 
@@ -33,7 +34,7 @@ export function HomeScreen() {
   return (
     <div className="home">
       <header className="home-header">
-        <h1 className="wordmark">Kin</h1>
+        <h1 className="wordmark"><Logo className="wordmark-logo" /></h1>
       </header>
 
       <TodayStrip />

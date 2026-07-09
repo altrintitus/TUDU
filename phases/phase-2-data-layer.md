@@ -31,7 +31,7 @@ firstLine(text)
 
 ### Task 1: Date logic (TDD)
 
-- [ ] **Step 1: Write failing tests** — `tests/dates.test.ts`
+- [x] **Step 1: Write failing tests** — `tests/dates.test.ts`
 
 ```ts
 import { describe, it, expect } from 'vitest';
@@ -102,8 +102,8 @@ describe('formatDue', () => {
 });
 ```
 
-- [ ] **Step 2: Run to verify FAIL** — `npx vitest run tests/dates.test.ts`
-- [ ] **Step 3: Implement** — `src/logic/dates.ts`
+- [x] **Step 2: Run to verify FAIL** — `npx vitest run tests/dates.test.ts`
+- [x] **Step 3: Implement** — `src/logic/dates.ts`
 
 ```ts
 // Structural input type: keeps this module free of a db.ts dependency.
@@ -153,11 +153,11 @@ export function formatDue(due: string, today: string): string {
 }
 ```
 
-- [ ] **Step 4: Run to verify PASS**, then commit: `git add -A && git commit -m "feat(data): date logic"`
+- [x] **Step 4: Run to verify PASS**, then commit: `git add -A && git commit -m "feat(data): date logic"`
 
 ### Task 2: Text helper (TDD)
 
-- [ ] **Step 1: Failing test** — `tests/text.test.ts`
+- [x] **Step 1: Failing test** — `tests/text.test.ts`
 
 ```ts
 import { describe, it, expect } from 'vitest';
@@ -175,7 +175,7 @@ describe('firstLine', () => {
 });
 ```
 
-- [ ] **Step 2: FAIL** → **Step 3: Implement** — `src/logic/text.ts`
+- [x] **Step 2: FAIL** → **Step 3: Implement** — `src/logic/text.ts`
 
 ```ts
 export function firstLine(text: string): string {
@@ -183,11 +183,11 @@ export function firstLine(text: string): string {
 }
 ```
 
-- [ ] **Step 4: PASS** → commit: `git commit -am "feat(data): firstLine helper"`
+- [x] **Step 4: PASS** → commit: `git commit -am "feat(data): firstLine helper"`
 
 ### Task 3: Dexie store + CRUD (TDD)
 
-- [ ] **Step 1: Failing tests** — `tests/db.test.ts` (fake-indexeddb already in `tests/setup.ts`)
+- [x] **Step 1: Failing tests** — `tests/db.test.ts` (fake-indexeddb already in `tests/setup.ts`)
 
 ```ts
 import { describe, it, expect, beforeEach } from 'vitest';
@@ -281,7 +281,7 @@ describe('ideas', () => {
 });
 ```
 
-- [ ] **Step 2: FAIL** → **Step 3: Implement** — `src/db.ts`
+- [x] **Step 2: FAIL** → **Step 3: Implement** — `src/db.ts`
 
 ```ts
 import Dexie, { type Table } from 'dexie';
@@ -398,11 +398,11 @@ export async function deleteIdea(id: string): Promise<void> {
 }
 ```
 
-- [ ] **Step 4: PASS** → commit: `git commit -am "feat(data): dexie store, inbox guards, CRUD"`
+- [x] **Step 4: PASS** → commit: `git commit -am "feat(data): dexie store, inbox guards, CRUD"`
 
 ### Task 4: Backup (TDD)
 
-- [ ] **Step 1: Failing tests** — `tests/backup.test.ts`
+- [x] **Step 1: Failing tests** — `tests/backup.test.ts`
 
 ```ts
 import { describe, it, expect, beforeEach } from 'vitest';
@@ -460,7 +460,7 @@ describe('validateBackup', () => {
 });
 ```
 
-- [ ] **Step 2: FAIL** → **Step 3: Implement** — `src/logic/backup.ts`
+- [x] **Step 2: FAIL** → **Step 3: Implement** — `src/logic/backup.ts`
 
 ```ts
 import { db, ensureInbox, type List, type Task, type Idea } from '../db';
@@ -507,7 +507,7 @@ export async function importData(b: BackupV1): Promise<void> {
 }
 ```
 
-- [ ] **Step 4: PASS** → **Step 5: Full verify + commit**
+- [x] **Step 4: PASS** → **Step 5: Full verify + commit**
 
 ```bash
 npm run verify

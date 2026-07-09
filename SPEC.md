@@ -60,7 +60,7 @@ interface Idea {
 }
 ```
 
-- Dexie tables: `lists`, `tasks`, `ideas`. Indexes: `tasks: id, listId, done, dueDate`; `ideas: id, listId, updatedAt`; `lists: id, sortOrder`.
+- Dexie tables: `lists`, `tasks`, `ideas`. Indexes: `tasks: id, listId, dueDate` (no `done` index — booleans aren't valid IndexedDB keys; filter in JS); `ideas: id, listId, updatedAt`; `lists: id, sortOrder`.
 - `Inbox` list created on first run (`id` fixed constant `"inbox"`); cannot be deleted or renamed away — guard in delete/rename paths.
 - Deleting a list prompts, then deletes its tasks + ideas (no orphans).
 

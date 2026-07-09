@@ -15,7 +15,7 @@
 | Phase | Title | Status |
 |---|---|---|
 | 1 | [Scaffold + verify harness](phase-1-scaffold.md) | **done** |
-| 2 | [Data layer](phase-2-data-layer.md) | pending |
+| 2 | [Data layer](phase-2-data-layer.md) | **done** |
 | 3 | [Home screen](phase-3-home.md) | pending |
 | 4 | [Capture sheet](phase-4-capture.md) | pending |
 | 5 | [List view + idea editor](phase-5-list-view.md) | pending |

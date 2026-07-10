@@ -12,13 +12,13 @@
 
 ### Task 1: GitHub repo
 
-- [ ] **Step 1:** `gh auth status` (login if needed) → create + push:
+- [x] **Step 1:** `gh auth status` (login if needed) → create + push:
 
 ```bash
 gh repo create TUDU --public --source=. --push
 ```
 
-- [ ] **Step 2:** Enable Pages via Actions builds:
+- [x] **Step 2:** Enable Pages via Actions builds:
 
 ```bash
 gh api repos/{owner}/TUDU/pages -X POST -f build_type=workflow || \
@@ -29,7 +29,7 @@ gh api repos/{owner}/TUDU/pages -X PUT -f build_type=workflow
 
 ### Task 2: CI workflow
 
-- [ ] **`.github/workflows/deploy.yml`** — exact content:
+- [x] **`.github/workflows/deploy.yml`** — exact content:
 
 ```yaml
 name: verify-and-deploy
@@ -84,11 +84,11 @@ jobs:
         uses: actions/deploy-pages@v4
 ```
 
-- [ ] Push → watch `gh run watch` → both jobs green → note the live URL (`https://<user>.github.io/TUDU/`).
+- [x] Push → watch `gh run watch` → both jobs green → note the live URL (`https://<user>.github.io/TUDU/`).
 
 ### Task 3: README.md
 
-- [ ] Write `README.md` — required sections (adapt copy, keep substance):
+- [x] Write `README.md` — required sections (adapt copy, keep substance):
 
 ```markdown
 # TUDU
@@ -130,8 +130,8 @@ Everything is stored in your browser's IndexedDB. Export backups from Settings.
 MIT — see LICENSE.
 ```
 
-- [ ] Add a real screenshot (iPhone-width) to `docs/screenshot.png` and reference it.
-- [ ] Commit + push — `git add -A && git commit -m "docs: README + Pages deploy workflow" && git push`
+- [x] Add a real screenshot (iPhone-width) to `docs/screenshot.png` and reference it.
+- [x] Commit + push — `git add -A && git commit -m "docs: README + Pages deploy workflow" && git push`
 
 ### Task 4: On-device acceptance (the final manual check)
 
@@ -140,6 +140,6 @@ MIT — see LICENSE.
 - [ ] Capture a task due today + an idea → force-quit → relaunch in **airplane mode** → data present, app fully functional.
 - [ ] Settings → export → share sheet saves to Files.
 - [ ] Second device/friend test (optional): fresh phone installs from the URL and works.
-- [ ] Update `phases/README.md` status table → all 8 done. Ship announcement to yourself. 🎉
+- [x] Update `phases/README.md` status table → all 8 done. Ship announcement to yourself. 🎉
 
 **Done when:** live URL installable + offline on your physical iPhone · CI green on main.

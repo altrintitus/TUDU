@@ -1,7 +1,8 @@
 import { deflateSync } from 'node:zlib';
 import { writeFileSync, mkdirSync } from 'node:fs';
 
-// TUDU mark: a rounded "T" (matching the logo's T) in ink-cream on near-black.
+// TUDU mark: a rounded "T" with the wordmark's accent underline, ink-cream on
+// near-black. Echoes the logo instead of a bare letter.
 const BG = [0x10, 0x0f, 0x0e], FG = [0xed, 0xed, 0xea];
 
 function crc32(buf) {
@@ -19,26 +20,32 @@ function chunk(type, data) {
   return Buffer.concat([be32(data.length), td, be32(crc32(td))]);
 }
 
-// distance from point (px,py) to segment (ax,ay)-(bx,by)
-function distSeg(px, py, ax, ay, bx, by) {
+// distance from point to a segment
+function distSeg(px, py, [ax, ay, bx, by]) {
   const dx = bx - ax, dy = by - ay;
   const l2 = dx * dx + dy * dy;
   let t = l2 === 0 ? 0 : ((px - ax) * dx + (py - ay) * dy) / l2;
   t = Math.max(0, Math.min(1, t));
-  const cx = ax + t * dx, cy = ay + t * dy;
-  return Math.hypot(px - cx, py - cy);
+  return Math.hypot(px - (ax + t * dx), py - (ay + t * dy));
 }
 
 function png(size, pad) {
   const inset = size * pad;
-  const xL = inset, xR = size - inset, yT = inset, yB = size - inset;
-  const cx = size / 2;
-  const w = (size - 2 * inset) * 0.17; // stroke width
-  const half = w / 2;
+  const content = size - 2 * inset;
+  const xL = inset, xR = size - inset, yT = inset, yB = size - inset, cx = size / 2;
+  const w = content * 0.155, half = w / 2;           // T stroke
+  const wu = content * 0.11, halfU = wu / 2;          // underline stroke
   const barY = yT + half;
-  // rounded caps: inset endpoints by half so the cap sits at the content edge
-  const bar = [xL + half, barY, xR - half, barY];
-  const stem = [cx, barY, cx, yB - half];
+  const tBottom = yB - content * 0.24;                // leave room for underline
+  const uHalf = content * 0.26;
+  const underlineY = yB - halfU;
+
+  // [segment, halfWidth]
+  const strokes = [
+    [[xL + half, barY, xR - half, barY], half],       // T bar
+    [[cx, barY, cx, tBottom], half],                  // T stem
+    [[cx - uHalf, underlineY, cx + uHalf, underlineY], halfU] // accent underline
+  ];
 
   const ihdr = Buffer.concat([be32(size), be32(size), Buffer.from([8, 6, 0, 0, 0])]);
   const rows = [];
@@ -46,16 +53,17 @@ function png(size, pad) {
     const row = Buffer.alloc(1 + size * 4);
     for (let x = 0; x < size; x++) {
       const px = x + 0.5, py = y + 0.5;
-      const d = Math.min(
-        distSeg(px, py, bar[0], bar[1], bar[2], bar[3]),
-        distSeg(px, py, stem[0], stem[1], stem[2], stem[3])
-      );
-      // 1px anti-aliased coverage
-      const cov = Math.max(0, Math.min(1, half - d + 0.5));
-      const r = Math.round(BG[0] + (FG[0] - BG[0]) * cov);
-      const g = Math.round(BG[1] + (FG[1] - BG[1]) * cov);
-      const b = Math.round(BG[2] + (FG[2] - BG[2]) * cov);
-      row.set([r, g, b, 255], 1 + x * 4);
+      let cov = 0;
+      for (const [seg, hw] of strokes) {
+        cov = Math.max(cov, Math.min(1, hw - distSeg(px, py, seg) + 0.5));
+      }
+      cov = Math.max(0, cov);
+      row.set([
+        Math.round(BG[0] + (FG[0] - BG[0]) * cov),
+        Math.round(BG[1] + (FG[1] - BG[1]) * cov),
+        Math.round(BG[2] + (FG[2] - BG[2]) * cov),
+        255
+      ], 1 + x * 4);
     }
     rows.push(row);
   }

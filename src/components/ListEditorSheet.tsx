@@ -12,6 +12,9 @@ export function ListEditorSheet({ open, list, onClose }: {
   const [name, setName] = useState(list?.name ?? '');
   const [emoji, setEmoji] = useState(list?.emoji ?? '');
   const [confirming, setConfirming] = useState(false);
+  // Start readonly so iOS doesn't classify this "name" field for contact
+  // AutoFill (it ignores autocomplete=off here); drop it the moment it's focused.
+  const [nameRO, setNameRO] = useState(true);
 
   const counts = useLiveQuery(async () => {
     if (!list) return { t: 0, i: 0 };
@@ -46,6 +49,8 @@ export function ListEditorSheet({ open, list, onClose }: {
           aria-label="Name"
           value={name}
           disabled={isInbox}
+          readOnly={nameRO}
+          onFocus={() => setNameRO(false)}
           placeholder="List name"
           autoComplete="off"
           autoCorrect="off"

@@ -72,6 +72,14 @@ test('per-list add captures directly into this list', async ({ page }) => {
   await expect(page.getByText('from inside list')).toBeVisible();
 });
 
+test('delete an idea from its editor', async ({ page }) => {
+  await page.getByRole('tab', { name: /ideas/i }).click();
+  await page.getByText('app idea').click();
+  await page.getByRole('button', { name: /delete idea/i }).click();
+  await page.getByRole('button', { name: /confirm/i }).click();
+  await expect(page.getByText('app idea')).toHaveCount(0);
+});
+
 test('garbage list id redirects home', async ({ page }) => {
   await page.goto('/#/list/does-not-exist');
   await expect(page.getByRole('button', { name: /new list/i })).toBeVisible(); // home

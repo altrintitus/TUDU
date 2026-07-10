@@ -74,7 +74,7 @@ interface Idea {
 
 ### Home
 - Today strip: each row shows checkbox, title, source-list name. Checking completes in place (row animates out). Hidden entirely when empty.
-- Lists section: rows with emoji, name, open-task count + idea count. Tap → List view. `[+ list]` creates (name + optional emoji). Long-press (or an edit affordance) → rename / delete. The permanent **Inbox** list is hidden from this section (it remains the capture fallback and its due tasks still surface in the Today strip).
+- Lists section: rows with emoji, name, open-task count + idea count. Tap → List view. `[+ list]` creates (name + optional emoji). Long-press (or an edit affordance) → rename / delete. The permanent **Inbox** list is hidden from this section **while empty**, and appears once it holds any task or idea — so nothing captured to the fallback list ever becomes unreachable.
 - Global `[+]` FAB → Capture sheet.
 
 ### Capture sheet

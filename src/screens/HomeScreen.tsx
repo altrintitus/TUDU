@@ -32,6 +32,16 @@ export function HomeScreen() {
   const showHint =
     !!model && model.lists.length <= 1 && model.openTasks.size === 0 && model.ideaCounts.size === 0;
 
+  // Inbox is the capture fallback: hide it from the home list when empty, but
+  // show it once it holds anything so those items never become unreachable.
+  const visibleLists = model
+    ? model.lists.filter(
+        (l) =>
+          l.id !== INBOX_ID ||
+          (model.openTasks.get(l.id) ?? 0) + (model.ideaCounts.get(l.id) ?? 0) > 0
+      )
+    : [];
+
   return (
     <div className="home">
       <header className="home-header">
@@ -56,12 +66,12 @@ export function HomeScreen() {
       <section className="lists">
         <h2 className="section-label">Lists</h2>
         <div className="list-grid">
-          {model?.lists.filter((l) => l.id !== INBOX_ID).map((l) => (
+          {visibleLists.map((l) => (
             <ListCard
               key={l.id}
               list={l}
-              openTaskCount={model.openTasks.get(l.id) ?? 0}
-              ideaCount={model.ideaCounts.get(l.id) ?? 0}
+              openTaskCount={model!.openTasks.get(l.id) ?? 0}
+              ideaCount={model!.ideaCounts.get(l.id) ?? 0}
               onOpen={() => navigate({ name: 'list', id: l.id })}
               onEdit={() => setEditing({ list: l })}
             />

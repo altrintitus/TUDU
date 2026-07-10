@@ -9,6 +9,7 @@ import { IdeaRow } from '../components/IdeaRow';
 import { TaskEditSheet } from '../components/TaskEditSheet';
 import { CaptureSheet } from '../components/CaptureSheet';
 import { Sheet } from '../components/Sheet';
+import { TasksIcon, IdeasIcon } from '../components/icons';
 
 type Tab = 'tasks' | 'ideas';
 type Pending = { label: string; run(): void };
@@ -22,7 +23,7 @@ export function ListScreen({ listId }: { listId: string }) {
   }, [listId]);
 
   const [tab, setTab] = useState<Tab>(
-    () => (sessionStorage.getItem(`kin.tab.${listId}`) as Tab) || 'tasks'
+    () => (sessionStorage.getItem(`tudu.tab.${listId}`) as Tab) || 'tasks'
   );
   const [capturing, setCapturing] = useState(false);
   const [editing, setEditing] = useState<Task | null>(null);
@@ -40,7 +41,7 @@ export function ListScreen({ listId }: { listId: string }) {
 
   const selectTab = (next: Tab) => {
     setTab(next);
-    sessionStorage.setItem(`kin.tab.${listId}`, next);
+    sessionStorage.setItem(`tudu.tab.${listId}`, next);
   };
 
   const open = tasks.filter((t) => !t.done).sort(compareListTasks);
@@ -69,6 +70,7 @@ export function ListScreen({ listId }: { listId: string }) {
           className={tab === 'tasks' ? 'tab active' : 'tab'}
           onClick={() => selectTab('tasks')}
         >
+          <TasksIcon />
           Tasks
         </button>
         <button
@@ -77,6 +79,7 @@ export function ListScreen({ listId }: { listId: string }) {
           className={tab === 'ideas' ? 'tab active' : 'tab'}
           onClick={() => selectTab('ideas')}
         >
+          <IdeasIcon />
           Ideas
         </button>
       </div>

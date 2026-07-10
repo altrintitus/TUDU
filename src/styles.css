@@ -7,21 +7,24 @@
 
 :root {
   color-scheme: dark;
-  /* Nocturne — obsidian minimalism */
-  --bg: #0a0a0d;
-  --bg-glow: #12131c;
-  --surface: #141419;
-  --surface-2: #1b1b22;
-  --surface-press: #202029;
-  --border: rgba(255, 255, 255, 0.07);
-  --border-strong: rgba(255, 255, 255, 0.12);
-  --text: #ececf1;
-  --muted: #83838f;
-  --faint: #56565f;
-  --accent: #8b9bff;
-  --accent-weak: rgba(139, 155, 255, 0.14);
-  --danger: #ff6b6b;
-  --danger-weak: rgba(255, 107, 107, 0.13);
+  /* TUDU — warm monochrome (ink on paper). Dark = same system inverted. */
+  --bg: #100f0e;
+  --bg-glow: #1a1916;
+  --surface: #1a1916;
+  --surface-2: #211f1c;
+  --surface-press: #2a2723;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.14);
+  --text: #ededea;
+  --muted: #8f8d86;
+  --faint: #5f5d57;
+  --accent: #ededea;          /* ink IS the accent — monochrome */
+  --accent-ink: #100f0e;      /* text over a filled ink surface */
+  --accent-weak: rgba(237, 237, 234, 0.12);
+  --check-border: #4a4843;
+  --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --danger: #ff7a7a;
+  --danger-weak: rgba(255, 122, 122, 0.14);
   --radius: 14px;
   --radius-sm: 10px;
   --radius-lg: 22px;
@@ -33,18 +36,22 @@
 @media (prefers-color-scheme: light) {
   :root {
     color-scheme: light;
-    --bg: #f5f5f2;
+    /* exact reference: warm paper + ink */
+    --bg: #f5f4f0;
     --bg-glow: #ffffff;
     --surface: #ffffff;
-    --surface-2: #f0f1f4;
-    --surface-press: #e7e8ec;
-    --border: rgba(0, 0, 0, 0.09);
-    --border-strong: rgba(0, 0, 0, 0.15);
-    --text: #18181d;
-    --muted: #6a6a76;
-    --faint: #9a9aa4;
-    --accent: #5566f0;
-    --accent-weak: rgba(85, 102, 240, 0.11);
+    --surface-2: #faf9f6;
+    --surface-press: #efeee9;
+    --border: #f0f0ee;
+    --border-strong: rgba(0, 0, 0, 0.12);
+    --text: #111111;
+    --muted: #999999;
+    --faint: #bcbcb8;
+    --accent: #111111;
+    --accent-ink: #f5f4f0;
+    --accent-weak: rgba(17, 17, 17, 0.06);
+    --check-border: #c8c8c4;
+    --card-shadow: 0 2px 20px rgba(0, 0, 0, 0.07), 0 0 0 1px rgba(0, 0, 0, 0.04);
     --danger: #e5484d;
     --danger-weak: rgba(229, 72, 77, 0.1);
   }
@@ -73,6 +80,36 @@ body::before {
 input, textarea, select, button { font: inherit; color: inherit; }
 input, textarea, select { font-size: 16px; } /* blocks iOS focus zoom */
 button { cursor: pointer; border: none; background: none; }
+
+/* custom checkbox — reference design: 18px, 4px radius, ink fill + paper tick */
+input[type='checkbox'] {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 1.5px solid var(--check-border);
+  background: transparent;
+  display: grid;
+  place-content: center;
+  transition: background 0.15s, border-color 0.15s;
+}
+input[type='checkbox']:checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+input[type='checkbox']::after {
+  content: '';
+  width: 9px;
+  height: 7px;
+  background: var(--accent-ink);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='7' viewBox='0 0 9 7'%3E%3Cpath d='M1 3.5L3.2 6L8 1' fill='none' stroke='%23000' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='7' viewBox='0 0 9 7'%3E%3Cpath d='M1 3.5L3.2 6L8 1' fill='none' stroke='%23000' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;
+  transform: scale(0);
+  transition: transform 0.15s var(--ease);
+}
+input[type='checkbox']:checked::after { transform: scale(1); }
 
 .app {
   position: relative;
@@ -120,6 +157,7 @@ button { cursor: pointer; border: none; background: none; }
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
+  box-shadow: var(--card-shadow);
   padding: var(--space-3) var(--space-4);
   min-height: var(--tap-target);
   animation: rise 0.34s var(--ease) both;
@@ -145,6 +183,7 @@ button { cursor: pointer; border: none; background: none; }
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
+  box-shadow: var(--card-shadow);
   overflow: hidden;
   transition: border-color 0.15s, background 0.15s;
 }
@@ -249,7 +288,7 @@ button { cursor: pointer; border: none; background: none; }
   font-weight: 600;
   transition: opacity 0.15s, background 0.15s;
 }
-.btn-primary { background: var(--accent); color: #0a0a0d; }
+.btn-primary { background: var(--accent); color: var(--accent-ink); }
 .btn-primary:disabled { opacity: 0.4; }
 .btn-danger { background: var(--danger-weak); color: var(--danger); }
 .btn-danger:active { background: var(--danger); color: #fff; }
@@ -264,7 +303,7 @@ button { cursor: pointer; border: none; background: none; }
   height: 56px;
   border-radius: 50%;
   background: var(--accent);
-  color: #0a0a0d;
+  color: var(--accent-ink);
   font-size: 30px;
   font-weight: 400;
   line-height: 1;
@@ -381,26 +420,29 @@ button { cursor: pointer; border: none; background: none; }
 .screen-emoji { font-size: 22px; }
 .screen-title { font-size: 24px; font-weight: 700; letter-spacing: -0.02em; }
 
-/* ---- tabs ---- */
+/* ---- tabs (reference: icon + label, underline active) ---- */
 .tabs {
-  display: inline-flex;
-  gap: 2px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 3px;
+  display: flex;
+  border-bottom: 1px solid var(--border);
   margin-bottom: var(--space-5);
 }
 .tab {
-  min-height: 38px;
-  padding: 0 var(--space-5);
-  border-radius: 999px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: var(--tap-target);
   color: var(--muted);
-  font-weight: 600;
+  font-weight: 400;
   font-size: 14px;
-  transition: background 0.15s, color 0.15s;
+  letter-spacing: 0.02em;
+  border-bottom: 1.5px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.15s;
 }
-.tab.active { background: var(--accent-weak); color: var(--accent); }
+.tab svg { display: block; }
+.tab.active { color: var(--text); font-weight: 600; border-bottom-color: var(--text); }
 
 /* ---- rows ---- */
 .rows { display: flex; flex-direction: column; gap: var(--space-2); }
@@ -412,16 +454,11 @@ button { cursor: pointer; border: none; background: none; }
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
+  box-shadow: var(--card-shadow);
   padding: var(--space-2) var(--space-4);
   min-height: var(--tap-target);
 }
 .task-row.overdue { border-left: 3px solid var(--danger); }
-.task-row input[type='checkbox'] {
-  width: 22px;
-  height: 22px;
-  accent-color: var(--accent);
-  flex: 0 0 auto;
-}
 .task-main {
   flex: 1;
   display: flex;
@@ -467,6 +504,7 @@ button { cursor: pointer; border: none; background: none; }
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
+  box-shadow: var(--card-shadow);
 }
 .idea-main {
   display: flex;
@@ -477,6 +515,7 @@ button { cursor: pointer; border: none; background: none; }
   min-height: var(--tap-target);
   text-align: left;
 }
+.idea-icon { flex: 0 0 auto; display: flex; color: var(--muted); }
 .idea-title { flex: 1; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .idea-time { font-size: 12px; color: var(--faint); white-space: nowrap; }
 

@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import type { Idea } from '../db';
 import { useLongPress } from '../hooks/useLongPress';
 import { firstLine, relativeTime } from '../logic/text';
+import { IdeasIcon } from './icons';
 
 export function IdeaRow({ idea, onOpen, onDelete }: {
   idea: Idea;
@@ -16,6 +17,7 @@ export function IdeaRow({ idea, onOpen, onDelete }: {
   return (
     <div className="idea-row" {...longPress} onPointerDownCapture={() => { fired.current = false; }}>
       <button className="idea-main" onClick={onClick}>
+        <span className="idea-icon"><IdeasIcon /></span>
         <span className="idea-title">{firstLine(idea.text)}</span>
         <span className="idea-time">{relativeTime(idea.updatedAt)}</span>
       </button>

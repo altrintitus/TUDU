@@ -52,3 +52,7 @@ When something fails repeatedly or a workaround is found, add a one-line bullet 
 - long-press ends in a ghost click on inner button; swallow via firedRef + onPointerDownCapture reset
 - controlled checkbox from async Dexie source: `.check()` races the write; use `.click()`
 - keep open+done tasks in one container so toggling repositions the checkbox node (no remount)
+- webkit e2e: goto that only ADDS a #fragment won't fire hashchange; set `location.hash` via evaluate
+- webkit anchor download: append `<a>` to DOM + delay `revokeObjectURL` (~1s), else no download
+- native share() hangs under automation; gate share path on `!navigator.webdriver`
+- toast text must not substring-match seeded list/task names (e2e getByText collisions)

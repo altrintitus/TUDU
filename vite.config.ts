@@ -5,6 +5,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig(({ mode }) => ({
   base: mode === 'production' ? '/TUDU/' : '/',
+  define: { __APP_VERSION__: JSON.stringify(process.env.npm_package_version) },
   plugins: [
     react(),
     VitePWA({

@@ -13,17 +13,17 @@
 
 ### Task 1: Behavior checklist
 
-- [ ] Header with back → home. Sections: **Backup**, **Storage**, **About**.
-- [ ] **Export**: button → `exportData()` → `JSON.stringify(data, null, 2)` → file `tudu-backup-YYYY-MM-DD.json` (name via `todayStr()`).
+- [x] Header with back → home. Sections: **Backup**, **Storage**, **About**.
+- [x] **Export**: button → `exportData()` → `JSON.stringify(data, null, 2)` → file `tudu-backup-YYYY-MM-DD.json` (name via `todayStr()`).
   - If `navigator.canShare?.({ files })` (iOS): `navigator.share({ files: [new File([json], name, { type: 'application/json' })] })` — lands in iCloud Files / AirDrop.
   - Fallback (desktop, e2e): anchor download via `URL.createObjectURL(new Blob([json], { type: 'application/json' }))`, then `revokeObjectURL`.
-- [ ] **Import**: `<input type="file" accept="application/json">` (hidden, triggered by button) → read text → `JSON.parse` in try/catch → `validateBackup`. Invalid → inline error "Not a TUDU backup file." Valid → confirm step showing incoming counts ("Replace everything with N lists / M tasks / K ideas?") → `importData` → success toast. Cancel → nothing written.
-- [ ] **Storage**: persistent-storage status via `navigator.storage.persisted()` ("Protected" / "Best-effort"); live counts (lists/tasks/ideas via `useLiveQuery`).
-- [ ] **About**: app version (`import.meta.env` — inject `define: { __APP_VERSION__: JSON.stringify(process.env.npm_package_version) }` in `vite.config.ts` + `declare const __APP_VERSION__: string` in `src/vite-env.d.ts`), link to GitHub repo.
+- [x] **Import**: `<input type="file" accept="application/json">` (hidden, triggered by button) → read text → `JSON.parse` in try/catch → `validateBackup`. Invalid → inline error "Not a TUDU backup file." Valid → confirm step showing incoming counts ("Replace everything with N lists / M tasks / K ideas?") → `importData` → success toast. Cancel → nothing written.
+- [x] **Storage**: persistent-storage status via `navigator.storage.persisted()` ("Protected" / "Best-effort"); live counts (lists/tasks/ideas via `useLiveQuery`).
+- [x] **About**: app version (`import.meta.env` — inject `define: { __APP_VERSION__: JSON.stringify(process.env.npm_package_version) }` in `vite.config.ts` + `declare const __APP_VERSION__: string` in `src/vite-env.d.ts`), link to GitHub repo.
 
 ### Task 2: e2e — `e2e/backup.spec.ts`
 
-- [ ] **Step 1: Write the spec** (same DB-wipe `beforeEach` block as lists.spec.ts, verbatim, ending with `page.reload()`)
+- [x] **Step 1: Write the spec** (same DB-wipe `beforeEach` block as lists.spec.ts, verbatim, ending with `page.reload()`)
 
 ```ts
 import { test, expect } from '@playwright/test';
@@ -92,9 +92,9 @@ test('invalid file shows error, writes nothing', async ({ page }) => {
 
 Note: e2e runs on the anchor-download path (test webkit has no `navigator.canShare` with files). The share path gets the phase-8 on-device manual check.
 
-- [ ] **Step 2: Build until spec passes** — `npx playwright test e2e/backup.spec.ts`
-- [ ] **Step 3: `npm run verify` green**
-- [ ] **Step 4: Reviewer agent on the diff, fix findings**
-- [ ] **Step 5: Commit** — `git commit -am "feat(settings): backup export/import, storage status"`
+- [x] **Step 2: Build until spec passes** — `npx playwright test e2e/backup.spec.ts`
+- [x] **Step 3: `npm run verify` green**
+- [x] **Step 4: Reviewer agent on the diff, fix findings**
+- [x] **Step 5: Commit** — `git commit -am "feat(settings): backup export/import, storage status"`
 
 **Done when:** e2e green · export→wipe→import roundtrip works by hand in a desktop browser too.

@@ -2,7 +2,7 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: 'e2e',
-  timeout: 15_000,
+  timeout: 30_000, // headroom for CI: preview build + dev server + parallel webkit workers
   projects: [
     // feature suites run against the dev server
     {

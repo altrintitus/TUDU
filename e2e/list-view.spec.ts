@@ -16,7 +16,12 @@ test.beforeEach(async ({ page }) => {
     await tudu.createIdea('inbox', 'app idea\nlonger body text');
   });
   await page.reload();
-  // Inbox is hidden from the home list, so open it directly by hash.
+  // Inbox is hidden from the home list, so open it directly by hash. Wait for
+  // ensureInbox() to create the row first, else ListScreen redirects home.
+  await page.waitForFunction(async () => {
+    const t = (window as never as { __tudu?: { db: { lists: { get(id: string): Promise<unknown> } } } }).__tudu;
+    return !!t && !!(await t.db.lists.get('inbox'));
+  });
   await page.evaluate(() => { window.location.hash = '#/list/inbox'; });
 });
 

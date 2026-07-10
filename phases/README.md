@@ -20,7 +20,7 @@
 | 4 | [Capture sheet](phase-4-capture.md) | **done** |
 | 5 | [List view + idea editor](phase-5-list-view.md) | **done (d5e945d)** |
 | 6 | [Settings: export/import](phase-6-settings.md) | **done (98a68ae)** |
-| 7 | [PWA + iOS polish](phase-7-pwa-polish.md) | pending |
+| 7 | [PWA + iOS polish](phase-7-pwa-polish.md) | **done (2b43824)** |
 | 8 | [Deploy + README](phase-8-deploy.md) | pending |
 
 Update this table (pending → **done (commit sha)**) when a phase lands.

@@ -51,7 +51,7 @@ import { createList, createTask, createIdea, db } from './db';
 
 // e2e seeding hook; dev server only, never in production builds
 if (import.meta.env.DEV) {
-  (window as unknown as Record<string, unknown>).__kin = { createList, createTask, createIdea, db };
+  (window as unknown as Record<string, unknown>).__tudu = { createList, createTask, createIdea, db };
 }
 export {};
 ```
@@ -108,14 +108,14 @@ test('inbox cannot be deleted', async ({ page }) => {
 
 test('today strip shows due + overdue across lists, checking removes', async ({ page }) => {
   await page.evaluate(async () => {
-    const kin = (window as never as { __kin: typeof import('../src/testBridge') & Record<string, CallableFunction> }).__kin;
+    const tudu = (window as never as { __tudu: typeof import('../src/testBridge') & Record<string, CallableFunction> }).__tudu;
     const today = new Date();
     const iso = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     const yesterday = new Date(today.getTime() - 86_400_000);
-    const work = await kin.createList('Work');
-    await kin.createTask(work.id, 'overdue report', iso(yesterday));
-    await kin.createTask('inbox', 'due today', iso(today));
-    await kin.createTask('inbox', 'future', '2999-01-01');
+    const work = await tudu.createList('Work');
+    await tudu.createTask(work.id, 'overdue report', iso(yesterday));
+    await tudu.createTask('inbox', 'due today', iso(today));
+    await tudu.createTask('inbox', 'future', '2999-01-01');
   });
   await page.reload();
   await expect(page.getByRole('heading', { name: 'Today' })).toBeVisible();

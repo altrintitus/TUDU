@@ -1,8 +1,8 @@
-# Kin — Phased Build Plan
+# TUDU — Phased Build Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans (or superpowers:subagent-driven-development) to implement a phase task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Build Kin (SPEC.md) in 8 sequential phases, each independently buildable and verifiable.
+**Goal:** Build TUDU (SPEC.md) in 8 sequential phases, each independently buildable and verifiable.
 
 **Architecture:** Local-first PWA. Dexie (IndexedDB) is the single store; React components read it reactively via `dexie-react-hooks` `useLiveQuery` — no state library, no context providers for data. A ~30-line `useHashRoute` hook replaces a router dep. Pure logic lives in `src/logic/` and is unit-tested; UI behavior is pinned by Playwright e2e specs (iPhone profile).
 

@@ -14,10 +14,10 @@
 ### Task 1: Behavior checklist
 
 - [ ] Header with back → home. Sections: **Backup**, **Storage**, **About**.
-- [ ] **Export**: button → `exportData()` → `JSON.stringify(data, null, 2)` → file `kin-backup-YYYY-MM-DD.json` (name via `todayStr()`).
+- [ ] **Export**: button → `exportData()` → `JSON.stringify(data, null, 2)` → file `tudu-backup-YYYY-MM-DD.json` (name via `todayStr()`).
   - If `navigator.canShare?.({ files })` (iOS): `navigator.share({ files: [new File([json], name, { type: 'application/json' })] })` — lands in iCloud Files / AirDrop.
   - Fallback (desktop, e2e): anchor download via `URL.createObjectURL(new Blob([json], { type: 'application/json' }))`, then `revokeObjectURL`.
-- [ ] **Import**: `<input type="file" accept="application/json">` (hidden, triggered by button) → read text → `JSON.parse` in try/catch → `validateBackup`. Invalid → inline error "Not a Kin backup file." Valid → confirm step showing incoming counts ("Replace everything with N lists / M tasks / K ideas?") → `importData` → success toast. Cancel → nothing written.
+- [ ] **Import**: `<input type="file" accept="application/json">` (hidden, triggered by button) → read text → `JSON.parse` in try/catch → `validateBackup`. Invalid → inline error "Not a TUDU backup file." Valid → confirm step showing incoming counts ("Replace everything with N lists / M tasks / K ideas?") → `importData` → success toast. Cancel → nothing written.
 - [ ] **Storage**: persistent-storage status via `navigator.storage.persisted()` ("Protected" / "Best-effort"); live counts (lists/tasks/ideas via `useLiveQuery`).
 - [ ] **About**: app version (`import.meta.env` — inject `define: { __APP_VERSION__: JSON.stringify(process.env.npm_package_version) }` in `vite.config.ts` + `declare const __APP_VERSION__: string` in `src/vite-env.d.ts`), link to GitHub repo.
 
@@ -33,16 +33,16 @@ import { readFileSync } from 'node:fs';
 
 test('export downloads a valid backup file', async ({ page }) => {
   await page.evaluate(async () => {
-    const kin = (window as never as { __kin: Record<string, CallableFunction> }).__kin;
-    const w = await kin.createList('Work');
-    await kin.createTask(w.id, 'report', '2026-07-10');
+    const tudu = (window as never as { __tudu: Record<string, CallableFunction> }).__tudu;
+    const w = await tudu.createList('Work');
+    await tudu.createTask(w.id, 'report', '2026-07-10');
   });
   await page.goto('/#/settings');
   const [download] = await Promise.all([
     page.waitForEvent('download'),
     page.getByRole('button', { name: /export/i }).click()
   ]);
-  expect(download.suggestedFilename()).toMatch(/^kin-backup-\d{4}-\d{2}-\d{2}\.json$/);
+  expect(download.suggestedFilename()).toMatch(/^tudu-backup-\d{4}-\d{2}-\d{2}\.json$/);
   const body = JSON.parse(readFileSync(await download.path(), 'utf8'));
   expect(body.version).toBe(1);
   expect(body.lists.map((l: { name: string }) => l.name)).toContain('Work');
@@ -60,8 +60,8 @@ test('import replaces data after confirm', async ({ page }) => {
     ideas: []
   };
   await page.evaluate(async () => {
-    const kin = (window as never as { __kin: Record<string, CallableFunction> }).__kin;
-    await kin.createTask('inbox', 'doomed task');
+    const tudu = (window as never as { __tudu: Record<string, CallableFunction> }).__tudu;
+    await tudu.createTask('inbox', 'doomed task');
   });
   await page.goto('/#/settings');
   await page.getByRole('button', { name: /import/i }).click();
@@ -86,7 +86,7 @@ test('invalid file shows error, writes nothing', async ({ page }) => {
     name: 'junk.json', mimeType: 'application/json',
     buffer: Buffer.from('{"hello":"world"}')
   });
-  await expect(page.getByText(/not a kin backup/i)).toBeVisible();
+  await expect(page.getByText(/not a TUDU backup/i)).toBeVisible();
 });
 ```
 

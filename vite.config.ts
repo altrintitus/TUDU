@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig(({ mode }) => ({
-  base: mode === 'production' ? '/Kin/' : '/',
+  base: mode === 'production' ? '/TUDU/' : '/',
   plugins: [
     react(),
     VitePWA({
@@ -13,8 +13,8 @@ export default defineConfig(({ mode }) => ({
       // default globs omit ttf; add it so the bundled Comfortaa font precaches for offline
       workbox: { globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,woff,woff2,ttf}'] },
       manifest: {
-        name: 'Kin',
-        short_name: 'Kin',
+        name: 'TUDU',
+        short_name: 'TUDU',
         description: 'Capture tasks and ideas into lists. Local-first.',
         display: 'standalone',
         background_color: '#0b0b0f',

@@ -1,4 +1,4 @@
-# Kin
+# TUDU
 
 Personal PWA: capture tasks + ideas into lists. iPhone-first via Safari Add to Home Screen; no App Store, no backend, data on-device. **`SPEC.md` is the requirements contract — implement against it exactly; deviations need user approval first.**
 

@@ -31,7 +31,7 @@ test('app works offline after first load', async ({ page, context }) => {
   await page.evaluate(() => navigator.serviceWorker.ready);
   await context.setOffline(true);
   await page.reload();
-  await expect(page.getByRole('heading', { name: 'Kin' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'TUDU' })).toBeVisible();
   await context.setOffline(false);
 });
 ```
@@ -82,12 +82,12 @@ export function currentInstallEnv(): { ua: string; standalone: boolean; dismisse
     standalone:
       window.matchMedia('(display-mode: standalone)').matches ||
       (navigator as unknown as { standalone?: boolean }).standalone === true,
-    dismissed: localStorage.getItem('kin.installHintDismissed') === '1'
+    dismissed: localStorage.getItem('tudu.installHintDismissed') === '1'
   };
 }
 ```
 
-- [ ] **Step 4: PASS.** `InstallHint` component: one-time dismissable card on home — "Install Kin: tap Share → Add to Home Screen." Dismiss sets `kin.installHintDismissed=1`.
+- [ ] **Step 4: PASS.** `InstallHint` component: one-time dismissable card on home — "Install TUDU: tap Share → Add to Home Screen." Dismiss sets `tudu.installHintDismissed=1`.
 
 ### Task 4: Final icon + design polish
 

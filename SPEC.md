@@ -1,6 +1,6 @@
-# Kin — SPEC
+# TUDU — SPEC
 
-Personal PWA for capturing **tasks** and **ideas**, organized into **lists**. iPhone-first, installed from Safari via Add to Home Screen. No App Store, no backend, no accounts. Hosted free on GitHub Pages; anyone can use it from the URL or fork the repo. Name from Bloodborne; no thematic tie-in.
+Personal PWA for capturing **tasks** and **ideas**, organized into **lists**. iPhone-first, installed from Safari via Add to Home Screen. No App Store, no backend, no accounts. Hosted free on GitHub Pages; anyone can use it from the URL or fork the repo. Name is a play on "to-do".
 
 > Status: locked 2026-07-08 after design interview. This file is self-contained — a fresh session implements against it without the interview transcript.
 
@@ -99,8 +99,8 @@ interface Idea {
 
 ## PWA & iOS requirements
 
-- `vite-plugin-pwa`: manifest (name `Kin`, `display: standalone`, dark theme-color, icons 192/512 + maskable + `apple-touch-icon`), service worker precaching app shell — full offline after first load.
-- Vite `base` must match repo path (`/Kin/`) for Pages; use **hash routing** (back gesture works, no 404 tricks).
+- `vite-plugin-pwa`: manifest (name `TUDU`, `display: standalone`, dark theme-color, icons 192/512 + maskable + `apple-touch-icon`), service worker precaching app shell — full offline after first load.
+- Vite `base` must match repo path (`/TUDU/`) for Pages; use **hash routing** (back gesture works, no 404 tricks).
 - iOS gotchas (honor all): `viewport-fit=cover` + safe-area insets; `100dvh` not `100vh`; inputs `font-size ≥ 16px` (blocks focus zoom); `overscroll-behavior` to stop rubber-band; no `beforeinstallprompt` on iOS → show one-time "Share → Add to Home Screen" hint when not standalone; IndexedDB can fail in private browsing → visible error banner, don't silently drop writes.
 - Request `navigator.storage.persist()` on first write.
 
@@ -132,4 +132,4 @@ e2e/                                     # Playwright, iPhone viewport
 
 ## Deploy & sharing
 
-GitHub Actions: on push to `main`, build + deploy to Pages. README covers: what Kin is, screenshot, install-on-iPhone steps (visit URL → Share → Add to Home Screen), local dev (`npm i && npm run dev`), privacy note (all data stays on your device). MIT license.
+GitHub Actions: on push to `main`, build + deploy to Pages. README covers: what TUDU is, screenshot, install-on-iPhone steps (visit URL → Share → Add to Home Screen), local dev (`npm i && npm run dev`), privacy note (all data stays on your device). MIT license.

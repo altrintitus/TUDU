@@ -1,6 +1,6 @@
 export type CaptureType = 'task' | 'idea';
-const TYPE_KEY = 'kin.capture.type';
-const LIST_KEY = 'kin.capture.listId';
+const TYPE_KEY = 'tudu.capture.type';
+const LIST_KEY = 'tudu.capture.listId';
 
 export function loadCaptureDefaults(storage: Storage = localStorage): { type: CaptureType; listId: string } {
   const rawType = storage.getItem(TYPE_KEY);

@@ -13,7 +13,7 @@
 
 ```tsx
 // ListScreen: header (emoji + name + back → navigate home), tabs Tasks|Ideas
-// (active tab per list in sessionStorage key `kin.tab.<listId>`), per-list [+]
+// (active tab per list in sessionStorage key `tudu.tab.<listId>`), per-list [+]
 // button → CaptureSheet with fixedListId=list.id.
 
 // TaskRow.tsx
@@ -77,7 +77,7 @@ export function useLongPress(onLongPress: () => void, ms = 500) {
 
 ### Task 2: e2e — `e2e/list-view.spec.ts`
 
-- [x] **Step 1: Write the spec** (same DB-wipe `beforeEach` as lists.spec.ts; seed via `__kin` bridge)
+- [x] **Step 1: Write the spec** (same DB-wipe `beforeEach` as lists.spec.ts; seed via `__tudu` bridge)
 
 ```ts
 import { test, expect } from '@playwright/test';
@@ -93,9 +93,9 @@ test.beforeEach(async ({ page }) => {
   });
   await page.reload();
   await page.evaluate(async () => {
-    const kin = (window as never as { __kin: Record<string, CallableFunction> }).__kin;
-    await kin.createTask('inbox', 'buy milk');
-    await kin.createIdea('inbox', 'app idea\nlonger body text');
+    const tudu = (window as never as { __tudu: Record<string, CallableFunction> }).__tudu;
+    await tudu.createTask('inbox', 'buy milk');
+    await tudu.createIdea('inbox', 'app idea\nlonger body text');
   });
   await page.reload();
   await page.getByText('Inbox').click();

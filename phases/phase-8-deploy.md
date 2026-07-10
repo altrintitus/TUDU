@@ -1,8 +1,8 @@
 # Phase 8 — Deploy + README
 
-**Goal:** Live on GitHub Pages, CI runs verify on every push, README lets a stranger install Kin on their iPhone.
+**Goal:** Live on GitHub Pages, CI runs verify on every push, README lets a stranger install TUDU on their iPhone.
 
-**Prerequisite:** Phase 7 done. **Repo must be named `Kin`** — production base path is `/Kin/` (vite.config.ts); different name ⇒ change `base` first.
+**Prerequisite:** Phase 7 done. **Repo must be named `TUDU`** — production base path is `/TUDU/` (vite.config.ts); different name ⇒ change `base` first.
 
 **Files:**
 - Create: `.github/workflows/deploy.yml`, `README.md`
@@ -15,14 +15,14 @@
 - [ ] **Step 1:** `gh auth status` (login if needed) → create + push:
 
 ```bash
-gh repo create Kin --public --source=. --push
+gh repo create TUDU --public --source=. --push
 ```
 
 - [ ] **Step 2:** Enable Pages via Actions builds:
 
 ```bash
-gh api repos/{owner}/Kin/pages -X POST -f build_type=workflow || \
-gh api repos/{owner}/Kin/pages -X PUT -f build_type=workflow
+gh api repos/{owner}/TUDU/pages -X POST -f build_type=workflow || \
+gh api repos/{owner}/TUDU/pages -X PUT -f build_type=workflow
 ```
 
 (`{owner}` literal works with gh's placeholder substitution.)
@@ -84,26 +84,26 @@ jobs:
         uses: actions/deploy-pages@v4
 ```
 
-- [ ] Push → watch `gh run watch` → both jobs green → note the live URL (`https://<user>.github.io/Kin/`).
+- [ ] Push → watch `gh run watch` → both jobs green → note the live URL (`https://<user>.github.io/TUDU/`).
 
 ### Task 3: README.md
 
 - [ ] Write `README.md` — required sections (adapt copy, keep substance):
 
 ```markdown
-# Kin
+# TUDU
 
 Capture tasks and ideas into lists. A tiny local-first PWA — no account, no
 server, your data never leaves your device.
 
 [screenshot]
 
-**Use it:** https://<user>.github.io/Kin/
+**Use it:** https://<user>.github.io/TUDU/
 
 ## Install on iPhone
 1. Open the link above in Safari.
 2. Tap Share → **Add to Home Screen**.
-3. Open Kin from your home screen — it works offline from now on.
+3. Open TUDU from your home screen — it works offline from now on.
 
 (Android/desktop: Chrome will offer "Install app" in the address bar.)
 

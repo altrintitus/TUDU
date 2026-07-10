@@ -28,7 +28,7 @@ export function loadCaptureDefaults(storage?: Storage): { type: CaptureType; lis
 export function saveCaptureDefaults(d: { type: CaptureType; listId: string }, storage?: Storage): void;
 ```
 
-localStorage keys: `kin.capture.type`, `kin.capture.listId`. Unknown/missing values fall back to `{ type: 'task', listId: 'inbox' }`.
+localStorage keys: `tudu.capture.type`, `tudu.capture.listId`. Unknown/missing values fall back to `{ type: 'task', listId: 'inbox' }`.
 
 ---
 
@@ -57,7 +57,7 @@ beforeEach(() => { s = mem(); });
 
 it('defaults to task/inbox when empty or garbage', () => {
   expect(loadCaptureDefaults(s)).toEqual({ type: 'task', listId: 'inbox' });
-  s.setItem('kin.capture.type', 'banana');
+  s.setItem('tudu.capture.type', 'banana');
   expect(loadCaptureDefaults(s).type).toBe('task');
 });
 
@@ -71,8 +71,8 @@ it('round-trips saved defaults', () => {
 
 ```ts
 export type CaptureType = 'task' | 'idea';
-const TYPE_KEY = 'kin.capture.type';
-const LIST_KEY = 'kin.capture.listId';
+const TYPE_KEY = 'tudu.capture.type';
+const LIST_KEY = 'tudu.capture.listId';
 
 export function loadCaptureDefaults(storage: Storage = localStorage): { type: CaptureType; listId: string } {
   const rawType = storage.getItem(TYPE_KEY);

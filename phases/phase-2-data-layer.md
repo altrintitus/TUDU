@@ -312,12 +312,12 @@ export interface Idea {
   updatedAt: number;
 }
 
-class KinDB extends Dexie {
+class TuduDB extends Dexie {
   lists!: Table<List, string>;
   tasks!: Table<Task, string>;
   ideas!: Table<Idea, string>;
   constructor() {
-    super('kin');
+    super('tudu');
     this.version(1).stores({
       lists: 'id, sortOrder',
       tasks: 'id, listId, dueDate', // no index on `done`: booleans are not valid IndexedDB keys
@@ -326,7 +326,7 @@ class KinDB extends Dexie {
   }
 }
 
-export const db = new KinDB();
+export const db = new TuduDB();
 
 export async function ensureInbox(): Promise<void> {
   const existing = await db.lists.get(INBOX_ID);

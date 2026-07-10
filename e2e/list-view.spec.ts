@@ -11,9 +11,9 @@ test.beforeEach(async ({ page }) => {
   });
   await page.reload();
   await page.evaluate(async () => {
-    const kin = (window as never as { __kin: Record<string, CallableFunction> }).__kin;
-    await kin.createTask('inbox', 'buy milk');
-    await kin.createIdea('inbox', 'app idea\nlonger body text');
+    const tudu = (window as never as { __tudu: Record<string, CallableFunction> }).__tudu;
+    await tudu.createTask('inbox', 'buy milk');
+    await tudu.createIdea('inbox', 'app idea\nlonger body text');
   });
   await page.reload();
   await page.getByText('Inbox').click();

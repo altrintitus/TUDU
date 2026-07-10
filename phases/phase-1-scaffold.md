@@ -28,7 +28,7 @@ npx playwright install webkit chromium
 
 ```json
 {
-  "name": "kin",
+  "name": "tudu",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -69,7 +69,7 @@ npx playwright install webkit chromium
 }
 ```
 
-- [x] **Step 2: `vite.config.ts`** — base path split (Pages serves at `/Kin/`), PWA manifest, vitest config in one file
+- [x] **Step 2: `vite.config.ts`** — base path split (Pages serves at `/TUDU/`), PWA manifest, vitest config in one file
 
 ```ts
 /// <reference types="vitest/config" />
@@ -78,15 +78,15 @@ import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig(({ mode }) => ({
-  base: mode === 'production' ? '/Kin/' : '/',
+  base: mode === 'production' ? '/TUDU/' : '/',
   plugins: [
     react(),
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['icons/apple-touch-icon.png'],
       manifest: {
-        name: 'Kin',
-        short_name: 'Kin',
+        name: 'TUDU',
+        short_name: 'TUDU',
         description: 'Capture tasks and ideas into lists. Local-first.',
         display: 'standalone',
         background_color: '#0b0b0f',
@@ -159,9 +159,9 @@ export default defineConfig({
     <meta name="theme-color" content="#0b0b0f" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="Kin" />
+    <meta name="apple-mobile-web-app-title" content="TUDU" />
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
-    <title>Kin</title>
+    <title>TUDU</title>
   </head>
   <body>
     <div id="root"></div>
@@ -302,7 +302,7 @@ export default function App() {
   const route = useHashRoute();
   return (
     <div className="app">
-      <header className="app-header"><h1>Kin</h1></header>
+      <header className="app-header"><h1>TUDU</h1></header>
       <main>
         {route.name === 'home' && <p className="placeholder">home</p>}
         {route.name === 'list' && <p className="placeholder">list {route.id}</p>}
@@ -422,7 +422,7 @@ import { test, expect } from '@playwright/test';
 
 test('app shell loads with header', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('heading', { name: 'Kin' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'TUDU' })).toBeVisible();
 });
 
 test('hash routes render and back returns home', async ({ page }) => {

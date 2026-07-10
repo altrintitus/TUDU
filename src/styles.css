@@ -248,6 +248,8 @@ input[type='checkbox']:checked::after { transform: scale(1); }
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
   padding: var(--space-5) var(--space-5) calc(env(safe-area-inset-bottom) + var(--space-5));
   animation: rise-sheet 0.3s var(--ease) both;
+  /* lift above the iOS on-screen keyboard (see --kb-inset in App.tsx) */
+  margin-bottom: var(--kb-inset, 0px);
 }
 .sheet-panel::before {
   content: '';

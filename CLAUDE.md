@@ -56,3 +56,5 @@ When something fails repeatedly or a workaround is found, add a one-line bullet 
 - webkit anchor download: append `<a>` to DOM + delay `revokeObjectURL` (~1s), else no download
 - native share() hangs under automation; gate share path on `!navigator.webdriver`
 - toast text must not substring-match seeded list/task names (e2e getByText collisions)
+- dev SW can't cache vite's unbundled modules; test offline against `vite preview` prod build
+- gate Pages base on `!TEST_BUILD` so preview/e2e serve at `/`; set TEST_BUILD on build AND preview

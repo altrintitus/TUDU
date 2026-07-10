@@ -9,3 +9,4 @@ design/
 *.local
 .claude/settings.local.json
 .claude/hooks/.state/
+dev-dist/

@@ -8,6 +8,7 @@ import { ListEditorSheet } from '../components/ListEditorSheet';
 import { Fab } from '../components/Fab';
 import { CaptureSheet } from '../components/CaptureSheet';
 import { Logo } from '../components/Logo';
+import { InstallHint } from '../components/InstallHint';
 
 type Editing = { list: List | null };
 
@@ -47,6 +48,8 @@ export function HomeScreen() {
           </svg>
         </button>
       </header>
+
+      <InstallHint />
 
       <TodayStrip />
 

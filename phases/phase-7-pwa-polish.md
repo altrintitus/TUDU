@@ -13,15 +13,15 @@
 
 ### Task 1: Service worker + offline e2e
 
-- [ ] **Step 1:** `vite.config.ts` — add to the `VitePWA({...})` options: `devOptions: { enabled: true }` (SW available on the dev server so e2e can exercise it).
-- [ ] **Step 2:** `src/main.tsx` — register:
+- [x] **Step 1:** `vite.config.ts` — add to the `VitePWA({...})` options: `devOptions: { enabled: true }` (SW available on the dev server so e2e can exercise it).
+- [x] **Step 2:** `src/main.tsx` — register:
 
 ```ts
 import { registerSW } from 'virtual:pwa-register';
 registerSW({ immediate: true });
 ```
 
-- [ ] **Step 3: `e2e/offline.spec.ts`** (runs in the `chromium-sw` Playwright project from phase 1 — webkit SW support in tests is unreliable)
+- [x] **Step 3: `e2e/offline.spec.ts`** (runs in the `chromium-sw` Playwright project from phase 1 — webkit SW support in tests is unreliable)
 
 ```ts
 import { test, expect } from '@playwright/test';
@@ -36,16 +36,16 @@ test('app works offline after first load', async ({ page, context }) => {
 });
 ```
 
-- [ ] **Step 4:** `npx playwright test e2e/offline.spec.ts` → PASS
+- [x] **Step 4:** `npx playwright test e2e/offline.spec.ts` → PASS
 
 ### Task 2: Persistent storage + private-mode banner
 
-- [ ] In `App.tsx`: `ensureInbox()` promise → on success, fire-and-forget `navigator.storage?.persist?.()`; on **failure** set `dbError` state → render `DbErrorBanner`.
-- [ ] `DbErrorBanner`: fixed top banner — "Storage unavailable (private browsing?). Nothing you enter will be saved." Non-dismissable while error persists. App remains viewable.
+- [x] In `App.tsx`: `ensureInbox()` promise → on success, fire-and-forget `navigator.storage?.persist?.()`; on **failure** set `dbError` state → render `DbErrorBanner`.
+- [x] `DbErrorBanner`: fixed top banner — "Storage unavailable (private browsing?). Nothing you enter will be saved." Non-dismissable while error persists. App remains viewable.
 
 ### Task 3: iOS install hint (TDD on the predicate)
 
-- [ ] **Step 1: Failing test** — `tests/install.test.ts`
+- [x] **Step 1: Failing test** — `tests/install.test.ts`
 
 ```ts
 import { describe, it, expect } from 'vitest';
@@ -68,7 +68,7 @@ describe('shouldShowInstallHint', () => {
 });
 ```
 
-- [ ] **Step 2: FAIL** → **Step 3: Implement** — `src/logic/install.ts`
+- [x] **Step 2: FAIL** → **Step 3: Implement** — `src/logic/install.ts`
 
 ```ts
 export function shouldShowInstallHint(env: { ua: string; standalone: boolean; dismissed: boolean }): boolean {
@@ -87,19 +87,19 @@ export function currentInstallEnv(): { ua: string; standalone: boolean; dismisse
 }
 ```
 
-- [ ] **Step 4: PASS.** `InstallHint` component: one-time dismissable card on home — "Install TUDU: tap Share → Add to Home Screen." Dismiss sets `tudu.installHintDismissed=1`.
+- [x] **Step 4: PASS.** `InstallHint` component: one-time dismissable card on home — "Install TUDU: tap Share → Add to Home Screen." Dismiss sets `tudu.installHintDismissed=1`.
 
 ### Task 4: Final icon + design polish
 
-- [ ] Replace placeholder artwork in `scripts/make-icons.mjs` (or hand-made PNGs at same paths): dark bg `#0b0b0f`, distinct mark. Keep all four outputs + sizes. Re-run `npm run icons`.
-- [ ] **Design pass with the `frontend-design` skill across all screens**: type scale, spacing rhythm, sheet slide + row check-out animations (`prefers-reduced-motion` respected), light theme audit, contrast ≥ WCAG AA for text.
+- [x] Replace placeholder artwork in `scripts/make-icons.mjs` (or hand-made PNGs at same paths): dark bg `#0b0b0f`, distinct mark. Keep all four outputs + sizes. Re-run `npm run icons`.
+- [x] **Design pass with the `frontend-design` skill across all screens**: type scale, spacing rhythm, sheet slide + row check-out animations (`prefers-reduced-motion` respected), light theme audit, contrast ≥ WCAG AA for text.
 - [ ] iOS audit on device (`npm run dev -- --host`): safe-areas (notch + home indicator) on every screen incl. sheets and FAB; no rubber-band scroll of the app shell; no zoom on any input focus; keyboard does not cover the capture sheet's Save.
 
 ### Task 5: Verify + manual PWA check
 
-- [ ] `npm run verify` green (all 6 e2e files).
+- [x] `npm run verify` green (all 6 e2e files).
 - [ ] `npm run build && npm run preview` → Chrome DevTools Lighthouse: PWA installable, no manifest/SW errors.
-- [ ] Reviewer agent on the diff, fix findings.
-- [ ] Commit — `git commit -am "feat(pwa): offline, install hint, storage persistence, polish"`
+- [x] Reviewer agent on the diff, fix findings.
+- [x] Commit — `git commit -am "feat(pwa): offline, install hint, storage persistence, polish"`
 
 **Done when:** offline e2e green · Lighthouse installable · phone: airplane-mode reload still renders app with data.

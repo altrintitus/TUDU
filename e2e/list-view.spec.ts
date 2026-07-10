@@ -16,7 +16,8 @@ test.beforeEach(async ({ page }) => {
     await tudu.createIdea('inbox', 'app idea\nlonger body text');
   });
   await page.reload();
-  await page.getByText('Inbox').click();
+  // Inbox is hidden from the home list, so open it directly by hash.
+  await page.evaluate(() => { window.location.hash = '#/list/inbox'; });
 });
 
 test('check task → moves to collapsed Done; uncheck restores', async ({ page }) => {
@@ -68,5 +69,5 @@ test('per-list add captures directly into this list', async ({ page }) => {
 
 test('garbage list id redirects home', async ({ page }) => {
   await page.goto('/#/list/does-not-exist');
-  await expect(page.getByText('Inbox')).toBeVisible(); // home
+  await expect(page.getByRole('button', { name: /new list/i })).toBeVisible(); // home
 });

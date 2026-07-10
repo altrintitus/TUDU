@@ -29,7 +29,7 @@ export function TaskEditSheet({ open, task, onClose }: {
     <Sheet open={open} onClose={onClose} title="Edit task">
       <label className="field">
         <span className="field-label">Title</span>
-        <input aria-label="Title" value={title} onChange={(e) => setTitle(e.target.value)} />
+        <input aria-label="Title" value={title} autoComplete="off" autoCorrect="off" onChange={(e) => setTitle(e.target.value)} />
       </label>
       <label className="field">
         <span className="field-label">Due</span>

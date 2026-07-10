@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { db, type List } from '../db';
+import { db, INBOX_ID, type List } from '../db';
 import { navigate } from '../hooks/useHashRoute';
 import { TodayStrip } from '../components/TodayStrip';
 import { ListCard } from '../components/ListCard';
@@ -56,7 +56,7 @@ export function HomeScreen() {
       <section className="lists">
         <h2 className="section-label">Lists</h2>
         <div className="list-grid">
-          {model?.lists.map((l) => (
+          {model?.lists.filter((l) => l.id !== INBOX_ID).map((l) => (
             <ListCard
               key={l.id}
               list={l}

@@ -72,6 +72,8 @@ function IdeaEditor({ idea }: { idea: Idea }) {
         className="idea-editor"
         aria-label="Idea text"
         value={text}
+        autoComplete="off"
+        autoCorrect="off"
         onChange={onChange}
         onBlur={flush}
       />

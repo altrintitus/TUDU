@@ -47,6 +47,9 @@ export function ListEditorSheet({ open, list, onClose }: {
           value={name}
           disabled={isInbox}
           placeholder="List name"
+          autoComplete="off"
+          autoCorrect="off"
+          autoCapitalize="words"
           onChange={(e) => setName(e.target.value)}
         />
       </label>
@@ -58,6 +61,8 @@ export function ListEditorSheet({ open, list, onClose }: {
           disabled={isInbox}
           maxLength={2}
           placeholder="Optional"
+          autoComplete="off"
+          autoCorrect="off"
           onChange={(e) => setEmoji(e.target.value)}
         />
       </label>

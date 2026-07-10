@@ -13,8 +13,9 @@ test.beforeEach(async ({ page }) => {
   await page.reload();
 });
 
-test('fresh app shows Inbox only, no Today strip', async ({ page }) => {
-  await expect(page.getByText('Inbox')).toBeVisible();
+test('fresh app: empty home (Inbox hidden), no Today strip', async ({ page }) => {
+  await expect(page.getByRole('button', { name: /new list/i })).toBeVisible();
+  await expect(page.getByText('Inbox')).toHaveCount(0); // Inbox hidden from home list
   await expect(page.getByText('Today')).toHaveCount(0);
 });
 
@@ -36,9 +37,12 @@ test('create, rename, delete a list', async ({ page }) => {
   await expect(page.getByText('Deriv')).toHaveCount(0);
 });
 
-test('inbox cannot be deleted', async ({ page }) => {
-  await page.getByRole('button', { name: /edit inbox/i }).click();
-  await expect(page.getByRole('button', { name: /^delete/i })).toHaveCount(0);
+test('inbox stays hidden from home after adding a list', async ({ page }) => {
+  await page.getByRole('button', { name: /new list/i }).click();
+  await page.getByRole('textbox', { name: /name/i }).fill('Work');
+  await page.getByRole('button', { name: /save/i }).click();
+  await expect(page.getByText('Work')).toBeVisible();
+  await expect(page.getByText('Inbox')).toHaveCount(0);
 });
 
 test('today strip shows due + overdue across lists, checking removes', async ({ page }) => {

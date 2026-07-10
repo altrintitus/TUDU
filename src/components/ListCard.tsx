@@ -1,4 +1,5 @@
 import type { List } from '../db';
+import { TasksIcon, IdeasIcon } from './icons';
 
 export function ListCard({ list, openTaskCount, ideaCount, onOpen, onEdit }: {
   list: List;
@@ -13,8 +14,8 @@ export function ListCard({ list, openTaskCount, ideaCount, onOpen, onEdit }: {
         <span className="list-card-emoji" aria-hidden="true">{list.emoji ?? '•'}</span>
         <span className="list-card-name">{list.name}</span>
         <span className="list-card-counts">
-          <span>{openTaskCount}<span className="ct-label">□</span></span>
-          <span>{ideaCount}<span className="ct-label">💡</span></span>
+          <span>{openTaskCount}<span className="ct-icon"><TasksIcon /></span></span>
+          <span>{ideaCount}<span className="ct-icon"><IdeasIcon /></span></span>
         </span>
       </button>
       <button className="list-card-edit" aria-label={`edit ${list.name}`} onClick={onEdit}>⋯</button>

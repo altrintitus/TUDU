@@ -206,7 +206,9 @@ input[type='checkbox']:checked::after { transform: scale(1); }
   font-size: 13px;
   font-variant-numeric: tabular-nums;
 }
-.list-card-counts .ct-label { margin-left: 3px; opacity: 0.75; }
+.list-card-counts > span { display: inline-flex; align-items: center; }
+.list-card-counts .ct-icon { display: inline-flex; margin-left: 4px; opacity: 0.75; }
+.list-card-counts .ct-icon svg { width: 13px; height: 13px; }
 .list-card-edit {
   width: var(--tap-target);
   color: var(--muted);

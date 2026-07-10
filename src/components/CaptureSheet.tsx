@@ -72,6 +72,8 @@ export function CaptureSheet({ open, onClose, fixedListId, defaultType }: {
           value={text}
           placeholder={type === 'task' ? 'New task…' : 'New idea…'}
           aria-label="Capture text"
+          autoComplete="off"
+          autoCorrect="off"
           onChange={(e) => setText(e.target.value)}
           onKeyDown={onKeyDown}
         />

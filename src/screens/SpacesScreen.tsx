@@ -2,17 +2,15 @@ import { useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db, INBOX_ID, type List } from '../db';
 import { navigate } from '../hooks/useHashRoute';
-import { TodayStrip } from '../components/TodayStrip';
 import { ListCard } from '../components/ListCard';
 import { ListEditorSheet } from '../components/ListEditorSheet';
 import { Fab } from '../components/Fab';
 import { CaptureSheet } from '../components/CaptureSheet';
-import { Logo } from '../components/Logo';
 import { InstallHint } from '../components/InstallHint';
 
 type Editing = { list: List | null };
 
-export function HomeScreen() {
+export function SpacesScreen() {
   const [editing, setEditing] = useState<Editing | null>(null);
   const [capturing, setCapturing] = useState(false);
 
@@ -32,8 +30,8 @@ export function HomeScreen() {
   const showHint =
     !!model && model.lists.length <= 1 && model.openTasks.size === 0 && model.ideaCounts.size === 0;
 
-  // Inbox is the capture fallback: hide it from the home list when empty, but
-  // show it once it holds anything so those items never become unreachable.
+  // Inbox (the capture fallback space) is hidden while empty, shown once it holds
+  // anything, so nothing captured there becomes unreachable.
   const visibleLists = model
     ? model.lists.filter(
         (l) =>
@@ -43,9 +41,9 @@ export function HomeScreen() {
     : [];
 
   return (
-    <div className="home">
-      <header className="home-header">
-        <h1 className="wordmark"><Logo className="wordmark-logo" /></h1>
+    <div className="spaces-screen">
+      <header className="screen-header spaces-header">
+        <h1 className="screen-title">Spaces</h1>
         <button className="icon-btn" aria-label="settings" onClick={() => navigate({ name: 'settings' })}>
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
             <circle cx="10" cy="10" r="2.6" stroke="currentColor" strokeWidth="1.5" />
@@ -61,10 +59,7 @@ export function HomeScreen() {
 
       <InstallHint />
 
-      <TodayStrip />
-
       <section className="lists">
-        <h2 className="section-label">Lists</h2>
         <div className="list-grid">
           {visibleLists.map((l) => (
             <ListCard
@@ -76,7 +71,7 @@ export function HomeScreen() {
               onEdit={() => setEditing({ list: l })}
             />
           ))}
-          <button className="list-add" onClick={() => setEditing({ list: null })}>+ New list</button>
+          <button className="list-add" onClick={() => setEditing({ list: null })}>+ New space</button>
         </div>
         {showHint && <p className="empty-hint">Capture something — tap +</p>}
       </section>

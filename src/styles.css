@@ -131,8 +131,12 @@ input[type='checkbox']:checked::after { transform: scale(1); }
   padding: 0 var(--space-1) var(--space-3);
 }
 
-/* ---- home ---- */
-.home { padding: var(--space-5) var(--space-4) calc(env(safe-area-inset-bottom) + 96px); }
+/* ---- top-level page panes (Today / Spaces / Ideas) ---- */
+.today-screen, .spaces-screen, .ideas-screen {
+  min-height: 100%;
+  padding: calc(env(safe-area-inset-top) + var(--space-8)) var(--space-4) calc(env(safe-area-inset-bottom) + 96px);
+}
+.spaces-header { justify-content: space-between; }
 .home-header {
   display: flex;
   align-items: baseline;
@@ -633,6 +637,9 @@ input[type='checkbox']:checked::after { transform: scale(1); }
   scroll-snap-align: start;
   scroll-snap-stop: always;
 }
+/* a pane's position:fixed children (FAB) escape the scroll — hide them unless
+   the pane is the active one, so only the current page's FAB shows */
+.pager-pane:not(.pager-pane-active) .fab { display: none; }
 .pager-dots {
   position: fixed;
   top: calc(env(safe-area-inset-top) + var(--space-3));

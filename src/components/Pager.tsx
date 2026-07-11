@@ -33,8 +33,13 @@ export function Pager({ panes, initial = 0 }: {
   return (
     <div className="pager">
       <div className="pager-track" ref={onTrackRef} onScroll={onScroll}>
-        {panes.map((p) => (
-          <section className="pager-pane" key={p.key}>{p.node}</section>
+        {panes.map((p, i) => (
+          <section
+            className={i === active ? 'pager-pane pager-pane-active' : 'pager-pane'}
+            key={p.key}
+          >
+            {p.node}
+          </section>
         ))}
       </div>
       <div className="pager-dots" role="tablist" aria-label="Pages">

@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useHashRoute } from './hooks/useHashRoute';
 import { ensureInbox } from './db';
-import { HomeScreen } from './screens/HomeScreen';
+import { Pager } from './components/Pager';
+import { TodayScreen } from './screens/TodayScreen';
+import { SpacesScreen } from './screens/SpacesScreen';
+import { IdeasScreen } from './screens/IdeasScreen';
 import { ListScreen } from './screens/ListScreen';
 import { IdeaScreen } from './screens/IdeaScreen';
 import { SettingsScreen } from './screens/SettingsScreen';
@@ -45,7 +48,16 @@ export default function App() {
   return (
     <div className="app">
       {dbError && <DbErrorBanner />}
-      {route.name === 'home' && <HomeScreen />}
+      {route.name === 'home' && (
+        <Pager
+          initial={0}
+          panes={[
+            { key: 'Today', node: <TodayScreen /> },
+            { key: 'Spaces', node: <SpacesScreen /> },
+            { key: 'Ideas', node: <IdeasScreen /> }
+          ]}
+        />
+      )}
       {route.name === 'list' && <ListScreen key={route.id} listId={route.id} />}
       {route.name === 'idea' && <IdeaScreen key={route.id} ideaId={route.id} />}
       {route.name === 'settings' && <SettingsScreen />}

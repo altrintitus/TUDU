@@ -1,8 +1,18 @@
 import { describe, it, expect } from 'vitest';
 import {
   todayStr, isDueOrOverdue, isOverdue, compareTodayTasks, compareListTasks, formatDue,
-  type TaskLike
+  taskGroup, type TaskLike
 } from '../src/logic/dates';
+
+describe('taskGroup', () => {
+  const today = '2026-07-11';
+  it('classifies by due date', () => {
+    expect(taskGroup({ done: false, dueDate: '2026-07-10', createdAt: 0 }, today)).toBe('overdue');
+    expect(taskGroup({ done: false, dueDate: '2026-07-11', createdAt: 0 }, today)).toBe('today');
+    expect(taskGroup({ done: false, dueDate: '2026-07-12', createdAt: 0 }, today)).toBe('upcoming');
+    expect(taskGroup({ done: false, createdAt: 0 }, today)).toBe('nodate');
+  });
+});
 
 // dates.ts is deliberately independent of db.ts (created in Task 3) — it accepts
 // any TaskLike shape, and db's Task is structurally assignable to it.

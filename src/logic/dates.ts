@@ -29,6 +29,14 @@ export function compareTodayTasks(a: TaskLike, b: TaskLike, today: string): numb
   return a.createdAt - b.createdAt;
 }
 
+export type TaskGroupKey = 'overdue' | 'today' | 'upcoming' | 'nodate';
+export function taskGroup(t: TaskLike, today: string): TaskGroupKey {
+  if (!t.dueDate) return 'nodate';
+  if (t.dueDate < today) return 'overdue';
+  if (t.dueDate === today) return 'today';
+  return 'upcoming';
+}
+
 export function compareListTasks(a: TaskLike, b: TaskLike): number {
   if (a.dueDate && b.dueDate && a.dueDate !== b.dueDate) return a.dueDate < b.dueDate ? -1 : 1;
   if (!!a.dueDate !== !!b.dueDate) return a.dueDate ? -1 : 1;

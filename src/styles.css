@@ -45,8 +45,8 @@
     --border: #f0f0ee;
     --border-strong: rgba(0, 0, 0, 0.12);
     --text: #111111;
-    --muted: #999999;
-    --faint: #bcbcb8;
+    --muted: #6b6b6b;   /* AA-contrast on white (was #999, ~2.8:1) */
+    --faint: #8a8a86;
     --accent: #111111;
     --accent-ink: #f5f4f0;
     --accent-weak: rgba(17, 17, 17, 0.06);

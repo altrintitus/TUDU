@@ -12,12 +12,15 @@ Personal PWA for capturing **tasks** and **ideas**, organized into **lists**. iP
 |---|---|
 | Platform | Serverless PWA, GitHub Pages, iPhone-first (must also work in desktop browsers) |
 | Storage | On-device IndexedDB via Dexie; `navigator.storage.persist()`; JSON export/import backup |
-| Structure | Lists contain both tasks and ideas; `Inbox` is a permanent default list |
-| Home | Today strip (due + overdue tasks across all lists) on top, then lists |
-| List view | Two tabs: Tasks / Ideas |
-| Tasks | Title + checkbox + optional due **date** (no time). Done tasks auto-archive out of default view |
-| Ideas | Plain text blob; first line = title in list rows |
-| Capture | Global `[+]` → bottom sheet, keyboard auto-focused, Task/Idea toggle (remembers last), list chip (defaults last-used), optional due date when Task. Save ≈ 3 seconds |
+| Structure | **Spaces** (renamed from "List" in the UI; internal store stays `lists`) contain tasks + ideas; `Inbox` is a permanent default space. **Routines** are global (not in a space). |
+| Navigation | Three horizontally-swipeable pages, minimal 3-dot indicator, lands on **Today**: **Today** (routines + tasks) · **Spaces** · **Ideas**. Space/idea detail push over the pager. |
+| Today | Routines section (today's scheduled, per-routine 🔥 streak + 7-day dots) then Tasks (all open one-off tasks across spaces, grouped Overdue/Today/Upcoming/No-date, with space labels) |
+| Routines | Global recurring habits; weekday schedule (default Daily); consistency streak + 7-day history. Never "overdue" |
+| Space view | Two tabs: Tasks / Ideas |
+| Tasks | Title + checkbox + optional due **date** (no time); **new tasks default to due=today**. Done tasks auto-archive out of default view |
+| Ideas | Plain text blob; first line = title in rows. The Ideas page aggregates all ideas across spaces, each tagged with its space |
+| Capture | Context-aware global `[+]` per page (Today→task, Ideas→idea, Space→task/idea); keyboard auto-focused; space chip (defaults last-used); optional due date when Task. Routines created from the Today ⊕. Save ≈ 3 seconds |
+| Gamification | Per-routine streaks + 7-day dots only. No points/levels |
 | Reminders | **None** (no push, no local notifications — iOS PWA limitation, ratified). Due dates surface in-app only |
 | Stack | Vite + React + TypeScript + Dexie + vite-plugin-pwa |
 | Design | Minimal, dark-first; light mode follows `prefers-color-scheme` |
@@ -25,7 +28,9 @@ Personal PWA for capturing **tasks** and **ideas**, organized into **lists**. iP
 
 ## Out of scope (v1)
 
-Push/local notifications · cross-device sync · tags · repeat tasks · subtasks · priorities · markdown rendering · search · multi-user. Do not build speculative hooks for them.
+Push/local notifications · cross-device sync · tags · subtasks · priorities · markdown rendering · search · multi-user · points/levels/badges · routine reminders · routine *times* or monthly routines. Do not build speculative hooks for them.
+
+> **2.0 note:** recurring "routines" (previously out of scope) are now a first-class feature — see the Navigation/Routines rows above and the data model below. Detailed design: `docs/superpowers/specs/2026-07-11-nav-routines-gamification-design.md`.
 
 ---
 
@@ -58,11 +63,17 @@ interface Idea {
   createdAt: number;
   updatedAt: number;
 }
+
+// Routines are global (no space). days = JS weekday indices 0=Sun..6=Sat; [0..6] = daily.
+interface Routine { id: string; title: string; days: number[]; sortOrder: number; createdAt: number; }
+// One completion; id = `${routineId}:${date}` makes toggling idempotent.
+interface RoutineDone { id: string; routineId: string; date: string; } // date 'YYYY-MM-DD' local
 ```
 
-- Dexie tables: `lists`, `tasks`, `ideas`. Indexes: `tasks: id, listId, dueDate` (no `done` index — booleans aren't valid IndexedDB keys; filter in JS); `ideas: id, listId, updatedAt`; `lists: id, sortOrder`.
-- `Inbox` list created on first run (`id` fixed constant `"inbox"`); cannot be deleted or renamed away — guard in delete/rename paths.
-- Deleting a list prompts, then deletes its tasks + ideas (no orphans).
+- Dexie tables (schema **version 2**, additive): `lists`, `tasks`, `ideas`, `routines`, `routineDone`. Indexes: `tasks: id, listId, dueDate` (no `done` index — booleans aren't valid IndexedDB keys; filter in JS); `ideas: id, listId, updatedAt`; `lists: id, sortOrder`; `routines: id, sortOrder`; `routineDone: id, routineId, date`.
+- `Inbox` space created on first run (`id` fixed constant `"inbox"`); cannot be deleted or renamed away — guard in delete/rename paths. Hidden from the Spaces page while empty.
+- Deleting a space prompts, then deletes its tasks + ideas (no orphans). Deleting a routine cascades its completions.
+- **Routine streak** (unit-tested, `logic/routines.ts`): consecutive completed *scheduled* days ending at the latest scheduled day that is completed or is today (today-not-done doesn't break it); non-scheduled days are skipped. 7-day dots = done / missed / off(not-scheduled) over the trailing 7 calendar days.
 
 ## Date logic (unit-test this)
 

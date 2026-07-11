@@ -3,6 +3,10 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   testDir: 'e2e',
   timeout: 30_000, // headroom for CI: preview build + dev server + parallel webkit workers
+  // CI runners have 2 cores; vite's on-demand dev compilation under parallel
+  // workers causes click timeouts. Serialize + retry there for stability.
+  workers: process.env.CI ? 1 : undefined,
+  retries: process.env.CI ? 2 : 0,
   projects: [
     // feature suites run against the dev server
     {

@@ -9,6 +9,10 @@ export function Pager({ panes, initial = 0 }: {
   const trackRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(initial);
   const seeded = useRef(false);
+  // While a dot-triggered smooth scroll runs, ignore scroll-derived updates —
+  // otherwise the mid-animation position briefly reverts `active` to the start
+  // pane and hides the target pane's FAB (a real click race in slower runners).
+  const suppressRef = useRef(false);
 
   const onTrackRef = (el: HTMLDivElement | null) => {
     trackRef.current = el;
@@ -20,14 +24,18 @@ export function Pager({ panes, initial = 0 }: {
 
   const onScroll = () => {
     const el = trackRef.current;
-    if (!el) return;
+    if (!el || suppressRef.current) return;
     const i = Math.round(el.scrollLeft / el.clientWidth);
     if (i !== active) setActive(i);
   };
 
   const goTo = (i: number) => {
     const el = trackRef.current;
-    if (el) el.scrollTo({ left: i * el.clientWidth, behavior: 'smooth' });
+    if (!el) return;
+    setActive(i); // target pane active immediately → its FAB is clickable at once
+    suppressRef.current = true; // hold through the smooth scroll
+    window.setTimeout(() => { suppressRef.current = false; }, 500);
+    el.scrollTo({ left: i * el.clientWidth, behavior: 'smooth' });
   };
 
   return (

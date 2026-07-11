@@ -3,6 +3,7 @@ import {
   db, INBOX_ID, ensureInbox, createList, renameList, deleteList,
   createTask, toggleTask, updateTask, deleteTask, createIdea, updateIdea, deleteIdea
 } from '../src/db';
+import { todayStr } from '../src/logic/dates';
 
 beforeEach(async () => {
   await db.delete();
@@ -46,6 +47,14 @@ describe('tasks', () => {
   it('createTask stores optional dueDate', async () => {
     const t = await createTask(INBOX_ID, 'call bank', '2026-07-09');
     expect(t).toMatchObject({ listId: INBOX_ID, title: 'call bank', done: false, dueDate: '2026-07-09' });
+  });
+  it('createTask defaults dueDate to today when omitted', async () => {
+    const t = await createTask(INBOX_ID, 'no date given');
+    expect(t.dueDate).toBe(todayStr());
+  });
+  it('createTask keeps an explicit dueDate', async () => {
+    const t = await createTask(INBOX_ID, 'dated', '2999-01-01');
+    expect(t.dueDate).toBe('2999-01-01');
   });
   it('toggleTask flips done and manages doneAt', async () => {
     const t = await createTask(INBOX_ID, 'x');

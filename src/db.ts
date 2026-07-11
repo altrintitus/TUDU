@@ -1,4 +1,5 @@
 import Dexie, { type Table } from 'dexie';
+import { todayStr } from './logic/dates';
 
 export const INBOX_ID = 'inbox';
 
@@ -80,7 +81,11 @@ export async function deleteList(id: string): Promise<void> {
 }
 
 export async function createTask(listId: string, title: string, dueDate?: string): Promise<Task> {
-  const task: Task = { id: crypto.randomUUID(), listId, title, done: false, dueDate, createdAt: Date.now() };
+  const task: Task = {
+    id: crypto.randomUUID(), listId, title, done: false,
+    dueDate: dueDate ?? todayStr(), // default to today so it lands on the Today page
+    createdAt: Date.now()
+  };
   await db.tasks.add(task);
   return task;
 }

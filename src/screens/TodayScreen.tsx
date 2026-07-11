@@ -1,9 +1,12 @@
 import { useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { db, toggleTask, deleteTask, type Task } from '../db';
+import { db, toggleTask, deleteTask, setRoutineDone, deleteRoutine, type Task } from '../db';
 import { todayStr, taskGroup, type TaskGroupKey } from '../logic/dates';
+import { isScheduledOn } from '../logic/routines';
 import { TaskListRow } from '../components/TaskListRow';
 import { TaskEditSheet } from '../components/TaskEditSheet';
+import { RoutineRow } from '../components/RoutineRow';
+import { RoutineEditorSheet } from '../components/RoutineEditorSheet';
 import { CaptureSheet } from '../components/CaptureSheet';
 import { Fab } from '../components/Fab';
 import { Sheet } from '../components/Sheet';
@@ -19,6 +22,7 @@ export function TodayScreen() {
   const [editing, setEditing] = useState<Task | null>(null);
   const [pending, setPending] = useState<{ label: string; run(): void } | null>(null);
   const [capturing, setCapturing] = useState(false);
+  const [addingRoutine, setAddingRoutine] = useState(false);
 
   const data = useLiveQuery(async () => {
     const [tasks, lists] = await Promise.all([db.tasks.toArray(), db.lists.toArray()]);
@@ -26,7 +30,22 @@ export function TodayScreen() {
     return { open: tasks.filter((t) => !t.done), names };
   });
 
+  const rdata = useLiveQuery(async () => {
+    const [routines, done] = await Promise.all([
+      db.routines.orderBy('sortOrder').toArray(),
+      db.routineDone.toArray()
+    ]);
+    const byRoutine = new Map<string, Set<string>>();
+    for (const d of done) {
+      let s = byRoutine.get(d.routineId);
+      if (!s) { s = new Set(); byRoutine.set(d.routineId, s); }
+      s.add(d.date);
+    }
+    return { routines, byRoutine };
+  });
+
   const today = todayStr();
+  const todaysRoutines = (rdata?.routines ?? []).filter((r) => isScheduledOn(r.days, today));
   const inGroup = (k: TaskGroupKey) =>
     (data?.open ?? [])
       .filter((t) => taskGroup(t, today) === k)
@@ -41,6 +60,31 @@ export function TodayScreen() {
   return (
     <div className="today-screen">
       <header className="screen-header"><h1 className="screen-title">Today</h1></header>
+
+      <div className="today-routines">
+        <div className="routines-header">
+          <h2 className="section-label">Routines</h2>
+          <button className="add-routine" aria-label="add routine" onClick={() => setAddingRoutine(true)}>＋</button>
+        </div>
+        {todaysRoutines.map((r) => {
+          const dd = rdata!.byRoutine.get(r.id) ?? new Set<string>();
+          const checked = dd.has(today);
+          return (
+            <RoutineRow
+              key={r.id}
+              routine={r}
+              doneDates={dd}
+              today={today}
+              checked={checked}
+              onToggle={() => void setRoutineDone(r.id, today, !checked)}
+              onDelete={() => setPending({ label: r.title, run: () => void deleteRoutine(r.id) })}
+            />
+          );
+        })}
+        {rdata && todaysRoutines.length === 0 && (
+          <p className="routines-empty">No routines today — tap ＋ to add one</p>
+        )}
+      </div>
 
       <div className="rows">
         {GROUPS.map(({ key, label }) => {
@@ -67,6 +111,7 @@ export function TodayScreen() {
 
       <Fab onPress={() => setCapturing(true)} />
       {capturing && <CaptureSheet open fixedType="task" onClose={() => setCapturing(false)} />}
+      {addingRoutine && <RoutineEditorSheet open onClose={() => setAddingRoutine(false)} />}
 
       {editing && (
         <TaskEditSheet key={editing.id} open task={editing} onClose={() => setEditing(null)} />

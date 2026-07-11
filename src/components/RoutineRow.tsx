@@ -1,0 +1,32 @@
+import { useRef } from 'react';
+import type { Routine } from '../db';
+import { useLongPress } from '../hooks/useLongPress';
+import { streak, last7 } from '../logic/routines';
+
+export function RoutineRow({ routine, doneDates, today, checked, onToggle, onDelete }: {
+  routine: Routine;
+  doneDates: Set<string>;
+  today: string;
+  checked: boolean;
+  onToggle(): void;
+  onDelete(): void;
+}) {
+  const fired = useRef(false);
+  const longPress = useLongPress(() => { fired.current = true; onDelete(); });
+  const s = streak(routine.days, doneDates, today);
+  const dots = last7(routine.days, doneDates, today);
+  return (
+    <div className="routine-row" {...longPress} onPointerDownCapture={() => { fired.current = false; }}>
+      <input type="checkbox" aria-label={routine.title} checked={checked} onChange={onToggle} />
+      <div className="routine-main">
+        <div className="routine-top">
+          <span className="routine-title">{routine.title}</span>
+          <span className="routine-streak">🔥 {s}</span>
+        </div>
+        <div className="routine-dots" aria-hidden="true">
+          {dots.map((d, i) => <span key={i} className={`rdot ${d}`} />)}
+        </div>
+      </div>
+    </div>
+  );
+}

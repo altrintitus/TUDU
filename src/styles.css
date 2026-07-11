@@ -494,6 +494,45 @@ input[type='checkbox']:checked::after { transform: scale(1); }
 .today-group { display: flex; flex-direction: column; gap: var(--space-2); margin-bottom: var(--space-5); }
 .section-label.danger { color: var(--danger); }
 
+/* ---- routines ---- */
+.today-routines { display: flex; flex-direction: column; gap: var(--space-2); margin-bottom: var(--space-6); }
+.routines-header { display: flex; align-items: center; justify-content: space-between; }
+.add-routine {
+  width: 32px; height: 32px; margin-right: calc(var(--space-1) * -1);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; line-height: 1; color: var(--muted); border-radius: var(--radius-sm);
+}
+.add-routine:active { color: var(--text); background: var(--surface-press); }
+.routines-empty { color: var(--faint); font-size: 14px; padding: var(--space-1); }
+.routine-row {
+  display: flex; align-items: center; gap: var(--space-3);
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); box-shadow: var(--card-shadow);
+  padding: var(--space-3) var(--space-4); min-height: var(--tap-target);
+}
+.routine-main { flex: 1; }
+.routine-top { display: flex; align-items: center; justify-content: space-between; }
+.routine-title { font-weight: 500; }
+.routine-streak { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.routine-dots { display: flex; gap: 5px; margin-top: 6px; }
+.rdot { width: 7px; height: 7px; border-radius: 50%; }
+.rdot.done { background: var(--accent); }
+.rdot.missed { background: transparent; border: 1px solid var(--border-strong); }
+.rdot.off { background: var(--border); }
+
+/* ---- routine day picker ---- */
+.daychips { display: flex; gap: 6px; }
+.daychip {
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 1px solid var(--border-strong); color: var(--muted); font-weight: 600; font-size: 13px;
+}
+.daychip.on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.presets { display: flex; gap: var(--space-2); margin-top: var(--space-3); }
+.presets button {
+  font-size: 13px; color: var(--muted); padding: 6px var(--space-3);
+  border: 1px solid var(--border); border-radius: 999px;
+}
+
 /* ---- done section ---- */
 .done-header {
   display: flex;

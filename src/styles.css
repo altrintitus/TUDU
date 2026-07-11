@@ -613,6 +613,44 @@ input[type='checkbox']:checked::after { transform: scale(1); }
 .settings-value { color: var(--text); font-weight: 500; text-align: right; }
 .settings-value.link { color: var(--accent); text-decoration: none; }
 
+/* ---- pager ---- */
+.pager { position: relative; height: 100dvh; }
+.pager-track {
+  display: flex;
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.pager-track::-webkit-scrollbar { display: none; }
+.pager-pane {
+  flex: 0 0 100%;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+.pager-dots {
+  position: fixed;
+  top: calc(env(safe-area-inset-top) + var(--space-3));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 30;
+  display: flex;
+  gap: 7px;
+}
+.pager-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--border-strong);
+  transition: background 0.2s, transform 0.2s;
+}
+.pager-dot.active { background: var(--accent); transform: scale(1.25); }
+
 @keyframes toast-in { from { opacity: 0; transform: translate(-50%, 8px); } to { opacity: 1; transform: translate(-50%, 0); } }
 @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 @keyframes rise-sheet { from { transform: translateY(100%); } to { transform: none; } }

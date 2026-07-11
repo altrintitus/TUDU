@@ -56,8 +56,12 @@ test('import replaces data after confirm', async ({ page }) => {
   await page.getByRole('button', { name: /replace/i }).click();
 
   await page.goto('/#/');
-  await expect(page.getByText('Restored')).toBeVisible();
-  await page.getByText('Restored').click();
+  // open the restored space from the Spaces pane (scope avoids the Today pane,
+  // which now also lists the restored task)
+  await page.getByRole('tab', { name: 'Spaces' }).click();
+  const spaces = page.locator('.spaces-screen');
+  await expect(spaces.getByText('Restored')).toBeVisible();
+  await spaces.getByText('Restored').click();
   await expect(page.getByText('restored task')).toBeVisible();
   await page.goto('/#/list/inbox');
   await expect(page.getByText('doomed task')).toHaveCount(0);

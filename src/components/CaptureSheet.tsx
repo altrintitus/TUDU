@@ -6,17 +6,18 @@ import { toast } from './Toast';
 
 // Mount this fresh on open (parent renders it conditionally) so state resets
 // each time — no setState-in-effect needed.
-export function CaptureSheet({ open, onClose, fixedListId, defaultType }: {
+export function CaptureSheet({ open, onClose, fixedListId, defaultType, fixedType }: {
   open: boolean;
   onClose(): void;
   fixedListId?: string;
   defaultType?: CaptureType;
+  fixedType?: CaptureType; // locks the type and hides the Task/Idea toggle
 }) {
   const lists = useLiveQuery(() => db.lists.orderBy('sortOrder').toArray(), []);
   const fieldRef = useRef<HTMLTextAreaElement>(null);
   const savingRef = useRef(false);
   const [text, setText] = useState('');
-  const [type, setType] = useState<CaptureType>(() => defaultType ?? loadCaptureDefaults().type);
+  const [type, setType] = useState<CaptureType>(() => fixedType ?? defaultType ?? loadCaptureDefaults().type);
   const [listId, setListId] = useState<string>(() => fixedListId ?? loadCaptureDefaults().listId);
   const [due, setDue] = useState('');
 
@@ -79,10 +80,12 @@ export function CaptureSheet({ open, onClose, fixedListId, defaultType }: {
         />
 
         <div className="capture-controls">
-          <div className="segmented" role="group" aria-label="Type">
-            <button aria-pressed={type === 'task'} onClick={() => setType('task')}>Task</button>
-            <button aria-pressed={type === 'idea'} onClick={() => setType('idea')}>Idea</button>
-          </div>
+          {!fixedType && (
+            <div className="segmented" role="group" aria-label="Type">
+              <button aria-pressed={type === 'task'} onClick={() => setType('task')}>Task</button>
+              <button aria-pressed={type === 'idea'} onClick={() => setType('idea')}>Idea</button>
+            </div>
+          )}
 
           {!fixedListId && (
             <select

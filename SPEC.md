@@ -78,34 +78,40 @@ interface RoutineDone { id: string; routineId: string; date: string; } // date '
 ## Date logic (unit-test this)
 
 - `today` = local date string `YYYY-MM-DD` from device clock.
-- **Today strip** = tasks where `!done && dueDate <= today`, overdue (`dueDate < today`) styled distinctly and sorted first, then by `dueDate`, then `createdAt`.
+- **Today tasks** = `!done` tasks grouped Overdue (`dueDate < today`) / Today (`== today`) / Upcoming (`> today`) / No-date; overdue styled distinctly; within a group sort by `dueDate` then `createdAt`.
+- **Routine streak** = consecutive completed *scheduled* days ending at the latest scheduled day that is completed or is today; non-scheduled days skipped. See `logic/routines.ts` (unit-tested).
 - No timezone math beyond local date formatting — dates are calendar dates, not instants.
 
 ## Screens & behaviors
 
-### Home
-- Today strip: each row shows checkbox, title, source-list name. Checking completes in place (row animates out). Hidden entirely when empty.
-- Lists section: rows with emoji, name, open-task count + idea count. Tap → List view. `[+ list]` creates (name + optional emoji). Long-press (or an edit affordance) → rename / delete. The permanent **Inbox** list is hidden from this section **while empty**, and appears once it holds any task or idea — so nothing captured to the fallback list ever becomes unreachable.
-- Global `[+]` FAB → Capture sheet.
+Three horizontally-swipeable top-level pages (minimal 3-dot indicator, lands on **Today**): **Today · Spaces · Ideas**. Space and idea detail push full-screen over the pager. Only the active pane's FAB is shown.
 
-### Capture sheet
-- Bottom sheet over dimmed home; text input auto-focused (keyboard up immediately).
-- Controls: `Task | Idea` segmented toggle (persists last choice), list chip (defaults to last-used list, falls back Inbox), due-date field only when Task selected.
-- Enter/Save writes, closes, brief non-blocking confirmation. Empty text = disabled save.
-- State (last type, last list) in `localStorage`.
+### Today (landing)
+- **Routines** section: today's scheduled routines. Row = checkbox · name · `🔥 streak` · 7-day dot row (done/missed/off). Check → records today's completion; routines stay visible when checked and are never "overdue". Section header has an ⊕ to add a routine.
+- **Tasks** section: all open one-off tasks across every space, grouped Overdue/Today/Upcoming/No-date, each showing its **space** label + due chip. Checking completes it (leaves Today). Tap → edit; long-press → delete.
 
-### List view
-- Header: emoji + name, back to Home. Tabs: **Tasks** / **Idea**s (remember last tab per session).
-- Tasks tab: open tasks sorted `dueDate` asc (undated last), then `createdAt`. Checking → done, moves to collapsed `Done (n)` section at bottom (tap to expand; uncheck restores). Row tap → inline edit title/due; swipe or long-press → delete.
-- Ideas tab: rows show first line bold + relative updated time, sorted `updatedAt` desc. Tap → Idea editor. Same delete affordance.
-- Per-list `[+]` adds directly to this list (skips list chip).
+### Spaces
+- Header "Spaces" + settings gear. Space cards: emoji · name · open-task + idea counts. Tap → space detail. `+ New space` creates (name + optional emoji); edit affordance → rename / delete. The permanent **Inbox** space is hidden while empty, shown once it holds anything.
+
+### Ideas
+- Every idea across all spaces, `updatedAt` desc: ✦ · first-line title · **space** label · relative time. Tap → idea editor; long-press → delete.
+
+### Capture (context-aware `[+]`)
+- Today `+` → new **task** (no type toggle); Space detail `+` → task/idea into that space; Ideas `+` → new **idea**. Routines are created from the Today ⊕.
+- Bottom sheet, text auto-focused. Controls: `Task | Idea` toggle **only when the page doesn't fix the type** (persists last freely-chosen type), space chip (defaults last-used, falls back Inbox), due-date field when Task. New tasks default `dueDate = today`. Empty text = disabled save. State (last type, last space) in `localStorage`.
+
+### Routine editor
+- Name + weekday chips (M–S) with Daily / Weekdays presets; default **Daily**. Save guards empty name / zero days (with a re-entry guard).
+
+### Space detail
+- Header: emoji + name, back. Tabs **Tasks** / **Ideas** (remember last tab per session). Tasks: open sorted `dueDate` then `createdAt`; check → collapsed `Done (n)`. Ideas: first line + relative time, `updatedAt` desc. Per-space `[+]` adds directly here.
 
 ### Idea editor
-- Full-screen plain-text editor (single `<textarea>`-equivalent), autosaves on pause + on close, updates `updatedAt`. No formatting UI.
+- Full-screen plain-text editor, autosaves (debounce + on blur/background/close), updates `updatedAt`; header Delete. No formatting UI.
 
-### Settings (modest sheet off Home)
-- Export: single JSON `{ version: 1, exportedAt, lists, tasks, ideas }` via share sheet / download.
-- Import: file picker → validate shape → **replace all** after explicit confirm (no merge in v1).
+### Settings (sheet off the Spaces page)
+- Export: single JSON `{ version: 1, exportedAt, lists, tasks, ideas, routines, routineDone }` via share sheet / download.
+- Import: file picker → validate shape → **replace all** after explicit confirm (no merge). Pre-2.0 backups (no routine fields) still import.
 - Show storage-persist status + data counts + app version.
 
 ## PWA & iOS requirements

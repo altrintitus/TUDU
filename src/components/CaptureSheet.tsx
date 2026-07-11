@@ -42,7 +42,11 @@ export function CaptureSheet({ open, onClose, fixedListId, defaultType, fixedTyp
     const targetList = fixedListId ?? validListId;
     if (type === 'task') await createTask(targetList, value, due || undefined);
     else await createIdea(targetList, value);
-    if (!fixedListId) saveCaptureDefaults({ type, listId: targetList });
+    // Persist last-used space always; but only persist the type when the user
+    // could actually choose it (a fixedType page must not clobber that memory).
+    if (!fixedListId) {
+      saveCaptureDefaults({ type: fixedType ? loadCaptureDefaults().type : type, listId: targetList });
+    }
     const name = lists?.find((l) => l.id === targetList)?.name ?? 'list';
     onClose();
     toast(`Saved to ${name}`);

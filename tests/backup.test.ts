@@ -1,5 +1,8 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { db, ensureInbox, createList, createTask, createIdea, INBOX_ID } from '../src/db';
+import {
+  db, ensureInbox, createList, createTask, createIdea,
+  createRoutine, setRoutineDone, getRoutineDoneDates, INBOX_ID
+} from '../src/db';
 import { exportData, validateBackup, importData } from '../src/logic/backup';
 
 beforeEach(async () => {
@@ -23,6 +26,38 @@ it('export → wipe → import restores identical data', async () => {
   expect((await exportData())).toMatchObject({
     lists: backup.lists, tasks: backup.tasks, ideas: backup.ideas
   });
+});
+
+it('export → wipe → import restores routines and streak history', async () => {
+  const r = await createRoutine('Meditate', [0, 1, 2, 3, 4, 5, 6]);
+  await setRoutineDone(r.id, '2026-07-10', true);
+  await setRoutineDone(r.id, '2026-07-11', true);
+  const backup = await exportData();
+  expect(backup.routines).toHaveLength(1);
+  expect(backup.routineDone).toHaveLength(2);
+
+  await db.delete();
+  await db.open();
+  await importData(backup);
+
+  const routines = await db.routines.toArray();
+  expect(routines).toEqual(backup.routines);
+  expect(await getRoutineDoneDates(r.id)).toEqual(['2026-07-10', '2026-07-11']);
+});
+
+it('importData REPLACES existing routines too', async () => {
+  const backup = await exportData(); // no routines
+  await createRoutine('doomed routine', [1]);
+  await importData(backup);
+  expect(await db.routines.count()).toBe(0);
+});
+
+it('accepts a pre-2.0 backup with no routine fields', async () => {
+  const legacy = { version: 1 as const, exportedAt: 'x', lists: [], tasks: [], ideas: [] };
+  expect(validateBackup(legacy)).toBe(true);
+  await createRoutine('should be wiped', [1]);
+  await importData(legacy);
+  expect(await db.routines.count()).toBe(0);
 });
 
 it('importData REPLACES existing data', async () => {

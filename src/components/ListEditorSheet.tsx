@@ -39,7 +39,7 @@ export function ListEditorSheet({ open, list, onClose }: {
     onClose();
   };
 
-  const title = list ? (isInbox ? 'Inbox' : 'Edit list') : 'New list';
+  const title = list ? (isInbox ? 'Inbox' : 'Edit space') : 'New space';
 
   return (
     <Sheet open={open} onClose={onClose} title={title}>
@@ -51,7 +51,7 @@ export function ListEditorSheet({ open, list, onClose }: {
           disabled={isInbox}
           readOnly={nameRO}
           onFocus={() => setNameRO(false)}
-          placeholder="List name"
+          placeholder="Space name"
           autoComplete="off"
           autoCorrect="off"
           autoCapitalize="words"

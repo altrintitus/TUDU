@@ -4,6 +4,7 @@ import {
   createTask, toggleTask, updateTask, deleteTask, createIdea, updateIdea, deleteIdea
 } from '../src/db';
 import { todayStr } from '../src/logic/dates';
+import { createRoutine, deleteRoutine, setRoutineDone, getRoutineDoneDates } from '../src/db';
 
 beforeEach(async () => {
   await db.delete();
@@ -40,6 +41,25 @@ describe('lists', () => {
     expect(await db.tasks.count()).toBe(1);
     expect(await db.ideas.count()).toBe(0);
     expect((await db.tasks.toArray())[0].title).toBe('survivor');
+  });
+});
+
+describe('routines', () => {
+  it('creates a routine and toggles completion idempotently', async () => {
+    const r = await createRoutine('Meditate', [0, 1, 2, 3, 4, 5, 6]);
+    expect(r).toMatchObject({ title: 'Meditate', days: [0, 1, 2, 3, 4, 5, 6] });
+    await setRoutineDone(r.id, '2026-07-11', true);
+    await setRoutineDone(r.id, '2026-07-11', true); // idempotent — no dupes
+    expect(await getRoutineDoneDates(r.id)).toEqual(['2026-07-11']);
+    await setRoutineDone(r.id, '2026-07-11', false);
+    expect(await getRoutineDoneDates(r.id)).toEqual([]);
+  });
+  it('deleteRoutine removes the routine and its completions', async () => {
+    const r = await createRoutine('Workout', [1, 3, 5]);
+    await setRoutineDone(r.id, '2026-07-13', true);
+    await deleteRoutine(r.id);
+    expect(await db.routines.get(r.id)).toBeUndefined();
+    expect(await getRoutineDoneDates(r.id)).toEqual([]);
   });
 });
 

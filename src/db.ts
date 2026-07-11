@@ -26,17 +26,42 @@ export interface Idea {
   createdAt: number;
   updatedAt: number;
 }
+// Global recurring habit. `days` = JS weekday indices (0=Sun..6=Sat); [0..6] = daily.
+export interface Routine {
+  id: string;
+  title: string;
+  days: number[];
+  sortOrder: number;
+  createdAt: number;
+}
+// One completion of a routine on a given local date. id = `${routineId}:${date}`
+// makes toggling idempotent and deletion trivial.
+export interface RoutineDone {
+  id: string;
+  routineId: string;
+  date: string; // 'YYYY-MM-DD' local
+}
 
 class TuduDB extends Dexie {
   lists!: Table<List, string>;
   tasks!: Table<Task, string>;
   ideas!: Table<Idea, string>;
+  routines!: Table<Routine, string>;
+  routineDone!: Table<RoutineDone, string>;
   constructor() {
     super('tudu');
     this.version(1).stores({
       lists: 'id, sortOrder',
       tasks: 'id, listId, dueDate', // no index on `done`: booleans are not valid IndexedDB keys
       ideas: 'id, listId, updatedAt'
+    });
+    // v2 adds routines (additive — existing stores unchanged, on-device data preserved)
+    this.version(2).stores({
+      lists: 'id, sortOrder',
+      tasks: 'id, listId, dueDate',
+      ideas: 'id, listId, updatedAt',
+      routines: 'id, sortOrder',
+      routineDone: 'id, routineId, date'
     });
   }
 }
@@ -120,4 +145,34 @@ export async function updateIdea(id: string, text: string): Promise<void> {
 
 export async function deleteIdea(id: string): Promise<void> {
   await db.ideas.delete(id);
+}
+
+// ---- routines ----
+
+export async function createRoutine(title: string, days: number[]): Promise<Routine> {
+  const last = await db.routines.orderBy('sortOrder').last();
+  const r: Routine = {
+    id: crypto.randomUUID(), title, days,
+    sortOrder: (last?.sortOrder ?? 0) + 1, createdAt: Date.now()
+  };
+  await db.routines.add(r);
+  return r;
+}
+
+export async function deleteRoutine(id: string): Promise<void> {
+  await db.transaction('rw', db.routines, db.routineDone, async () => {
+    await db.routineDone.where('routineId').equals(id).delete();
+    await db.routines.delete(id);
+  });
+}
+
+export async function setRoutineDone(routineId: string, date: string, done: boolean): Promise<void> {
+  const id = `${routineId}:${date}`;
+  if (done) await db.routineDone.put({ id, routineId, date });
+  else await db.routineDone.delete(id);
+}
+
+export async function getRoutineDoneDates(routineId: string): Promise<string[]> {
+  const rows = await db.routineDone.where('routineId').equals(routineId).toArray();
+  return rows.map((r) => r.date).sort();
 }

@@ -16,10 +16,13 @@ Capture **tasks** and **ideas** into **lists**. A tiny local-first PWA — no ac
 
 ## What it does
 
-- Lists hold both **tasks** (checkbox + optional due date) and **ideas** (free-form notes; first line = title).
-- **Today** view collects due + overdue tasks across every list.
-- ~3-second capture sheet with smart defaults (remembers last type + list).
-- Full-screen autosaving idea editor.
+Three swipeable pages — **Today · Spaces · Ideas** (minimal, lands on Today):
+
+- **Today** — your **routines** (recurring habits with a 🔥 streak + 7-day history) plus every open task across spaces, grouped Overdue / Today / Upcoming.
+- **Routines** keep you consistent: pick the weekdays (default Daily), check them off, watch the streak grow.
+- **Spaces** hold both **tasks** (checkbox + due date, defaulting to today) and **ideas** (free-form notes; first line = title).
+- **Ideas** page aggregates every idea across spaces, each tagged with its space.
+- ~3-second context-aware capture; full-screen autosaving idea editor.
 - JSON **export / import** backup (Settings) — replace-all with confirm.
 - Offline-first, installable; warm monochrome design, light + dark follow your system.
 

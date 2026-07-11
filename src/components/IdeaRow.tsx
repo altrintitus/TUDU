@@ -4,8 +4,9 @@ import { useLongPress } from '../hooks/useLongPress';
 import { firstLine, relativeTime } from '../logic/text';
 import { IdeasIcon } from './icons';
 
-export function IdeaRow({ idea, onOpen, onDelete }: {
+export function IdeaRow({ idea, spaceName, onOpen, onDelete }: {
   idea: Idea;
+  spaceName?: string; // shown on the aggregated Ideas page
   onOpen(): void;
   onDelete(): void;
 }) {
@@ -19,6 +20,7 @@ export function IdeaRow({ idea, onOpen, onDelete }: {
       <button className="idea-main" onClick={onClick}>
         <span className="idea-icon"><IdeasIcon /></span>
         <span className="idea-title">{firstLine(idea.text)}</span>
+        {spaceName && <span className="idea-space">{spaceName}</span>}
         <span className="idea-time">{relativeTime(idea.updatedAt)}</span>
       </button>
     </div>

@@ -569,6 +569,7 @@ input[type='checkbox']:checked::after { transform: scale(1); }
 }
 .idea-icon { flex: 0 0 auto; display: flex; color: var(--muted); }
 .idea-title { flex: 1; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.idea-space { font-size: 12px; color: var(--muted); white-space: nowrap; }
 .idea-time { font-size: 12px; color: var(--faint); white-space: nowrap; }
 
 /* ---- idea editor ---- */

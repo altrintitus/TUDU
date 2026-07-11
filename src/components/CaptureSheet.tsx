@@ -87,7 +87,7 @@ export function CaptureSheet({ open, onClose, fixedListId, defaultType }: {
           {!fixedListId && (
             <select
               className="capture-list"
-              aria-label="List"
+              aria-label="Space"
               value={validListId}
               onChange={(e) => setListId(e.target.value)}
             >

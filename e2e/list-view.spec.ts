@@ -64,7 +64,7 @@ test('ideas tab shows first-line title; editor autosaves across reload', async (
 test('per-list add captures directly into this list', async ({ page }) => {
   await page.getByRole('tab', { name: /tasks/i }).click();
   await page.getByRole('button', { name: /add to inbox/i }).click();
-  await expect(page.getByLabel(/list/i)).toHaveCount(0); // chip hidden
+  await expect(page.getByLabel(/space/i)).toHaveCount(0); // chip hidden
   // Task capture also renders the due-date field, which webkit exposes as a
   // second textbox — target the capture field by name (see capture.spec.ts).
   await page.getByRole('textbox', { name: 'Capture text' }).fill('from inside list');
@@ -82,5 +82,5 @@ test('delete an idea from its editor', async ({ page }) => {
 
 test('garbage list id redirects home', async ({ page }) => {
   await page.goto('/#/list/does-not-exist');
-  await expect(page.getByRole('button', { name: /new list/i })).toBeVisible(); // home
+  await expect(page.getByRole('button', { name: /new space/i })).toBeVisible(); // home
 });

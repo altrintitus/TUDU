@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 
+// The global capture FAB lives on the Spaces pane — land there each test.
 test.beforeEach(async ({ page }) => {
   await page.goto('/');
   await page.evaluate(async () => {
@@ -10,6 +11,7 @@ test.beforeEach(async ({ page }) => {
     })));
   });
   await page.reload();
+  await page.getByRole('tab', { name: 'Spaces' }).click();
 });
 
 const iso = () => {
@@ -17,36 +19,37 @@ const iso = () => {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 };
 
-test('capture a task due today → appears in Today strip', async ({ page }) => {
+test('capture a task into Inbox (the default space)', async ({ page }) => {
   await page.getByRole('button', { name: /capture/i }).click();
   // date input also exposes role=textbox, so target the capture field by its label
   await page.getByRole('textbox', { name: 'Capture text' }).fill('finish report');
   await page.getByLabel(/due/i).fill(iso());
   await page.getByRole('button', { name: /save/i }).click();
-  await expect(page.getByText('Today')).toBeVisible();
+  // it lands in the Inbox space
+  await page.evaluate(() => { window.location.hash = '#/list/inbox'; });
   await expect(page.getByText('finish report')).toBeVisible();
 });
 
-test('capture an idea into a chosen list; sheet remembers it', async ({ page }) => {
-  await page.getByRole('button', { name: /new list/i }).click();
+test('capture an idea into a chosen space; sheet remembers it', async ({ page }) => {
+  await page.getByRole('button', { name: /new space/i }).click();
   await page.getByRole('textbox', { name: /name/i }).fill('Work');
   await page.getByRole('button', { name: /save/i }).click();
 
   await page.getByRole('button', { name: /capture/i }).click();
   await page.getByRole('button', { name: /idea/i }).click();
-  await page.getByLabel(/list/i).selectOption({ label: 'Work' });
+  await page.getByLabel('Space', { exact: true }).selectOption({ label: 'Work' });
   await page.getByRole('textbox', { name: 'Capture text' }).fill('agent eval harness');
   await page.getByRole('button', { name: /save/i }).click();
 
   // reopen: defaults remembered
   await page.getByRole('button', { name: /capture/i }).click();
   await expect(page.getByRole('button', { name: /idea/i })).toHaveAttribute('aria-pressed', 'true');
-  await expect(page.getByLabel(/list/i).locator('option:checked')).toHaveText('Work');
+  await expect(page.getByLabel('Space', { exact: true }).locator('option:checked')).toHaveText('Work');
 });
 
 test('save disabled on empty text; dismiss writes nothing', async ({ page }) => {
   await page.getByRole('button', { name: /capture/i }).click();
   await expect(page.getByRole('button', { name: /save/i })).toBeDisabled();
   await page.getByRole('button', { name: /cancel/i }).click();
-  await expect(page.getByText('Today')).toHaveCount(0);
+  await expect(page.getByRole('textbox', { name: 'Capture text' })).toHaveCount(0);
 });

@@ -58,3 +58,6 @@ When something fails repeatedly or a workaround is found, add a one-line bullet 
 - toast text must not substring-match seeded list/task names (e2e getByText collisions)
 - dev SW can't cache vite's unbundled modules; test offline against `vite preview` prod build
 - gate Pages base on `!TEST_BUILD` so preview/e2e serve at `/`; set TEST_BUILD on build AND preview
+- scroll-snap pager: a pane's fixed FAB bleeds across panes; hide `.fab` on non-active panes
+- pager dot-nav: setActive(target) immediately + suppress scroll-updates during the smooth scroll (else FAB click races on slow runners)
+- CI e2e: vite dev on-demand compile under parallel workers → click timeouts; set workers:1 + retries:2 in CI

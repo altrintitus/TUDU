@@ -1,4 +1,4 @@
-import { useEffect, useRef, type ReactNode } from 'react';
+import { useEffect, useLayoutEffect, useRef, type ReactNode } from 'react';
 
 export function Sheet({ open, onClose, title, children }: {
   open: boolean;
@@ -8,11 +8,20 @@ export function Sheet({ open, onClose, title, children }: {
 }) {
   const panelRef = useRef<HTMLDivElement>(null);
 
+  // Focus the first text field synchronously (pre-paint) so iOS raises the
+  // keyboard immediately. Skip date inputs (would open the date picker) and
+  // buttons. Runs in the tap's discrete-event flush, like CaptureSheet.
+  useLayoutEffect(() => {
+    if (!open) return;
+    panelRef.current
+      ?.querySelector<HTMLElement>('input:not([type=date]), textarea, [contenteditable="true"]')
+      ?.focus();
+  }, [open]);
+
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
     window.addEventListener('keydown', onKey);
-    panelRef.current?.querySelector<HTMLElement>('input, textarea, button')?.focus();
     return () => window.removeEventListener('keydown', onKey);
   }, [open, onClose]);
 

@@ -1,41 +1,51 @@
 import { useRef, useState } from 'react';
 import { Sheet } from './Sheet';
-import { createRoutine } from '../db';
+import { createRoutine, updateRoutine, deleteRoutine, type Routine } from '../db';
 
 const LABELS = ['S', 'M', 'T', 'W', 'T', 'F', 'S']; // index = JS getDay (0=Sun)
 const DAILY = [0, 1, 2, 3, 4, 5, 6];
 const WEEKDAYS = [1, 2, 3, 4, 5];
 
-export function RoutineEditorSheet({ open, onClose }: { open: boolean; onClose(): void }) {
-  const [title, setTitle] = useState('');
-  const [ro, setRo] = useState(true); // readonly-until-focus → suppress iOS autofill
-  const [days, setDays] = useState<number[]>(DAILY);
+// New routine when `routine` is absent; edit (with Delete) when present.
+export function RoutineEditorSheet({ open, routine, onClose }: {
+  open: boolean;
+  routine?: Routine | null;
+  onClose(): void;
+}) {
+  const [title, setTitle] = useState(routine?.title ?? '');
+  const [days, setDays] = useState<number[]>(routine?.days ?? DAILY);
+  const [confirming, setConfirming] = useState(false);
   const savingRef = useRef(false);
 
   const toggleDay = (d: number) =>
-    setDays((cur) => (cur.includes(d) ? cur.filter((x) => x !== d) : [...cur, d].sort()));
+    setDays((cur) => (cur.includes(d) ? cur.filter((x) => x !== d) : [...cur, d].sort((a, b) => a - b)));
 
   const save = async () => {
     const t = title.trim();
-    // Guard re-entry: a fast double-tap can fire again before the first write
-    // resolves, creating a duplicate routine.
     if (!t || days.length === 0 || savingRef.current) return;
     savingRef.current = true;
-    await createRoutine(t, days);
+    if (routine) await updateRoutine(routine.id, { title: t, days });
+    else await createRoutine(t, days);
+    onClose();
+  };
+
+  const remove = async () => {
+    if (!routine) return;
+    await deleteRoutine(routine.id);
     onClose();
   };
 
   return (
-    <Sheet open={open} onClose={onClose} title="New routine">
+    <Sheet open={open} onClose={onClose} title={routine ? 'Edit routine' : 'New routine'}>
       <label className="field">
         <span className="field-label">Name</span>
         <input
           aria-label="Name"
           value={title}
-          readOnly={ro}
-          onFocus={() => setRo(false)}
           autoComplete="off"
           autoCorrect="off"
+          data-1p-ignore
+          data-lpignore="true"
           placeholder="Meditate"
           onChange={(e) => setTitle(e.target.value)}
         />
@@ -62,6 +72,12 @@ export function RoutineEditorSheet({ open, onClose }: { open: boolean; onClose()
         </div>
       </div>
       <div className="sheet-actions">
+        {routine && !confirming && (
+          <button className="btn-danger" onClick={() => setConfirming(true)}>Delete</button>
+        )}
+        {routine && confirming && (
+          <button className="btn-danger" onClick={remove}>Confirm — delete routine</button>
+        )}
         <button className="btn-primary" onClick={save} disabled={!title.trim() || days.length === 0}>
           Save
         </button>

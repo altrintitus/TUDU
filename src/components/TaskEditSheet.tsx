@@ -13,8 +13,6 @@ export function TaskEditSheet({ open, task, onClose }: {
   const [due, setDue] = useState(task?.dueDate ?? '');
   const [listId, setListId] = useState(task?.listId ?? '');
   const [confirming, setConfirming] = useState(false);
-  // readonly until focus → suppresses iOS contact AutoFill on this text field
-  const [titleRO, setTitleRO] = useState(true);
 
   if (!open || !task) return null;
 
@@ -34,7 +32,7 @@ export function TaskEditSheet({ open, task, onClose }: {
     <Sheet open={open} onClose={onClose} title="Edit task">
       <label className="field">
         <span className="field-label">Title</span>
-        <input aria-label="Title" value={title} readOnly={titleRO} onFocus={() => setTitleRO(false)} autoComplete="off" autoCorrect="off" onChange={(e) => setTitle(e.target.value)} />
+        <input aria-label="Title" value={title} autoComplete="off" autoCorrect="off" data-1p-ignore data-lpignore="true" onChange={(e) => setTitle(e.target.value)} />
       </label>
       <label className="field">
         <span className="field-label">Space</span>

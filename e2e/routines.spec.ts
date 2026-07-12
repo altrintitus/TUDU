@@ -18,9 +18,11 @@ test('create a routine → shows on Today → check → streak 1', async ({ page
   await page.getByRole('textbox', { name: /name/i }).fill('Meditate');
   await page.getByRole('button', { name: /save/i }).click();
 
-  await expect(page.getByText('Meditate')).toBeVisible();
-  await expect(page.getByText('🔥 0')).toBeVisible();
+  // Meditate also renders on the Progress pane (both mounted) — scope to Today.
+  const today = page.locator('.today-screen');
+  await expect(today.getByText('Meditate')).toBeVisible();
+  await expect(today.locator('.routine-streak')).toHaveText('0'); // flame is an svg; text is the count
 
   await page.getByRole('checkbox', { name: /meditate/i }).click();
-  await expect(page.getByText('🔥 1')).toBeVisible();
+  await expect(today.locator('.routine-streak')).toHaveText('1');
 });

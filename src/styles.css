@@ -132,7 +132,7 @@ input[type='checkbox']:checked::after { transform: scale(1); }
 }
 
 /* ---- top-level page panes (Today / Spaces / Ideas) ---- */
-.today-screen, .spaces-screen, .ideas-screen {
+.today-screen, .spaces-screen, .progress-screen {
   min-height: 100%;
   padding: calc(env(safe-area-inset-top) + var(--space-8)) var(--space-4) calc(env(safe-area-inset-bottom) + 96px);
 }
@@ -703,6 +703,24 @@ input[type='checkbox']:checked::after { transform: scale(1); }
   transition: background 0.2s, transform 0.2s;
 }
 .pager-dot.active { background: var(--accent); transform: scale(1.25); }
+
+/* ---- progress ---- */
+.progress-section { margin-bottom: var(--space-6); }
+.progress-hero {
+  display: flex; flex-direction: column; align-items: center; gap: var(--space-1);
+  margin: var(--space-4) 0 var(--space-8); color: var(--accent);
+}
+.hero-streak { font-size: 56px; font-weight: 700; line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+.hero-label { font-size: 13px; color: var(--muted); }
+.hero-best { color: var(--faint); }
+.heatmap { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; max-width: 264px; }
+.hcell { aspect-ratio: 1; border-radius: 3px; background: var(--accent); }
+.hcell.blank { background: transparent; }
+.hcell.heat-0 { background: transparent; border: 1px solid var(--border); }
+.hcell.heat-1 { opacity: 0.32; }
+.hcell.heat-2 { opacity: 0.6; }
+.hcell.heat-3 { opacity: 1; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
 @keyframes toast-in { from { opacity: 0; transform: translate(-50%, 8px); } to { opacity: 1; transform: translate(-50%, 0); } }
 @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }

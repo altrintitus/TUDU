@@ -4,7 +4,7 @@ import { ensureInbox } from './db';
 import { Pager } from './components/Pager';
 import { TodayScreen } from './screens/TodayScreen';
 import { SpacesScreen } from './screens/SpacesScreen';
-import { IdeasScreen } from './screens/IdeasScreen';
+import { ProgressScreen } from './screens/ProgressScreen';
 import { ListScreen } from './screens/ListScreen';
 import { IdeaScreen } from './screens/IdeaScreen';
 import { SettingsScreen } from './screens/SettingsScreen';
@@ -54,7 +54,7 @@ export default function App() {
           panes={[
             { key: 'Today', node: <TodayScreen /> },
             { key: 'Spaces', node: <SpacesScreen /> },
-            { key: 'Ideas', node: <IdeasScreen /> }
+            { key: 'Progress', node: <ProgressScreen /> }
           ]}
         />
       )}

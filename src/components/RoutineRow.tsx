@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import type { Routine } from '../db';
 import { useLongPress } from '../hooks/useLongPress';
 import { streak, last7 } from '../logic/routines';
+import { Flame } from './icons';
 
 export function RoutineRow({ routine, doneDates, today, checked, onToggle, onDelete }: {
   routine: Routine;
@@ -21,7 +22,9 @@ export function RoutineRow({ routine, doneDates, today, checked, onToggle, onDel
       <div className="routine-main">
         <div className="routine-top">
           <span className="routine-title">{routine.title}</span>
-          <span className="routine-streak">🔥 {s}</span>
+          <span className={s > 0 ? 'routine-streak' : 'routine-streak zero'}>
+            <Flame filled={s > 0} size={14} /> {s}
+          </span>
         </div>
         <div className="routine-dots" aria-hidden="true">
           {dots.map((d, i) => <span key={i} className={`rdot ${d}`} />)}

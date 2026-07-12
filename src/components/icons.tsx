@@ -28,3 +28,15 @@ export function IdeasIcon() {
     </svg>
   );
 }
+
+// Streak flame. filled = ink silhouette (streak ≥ 1); outline = dimmed (streak 0).
+export function Flame({ filled = true, size = 16 }: { filled?: boolean; size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" aria-hidden="true"
+      fill={filled ? 'currentColor' : 'none'}
+      stroke={filled ? 'none' : 'currentColor'} strokeWidth={filled ? 0 : 1.3}>
+      <path d="M8.5 1.4c.3 1.6-.5 2.7-1.4 3.7-1 1.1-2.2 2.3-2.2 4.3a3.6 3.6 0 0 0 7.2 0c0-1-.4-1.9-1-2.6-.2.5-.6.9-1.1 1.1.7-1.8 0-4.2-1.5-6.5z"
+        strokeLinejoin="round" />
+    </svg>
+  );
+}

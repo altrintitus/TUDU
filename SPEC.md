@@ -13,13 +13,14 @@ Personal PWA for capturing **tasks** and **ideas**, organized into **lists**. iP
 | Platform | Serverless PWA, GitHub Pages, iPhone-first (must also work in desktop browsers) |
 | Storage | On-device IndexedDB via Dexie; `navigator.storage.persist()`; JSON export/import backup |
 | Structure | **Spaces** (renamed from "List" in the UI; internal store stays `lists`) contain tasks + ideas; `Inbox` is a permanent default space. **Routines** are global (not in a space). |
-| Navigation | Three horizontally-swipeable pages, minimal 3-dot indicator, lands on **Today**: **Today** (routines + tasks) · **Spaces** · **Ideas**. Space/idea detail push over the pager. |
+| Navigation | Three horizontally-swipeable pages, minimal 3-dot indicator, lands on **Today**: **Today** (routines + tasks) · **Spaces** · **Progress**. Space/idea detail push over the pager. |
 | Today | Routines section (today's scheduled, per-routine 🔥 streak + 7-day dots) then Tasks (all open one-off tasks across spaces, grouped Overdue/Today/Upcoming/No-date, with space labels) |
 | Routines | Global recurring habits; weekday schedule (default Daily); consistency streak + 7-day history. Never "overdue" |
 | Space view | Two tabs: Tasks / Ideas |
 | Tasks | Title + checkbox + optional due **date** (no time); **new tasks default to due=today**. Done tasks auto-archive out of default view |
-| Ideas | Plain text blob; first line = title in rows. The Ideas page aggregates all ideas across spaces, each tagged with its space |
-| Capture | Context-aware global `[+]` per page (Today→task, Ideas→idea, Space→task/idea); keyboard auto-focused; space chip (defaults last-used); optional due date when Task. Routines created from the Today ⊕. Save ≈ 3 seconds |
+| Ideas | Plain text blob; first line = title in rows. Ideas live **inside each Space** (Tasks/Ideas tabs) — there is no standalone Ideas page |
+| Progress | Read-only performance page: hero day-streak + best, 30-day activity heatmap, per-routine flame + streak + 7-day dots, task stats (done today / this week, keep-up rate, overdue). No schema change — derives from `doneAt` + `routineDone` |
+| Capture | Context-aware global `[+]` per page (Today→task, Space→task/idea); keyboard auto-focused; space chip (defaults last-used); optional due date when Task. Routines created from the Today ⊕. Progress is read-only (no capture). Save ≈ 3 seconds |
 | Gamification | Per-routine streaks + 7-day dots only. No points/levels |
 | Reminders | **None** (no push, no local notifications — iOS PWA limitation, ratified). Due dates surface in-app only |
 | Stack | Vite + React + TypeScript + Dexie + vite-plugin-pwa |
@@ -80,11 +81,12 @@ interface RoutineDone { id: string; routineId: string; date: string; } // date '
 - `today` = local date string `YYYY-MM-DD` from device clock.
 - **Today tasks** = `!done` tasks grouped Overdue (`dueDate < today`) / Today (`== today`) / Upcoming (`> today`) / No-date; overdue styled distinctly; within a group sort by `dueDate` then `createdAt`.
 - **Routine streak** = consecutive completed *scheduled* days ending at the latest scheduled day that is completed or is today; non-scheduled days skipped. See `logic/routines.ts` (unit-tested).
+- **Progress stats** (unit-tested, `logic/stats.ts`): overall day-streak (any-completion days), 30-day activity counts + heat levels, task keep-up rate. Derived from `Task.doneAt` + `routineDone` — no schema change.
 - No timezone math beyond local date formatting — dates are calendar dates, not instants.
 
 ## Screens & behaviors
 
-Three horizontally-swipeable top-level pages (minimal 3-dot indicator, lands on **Today**): **Today · Spaces · Ideas**. Space and idea detail push full-screen over the pager. Only the active pane's FAB is shown.
+Three horizontally-swipeable top-level pages (minimal 3-dot indicator, lands on **Today**): **Today · Spaces · Progress**. Space and idea detail push full-screen over the pager. Only the active pane's FAB is shown.
 
 ### Today (landing)
 - **Routines** section: today's scheduled routines. Row = checkbox · name · `🔥 streak` · 7-day dot row (done/missed/off). Check → records today's completion; routines stay visible when checked and are never "overdue". Section header has an ⊕ to add a routine.
@@ -93,11 +95,12 @@ Three horizontally-swipeable top-level pages (minimal 3-dot indicator, lands on 
 ### Spaces
 - Header "Spaces" + settings gear. Space cards: emoji · name · open-task + idea counts. Tap → space detail. `+ New space` creates (name + optional emoji); edit affordance → rename / delete. The permanent **Inbox** space is hidden while empty, shown once it holds anything.
 
-### Ideas
-- Every idea across all spaces, `updatedAt` desc: ✦ · first-line title · **space** label · relative time. Tap → idea editor; long-press → delete.
+### Progress
+- Read-only analytics (no FAB). **Hero**: overall day-streak (consecutive days with ≥1 routine or task completed; today-not-yet-active doesn't break it) + best-ever run, with the custom flame. **30-day activity**: weekday-aligned heatmap shaded by daily completion count (routines done + tasks `doneAt`). **Routines**: every routine with flame + streak + 7-day dots. **Tasks**: done today / done this week / keep-up rate (`doneWeek / (doneWeek + overdue)`, `—` when both 0) / overdue count.
+- Ideas are **not** a top-level page — they live inside each Space (see Space detail). Capture an idea via the Spaces `[+]` (Task/Idea toggle) or a Space's own `[+]`.
 
 ### Capture (context-aware `[+]`)
-- Today `+` → new **task** (no type toggle); Space detail `+` → task/idea into that space; Ideas `+` → new **idea**. Routines are created from the Today ⊕.
+- Today `+` → new **task** (no type toggle); Space detail `+` → task/idea into that space; Spaces `+` → task/idea (Task/Idea toggle). Routines are created from the Today ⊕.
 - Bottom sheet, text auto-focused. Controls: `Task | Idea` toggle **only when the page doesn't fix the type** (persists last freely-chosen type), space chip (defaults last-used, falls back Inbox), due-date field when Task. New tasks default `dueDate = today`. Empty text = disabled save. State (last type, last space) in `localStorage`.
 
 ### Routine editor

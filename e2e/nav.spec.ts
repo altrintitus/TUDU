@@ -16,7 +16,7 @@ test('three pages present; dots select', async ({ page }) => {
   // all three panes are mounted side-by-side in the scroll track
   await expect(page.getByRole('heading', { name: 'Today' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Spaces' })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Ideas' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Progress' })).toBeVisible();
   // the Spaces pane carries the New space affordance
   await page.getByRole('tab', { name: 'Spaces' }).click();
   await expect(page.getByRole('button', { name: /new space/i })).toBeVisible();

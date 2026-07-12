@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { db, toggleTask, deleteTask, setRoutineDone, deleteRoutine, type Task } from '../db';
+import { db, toggleTask, deleteTask, setRoutineDone, deleteRoutine, type Task, type Routine } from '../db';
 import { todayStr, taskGroup, type TaskGroupKey } from '../logic/dates';
 import { isScheduledOn } from '../logic/routines';
 import { TaskListRow } from '../components/TaskListRow';
@@ -24,6 +24,7 @@ export function TodayScreen() {
   const [pending, setPending] = useState<{ label: string; run(): void } | null>(null);
   const [capturing, setCapturing] = useState(false);
   const [addingRoutine, setAddingRoutine] = useState(false);
+  const [editingRoutine, setEditingRoutine] = useState<Routine | null>(null);
 
   const data = useLiveQuery(async () => {
     const [tasks, lists] = await Promise.all([db.tasks.toArray(), db.lists.toArray()]);
@@ -78,6 +79,7 @@ export function TodayScreen() {
               today={today}
               checked={checked}
               onToggle={() => void setRoutineDone(r.id, today, !checked)}
+              onEdit={() => setEditingRoutine(r)}
               onDelete={() => setPending({ label: r.title, run: () => void deleteRoutine(r.id) })}
             />
           );
@@ -118,13 +120,16 @@ export function TodayScreen() {
       <Fab onPress={() => setCapturing(true)} />
       {capturing && <CaptureSheet open fixedType="task" onClose={() => setCapturing(false)} />}
       {addingRoutine && <RoutineEditorSheet open onClose={() => setAddingRoutine(false)} />}
+      {editingRoutine && (
+        <RoutineEditorSheet key={editingRoutine.id} open routine={editingRoutine} onClose={() => setEditingRoutine(null)} />
+      )}
 
       {editing && (
         <TaskEditSheet key={editing.id} open task={editing} onClose={() => setEditing(null)} />
       )}
 
       {pending && (
-        <Sheet open onClose={() => setPending(null)} title="Delete">
+        <Sheet open onClose={() => setPending(null)}>
           <p className="confirm-text">Delete “{pending.label}”?</p>
           <div className="sheet-actions">
             <button className="btn-danger" onClick={() => { pending.run(); setPending(null); }}>

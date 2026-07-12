@@ -505,7 +505,14 @@ input[type='checkbox']:checked::after { transform: scale(1); }
   min-height: var(--tap-target);
 }
 .task-title { flex: 1; font-weight: 500; }
-.task-row.done .task-title { color: var(--muted); text-decoration: line-through; }
+.task-row.done .task-title, .routine-row.done .routine-title { color: var(--muted); }
+.task-title, .routine-title { position: relative; }
+.task-row.done .task-title::after, .routine-row.done .routine-title::after {
+  content: ''; position: absolute; left: 0; top: 52%; width: 100%; height: 1.5px;
+  background: currentColor; transform: scaleX(0); transform-origin: left;
+  animation: strike 0.26s var(--ease) forwards;
+}
+@keyframes strike { to { transform: scaleX(1); } }
 .task-due {
   font-size: 12px;
   font-weight: 600;
@@ -539,11 +546,13 @@ input[type='checkbox']:checked::after { transform: scale(1); }
   border-radius: var(--radius); box-shadow: var(--card-shadow);
   padding: var(--space-3) var(--space-4); min-height: var(--tap-target);
 }
-.routine-main { flex: 1; }
+.routine-main { flex: 1; min-width: 0; text-align: left; background: none; border: none; padding: 0; cursor: pointer; }
 .routine-top { display: flex; align-items: center; justify-content: space-between; }
 .routine-title { font-weight: 500; }
 .routine-streak { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .routine-streak.zero { color: var(--faint); }
+.flame { color: var(--flame); }
+.flame-dim { opacity: 0.5; }
 .routine-dots { display: flex; gap: 5px; margin-top: 6px; }
 .rdot { width: 7px; height: 7px; border-radius: 50%; }
 .rdot.done { background: var(--accent); }
@@ -804,4 +813,5 @@ input[type='checkbox']:checked::after { transform: scale(1); }
 @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) {
   .today-row, .sheet-panel, .sheet-backdrop, .toast { animation: none; }
+  .task-row.done .task-title::after, .routine-row.done .routine-title::after { animation: none; transform: scaleX(1); }
 }

@@ -4,12 +4,13 @@ import { useLongPress } from '../hooks/useLongPress';
 import { streak, last7 } from '../logic/routines';
 import { Flame } from './icons';
 
-export function RoutineRow({ routine, doneDates, today, checked, onToggle, onDelete }: {
+export function RoutineRow({ routine, doneDates, today, checked, onToggle, onEdit, onDelete }: {
   routine: Routine;
   doneDates: Set<string>;
   today: string;
   checked: boolean;
   onToggle(): void;
+  onEdit(): void;
   onDelete(): void;
 }) {
   const fired = useRef(false);
@@ -17,9 +18,9 @@ export function RoutineRow({ routine, doneDates, today, checked, onToggle, onDel
   const s = streak(routine.days, doneDates, today);
   const dots = last7(routine.days, doneDates, today);
   return (
-    <div className="routine-row" {...longPress} onPointerDownCapture={() => { fired.current = false; }}>
+    <div className={checked ? 'routine-row done' : 'routine-row'} {...longPress} onPointerDownCapture={() => { fired.current = false; }}>
       <input type="checkbox" aria-label={routine.title} checked={checked} onChange={onToggle} />
-      <div className="routine-main">
+      <button type="button" className="routine-main" onClick={() => { if (!fired.current) onEdit(); }}>
         <div className="routine-top">
           <span className="routine-title">{routine.title}</span>
           <span className={s > 0 ? 'routine-streak' : 'routine-streak zero'}>
@@ -29,7 +30,7 @@ export function RoutineRow({ routine, doneDates, today, checked, onToggle, onDel
         <div className="routine-dots" aria-hidden="true">
           {dots.map((d, i) => <span key={i} className={`rdot ${d}`} />)}
         </div>
-      </div>
+      </button>
     </div>
   );
 }

@@ -1,8 +1,8 @@
-import { useRef, useState } from 'react';
+import { useRef, useSyncExternalStore } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db, setWater } from '../db';
 import { todayStr } from '../logic/dates';
-import { loadGoal, saveGoal, formatL, fillFraction, snap, GOAL_PRESETS, STEP } from '../logic/water';
+import { loadGoal, formatL, fillFraction, snap, GOAL_PRESETS, STEP, setWaterGoal, subscribeWaterGoal } from '../logic/water';
 import { Droplet } from './icons';
 
 // Draggable daily water meter. Interactive on Today; pass readOnly for Progress.
@@ -10,7 +10,7 @@ export function WaterMeter({ readOnly = false }: { readOnly?: boolean }) {
   const today = todayStr();
   const row = useLiveQuery(() => db.water.get(today), [today]);
   const ml = row?.ml ?? 0;
-  const [goal, setGoal] = useState(() => loadGoal());
+  const goal = useSyncExternalStore(subscribeWaterGoal, loadGoal); // shared across panes
   const trackRef = useRef<HTMLDivElement>(null);
   const dragging = useRef(false);
 
@@ -38,7 +38,7 @@ export function WaterMeter({ readOnly = false }: { readOnly?: boolean }) {
   };
   const onKeyDown = (e: React.KeyboardEvent) => {
     if (readOnly) return;
-    if (e.key === 'ArrowRight' || e.key === 'ArrowUp') { e.preventDefault(); void setWater(today, snap(ml + STEP)); }
+    if (e.key === 'ArrowRight' || e.key === 'ArrowUp') { e.preventDefault(); void setWater(today, Math.min(goal, snap(ml + STEP))); }
     if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') { e.preventDefault(); void setWater(today, snap(ml - STEP)); }
   };
 
@@ -72,7 +72,7 @@ export function WaterMeter({ readOnly = false }: { readOnly?: boolean }) {
               type="button"
               className={g === goal ? 'water-goal on' : 'water-goal'}
               aria-pressed={g === goal}
-              onClick={() => { setGoal(g); saveGoal(g); }}
+              onClick={() => setWaterGoal(g)}
             >
               {formatL(g)}
             </button>

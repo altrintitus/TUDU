@@ -15,6 +15,18 @@ export function saveGoal(ml: number, storage: Storage = localStorage): void {
   storage.setItem(GOAL_KEY, String(ml));
 }
 
+// Reactive goal: both the Today and Progress meters (mounted at once in the
+// pager) subscribe, so changing the goal on one pane updates the other.
+const goalListeners = new Set<() => void>();
+export function setWaterGoal(ml: number, storage: Storage = localStorage): void {
+  saveGoal(ml, storage);
+  goalListeners.forEach((l) => l());
+}
+export function subscribeWaterGoal(cb: () => void): () => void {
+  goalListeners.add(cb);
+  return () => { goalListeners.delete(cb); };
+}
+
 export function formatL(ml: number): string {
   return `${(ml / 1000).toFixed(1)} L`;
 }

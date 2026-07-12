@@ -13,6 +13,13 @@ export function todayStr(now: Date = new Date()): string {
   return `${y}-${m}-${d}`;
 }
 
+// calendar-day arithmetic on a local YYYY-MM-DD string (no instant math)
+export function addDays(date: string, n: number): string {
+  const dt = new Date(`${date}T00:00:00`);
+  dt.setDate(dt.getDate() + n);
+  return todayStr(dt);
+}
+
 export function isDueOrOverdue(t: TaskLike, today: string): boolean {
   return !t.done && !!t.dueDate && t.dueDate <= today;
 }

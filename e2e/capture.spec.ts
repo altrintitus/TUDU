@@ -53,6 +53,19 @@ test('capture an idea into a chosen space; sheet remembers it', async ({ page })
   await expect(page.getByRole('button', { name: 'Space', exact: true })).toContainText('Work');
 });
 
+test('the None schedule option creates a task with no due date', async ({ page }) => {
+  await page.getByRole('button', { name: /capture/i }).click();
+  await page.getByRole('textbox', { name: 'Capture text' }).fill('someday task');
+  await page.getByRole('button', { name: 'Schedule', exact: true }).click();
+  await page.getByRole('button', { name: 'None', exact: true }).click();
+  await page.getByRole('button', { name: /save/i }).click();
+  // a no-date task lands under the "No date" group on Today (not "Today")
+  await page.getByRole('tab', { name: 'Today' }).click();
+  const today = page.locator('.today-screen');
+  await expect(today.getByRole('heading', { name: 'No date' })).toBeVisible();
+  await expect(today.getByText('someday task')).toBeVisible();
+});
+
 test('save disabled on empty text; dismiss writes nothing', async ({ page }) => {
   await page.getByRole('button', { name: /capture/i }).click();
   await expect(page.getByRole('button', { name: /save/i })).toBeDisabled();

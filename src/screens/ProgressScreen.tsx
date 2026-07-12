@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db, type Routine } from '../db';
 import { todayStr } from '../logic/dates';
 import { streak, last7 } from '../logic/routines';
 import { activityByDay, overallStreak, activityWindow, heatLevel, taskStats, totalCompletions, weekTrend } from '../logic/stats';
-import { goalMetDays, loadGoal } from '../logic/water';
+import { goalMetDays, loadGoal, subscribeWaterGoal } from '../logic/water';
 import { navigate } from '../hooks/useHashRoute';
 import { Flame, Gear } from '../components/icons';
 import { WaterMeter } from '../components/WaterMeter';
@@ -13,6 +13,7 @@ import { RoutineEditorSheet } from '../components/RoutineEditorSheet';
 export function ProgressScreen() {
   const today = todayStr();
   const [editingRoutine, setEditingRoutine] = useState<Routine | null>(null);
+  const waterGoal = useSyncExternalStore(subscribeWaterGoal, loadGoal);
   const data = useLiveQuery(async () => {
     const [tasks, routines, routineDone, water] = await Promise.all([
       db.tasks.toArray(),
@@ -43,7 +44,7 @@ export function ProgressScreen() {
   const { current, best } = overallStreak(activity, today);
   const window30 = activityWindow(activity, today, 30);
   const ts = taskStats(data.tasks, today);
-  const waterMet = goalMetDays(data.water, loadGoal(), today, 30);
+  const waterMet = goalMetDays(data.water, waterGoal, today, 30);
   const total = totalCompletions(activity);
   const { thisWeek, lastWeek } = weekTrend(activity, today);
   const trend = thisWeek - lastWeek;

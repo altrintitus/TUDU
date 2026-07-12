@@ -120,10 +120,11 @@ export async function deleteList(id: string): Promise<void> {
   });
 }
 
-export async function createTask(listId: string, title: string, dueDate?: string): Promise<Task> {
+export async function createTask(listId: string, title: string, dueDate?: string | null): Promise<Task> {
   const task: Task = {
     id: crypto.randomUUID(), listId, title, done: false,
-    dueDate: dueDate ?? todayStr(), // default to today so it lands on the Today page
+    // undefined → default to today (lands on Today); null → explicitly no date
+    dueDate: dueDate === null ? undefined : (dueDate ?? todayStr()),
     createdAt: Date.now()
   };
   await db.tasks.add(task);

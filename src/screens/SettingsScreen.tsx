@@ -8,6 +8,7 @@ import { toast } from '../components/Toast';
 import { Sheet } from '../components/Sheet';
 
 const REPO_URL = 'https://github.com/altrintitus/TUDU';
+const plural = (n: number, one: string) => `${n} ${n === 1 ? one : one + 's'}`;
 
 export function SettingsScreen() {
   const fileRef = useRef<HTMLInputElement>(null);
@@ -20,9 +21,10 @@ export function SettingsScreen() {
   }, []);
 
   const counts = useLiveQuery(async () => ({
-    lists: await db.lists.count(),
+    spaces: await db.lists.count(),
     tasks: await db.tasks.count(),
-    ideas: await db.ideas.count()
+    ideas: await db.ideas.count(),
+    routines: await db.routines.count()
   }));
 
   const doExport = async () => {
@@ -114,7 +116,9 @@ export function SettingsScreen() {
         <div className="settings-row">
           <span>Data</span>
           <span className="settings-value">
-            {counts ? `${counts.lists} lists · ${counts.tasks} tasks · ${counts.ideas} ideas` : '—'}
+            {counts
+              ? `${plural(counts.spaces, 'space')} · ${plural(counts.tasks, 'task')} · ${plural(counts.ideas, 'idea')} · ${plural(counts.routines, 'routine')}`
+              : '—'}
           </span>
         </div>
       </section>
@@ -134,8 +138,8 @@ export function SettingsScreen() {
       {pending && (
         <Sheet open onClose={() => setPending(null)} title="Replace all data">
           <p className="confirm-text">
-            Replace everything with {pending.lists.length} lists / {pending.tasks.length} tasks /{' '}
-            {pending.ideas.length} ideas? This can’t be undone.
+            Replace everything with {plural(pending.lists.length, 'space')} / {plural(pending.tasks.length, 'task')} /{' '}
+            {plural(pending.ideas.length, 'idea')} / {plural(pending.routines?.length ?? 0, 'routine')}? This can’t be undone.
           </p>
           <div className="sheet-actions">
             <button className="btn-danger" onClick={confirmImport}>Replace everything</button>

@@ -121,10 +121,11 @@ export async function toggleTask(id: string): Promise<void> {
   await db.tasks.update(id, t.done ? { done: false, doneAt: undefined } : { done: true, doneAt: Date.now() });
 }
 
-export async function updateTask(id: string, patch: { title?: string; dueDate?: string | null }): Promise<void> {
+export async function updateTask(id: string, patch: { title?: string; dueDate?: string | null; listId?: string }): Promise<void> {
   const upd: Partial<Task> = {};
   if (patch.title !== undefined) upd.title = patch.title;
   if (patch.dueDate !== undefined) upd.dueDate = patch.dueDate ?? undefined;
+  if (patch.listId !== undefined) upd.listId = patch.listId;
   await db.tasks.update(id, upd);
 }
 

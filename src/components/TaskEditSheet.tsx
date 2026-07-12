@@ -1,14 +1,17 @@
 import { useState } from 'react';
+import { useLiveQuery } from 'dexie-react-hooks';
 import { Sheet } from './Sheet';
-import { updateTask, deleteTask, type Task } from '../db';
+import { db, updateTask, deleteTask, type Task } from '../db';
 
 export function TaskEditSheet({ open, task, onClose }: {
   open: boolean;
   task: Task | null;
   onClose(): void;
 }) {
+  const lists = useLiveQuery(() => db.lists.orderBy('sortOrder').toArray(), []);
   const [title, setTitle] = useState(task?.title ?? '');
   const [due, setDue] = useState(task?.dueDate ?? '');
+  const [listId, setListId] = useState(task?.listId ?? '');
   const [confirming, setConfirming] = useState(false);
   // readonly until focus → suppresses iOS contact AutoFill on this text field
   const [titleRO, setTitleRO] = useState(true);
@@ -18,7 +21,7 @@ export function TaskEditSheet({ open, task, onClose }: {
   const save = async () => {
     const t = title.trim();
     if (!t) return;
-    await updateTask(task.id, { title: t, dueDate: due || null });
+    await updateTask(task.id, { title: t, dueDate: due || null, listId });
     onClose();
   };
 
@@ -32,6 +35,12 @@ export function TaskEditSheet({ open, task, onClose }: {
       <label className="field">
         <span className="field-label">Title</span>
         <input aria-label="Title" value={title} readOnly={titleRO} onFocus={() => setTitleRO(false)} autoComplete="off" autoCorrect="off" onChange={(e) => setTitle(e.target.value)} />
+      </label>
+      <label className="field">
+        <span className="field-label">Space</span>
+        <select aria-label="Space" value={listId} onChange={(e) => setListId(e.target.value)}>
+          {lists?.map((l) => <option key={l.id} value={l.id}>{l.name}</option>)}
+        </select>
       </label>
       <label className="field">
         <span className="field-label">Due</span>

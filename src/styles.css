@@ -332,15 +332,21 @@ input[type='checkbox']:checked::after { transform: scale(1); }
 .capture-input {
   width: 100%;
   min-height: 56px;
-  resize: none;
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   padding: var(--space-3) var(--space-4);
   line-height: 1.4;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
   transition: border-color 0.15s;
 }
 .capture-input:focus { outline: none; border-color: var(--accent); }
+.capture-input.is-empty::before {
+  content: attr(data-placeholder);
+  color: var(--faint);
+  pointer-events: none;
+}
 .capture-controls {
   display: flex;
   flex-wrap: wrap;
@@ -365,15 +371,33 @@ input[type='checkbox']:checked::after { transform: scale(1); }
   transition: background 0.15s, color 0.15s;
 }
 .segmented button[aria-pressed='true'] { background: var(--accent-weak); color: var(--accent); }
-.capture-list, .capture-due {
-  min-height: 44px;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 0 var(--space-3);
-  color: var(--text);
+/* custom non-focusable pickers (space + schedule) — no native form field, so
+   iOS shows no keyboard form-assistant bar while typing */
+.capture-picker { position: relative; }
+.capture-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  min-height: 48px; padding: 0 var(--space-4);
+  background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm);
+  color: var(--text); font-weight: 500; font-size: 14px;
 }
-.capture-list { flex: 1; min-width: 120px; }
+.capture-chip svg { color: var(--muted); }
+.picker-menu {
+  position: absolute; bottom: calc(100% + 6px); left: 0; z-index: 10;
+  min-width: 168px; max-height: 240px; overflow-y: auto;
+  display: flex; flex-direction: column;
+  background: var(--surface-2); border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4); padding: 4px;
+}
+.picker-menu button {
+  text-align: left; padding: var(--space-3); min-height: 40px;
+  border-radius: 8px; color: var(--text); font-size: 14px;
+}
+.picker-menu button:active { background: var(--surface-press); }
+.picker-menu button[aria-selected='true'] { color: var(--accent); font-weight: 600; }
+.picker-menu.sched input[type=date] {
+  min-height: 40px; margin-top: 4px; background: var(--bg);
+  border: 1px solid var(--border); border-radius: 8px; padding: 0 var(--space-3); color: var(--text);
+}
 .capture-actions { flex-direction: row; }
 .capture-actions .btn-ghost { flex: 0 0 auto; padding: 0 var(--space-5); }
 .capture-actions .btn-primary { flex: 1; }

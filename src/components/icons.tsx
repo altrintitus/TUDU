@@ -41,6 +41,16 @@ export function Flame({ filled = true, size = 16 }: { filled?: boolean; size?: n
   );
 }
 
+// Calendar (schedule control).
+export function Calendar({ size = 15 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <rect x="2.2" y="3.2" width="11.6" height="10.6" rx="2.2" stroke="currentColor" strokeWidth="1.3" />
+      <path d="M2.2 6.2h11.6M5.3 2v2.4M10.7 2v2.4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 // Water droplet.
 export function Droplet({ size = 14 }: { size?: number }) {
   return (

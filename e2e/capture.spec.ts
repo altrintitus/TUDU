@@ -14,20 +14,24 @@ test.beforeEach(async ({ page }) => {
   await page.getByRole('tab', { name: 'Spaces' }).click();
 });
 
-const iso = () => {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-};
-
-test('capture a task into Inbox (the default space)', async ({ page }) => {
+test('capture a task into Inbox (the only space on a fresh app)', async ({ page }) => {
   await page.getByRole('button', { name: /capture/i }).click();
-  // date input also exposes role=textbox, so target the capture field by its label
   await page.getByRole('textbox', { name: 'Capture text' }).fill('finish report');
-  await page.getByLabel(/due/i).fill(iso());
   await page.getByRole('button', { name: /save/i }).click();
-  // it lands in the Inbox space
+  // fresh app has no real spaces yet → falls back to Inbox
   await page.evaluate(() => { window.location.hash = '#/list/inbox'; });
   await expect(page.getByText('finish report')).toBeVisible();
+});
+
+test('schedule chip sets a due date via the Today quick option', async ({ page }) => {
+  await page.getByRole('button', { name: /capture/i }).click();
+  await page.getByRole('textbox', { name: 'Capture text' }).fill('call plumber');
+  await page.getByRole('button', { name: 'Schedule', exact: true }).click();
+  await page.getByRole('button', { name: 'Today', exact: true }).click();
+  // chip now reflects the chosen date
+  await expect(page.getByRole('button', { name: 'Schedule', exact: true })).toContainText('Today');
+  await page.getByRole('button', { name: /save/i }).click();
+  await expect(page.getByRole('textbox', { name: 'Capture text' })).toHaveCount(0);
 });
 
 test('capture an idea into a chosen space; sheet remembers it', async ({ page }) => {
@@ -37,14 +41,16 @@ test('capture an idea into a chosen space; sheet remembers it', async ({ page })
 
   await page.getByRole('button', { name: /capture/i }).click();
   await page.getByRole('button', { name: /idea/i }).click();
-  await page.getByLabel('Space', { exact: true }).selectOption({ label: 'Work' });
+  // custom space picker: open it and choose Work
+  await page.getByRole('button', { name: 'Space', exact: true }).click();
+  await page.getByRole('option', { name: /Work/ }).click();
   await page.getByRole('textbox', { name: 'Capture text' }).fill('agent eval harness');
   await page.getByRole('button', { name: /save/i }).click();
 
-  // reopen: defaults remembered
+  // reopen: defaults remembered (type=idea, space=Work on the chip)
   await page.getByRole('button', { name: /capture/i }).click();
   await expect(page.getByRole('button', { name: /idea/i })).toHaveAttribute('aria-pressed', 'true');
-  await expect(page.getByLabel('Space', { exact: true }).locator('option:checked')).toHaveText('Work');
+  await expect(page.getByRole('button', { name: 'Space', exact: true })).toContainText('Work');
 });
 
 test('save disabled on empty text; dismiss writes nothing', async ({ page }) => {

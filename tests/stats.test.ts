@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { activityByDay, overallStreak, activityWindow, heatLevel, taskStats } from '../src/logic/stats';
+import { activityByDay, overallStreak, activityWindow, heatLevel, taskStats, totalCompletions, weekTrend } from '../src/logic/stats';
 
 // local-noon epoch ms for a YYYY-MM-DD (avoids TZ edge at midnight)
 const ms = (d: string) => new Date(`${d}T12:00:00`).getTime();
@@ -78,5 +78,19 @@ describe('taskStats', () => {
   });
   it('keepUpRate is null when nothing done this week and nothing overdue', () => {
     expect(taskStats([{ done: false, dueDate: '2026-07-20' }], today).keepUpRate).toBeNull();
+  });
+});
+
+describe('totalCompletions / weekTrend', () => {
+  const today = '2026-07-11';
+  const a = new Map([
+    ['2026-07-11', 2], ['2026-07-08', 1], // this week [07-05..07-11]
+    ['2026-07-03', 3], ['2026-06-30', 1]  // last week [06-28..07-04]
+  ]);
+  it('total sums all counts', () => {
+    expect(totalCompletions(a)).toBe(7);
+  });
+  it('splits this vs last 7-day window', () => {
+    expect(weekTrend(a, today)).toEqual({ thisWeek: 3, lastWeek: 4 });
   });
 });

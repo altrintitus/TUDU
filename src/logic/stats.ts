@@ -75,3 +75,23 @@ export function taskStats(tasks: TaskStat[], today: string): {
   const denom = doneWeek + overdue;
   return { doneToday, doneWeek, open, overdue, keepUpRate: denom === 0 ? null : Math.round((doneWeek / denom) * 100) };
 }
+
+// all-time completion count (routines + tasks) from the activity map
+export function totalCompletions(activity: Map<string, number>): number {
+  let n = 0;
+  for (const c of activity.values()) n += c;
+  return n;
+}
+
+// completions in the trailing 7 days vs the 7 before that
+export function weekTrend(activity: Map<string, number>, today: string): { thisWeek: number; lastWeek: number } {
+  const inRange = (start: string, end: string) => {
+    let n = 0;
+    for (const [d, c] of activity) if (d >= start && d <= end) n += c;
+    return n;
+  };
+  return {
+    thisWeek: inRange(addDays(today, -6), today),
+    lastWeek: inRange(addDays(today, -13), addDays(today, -7))
+  };
+}

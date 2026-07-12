@@ -44,17 +44,6 @@ export function SpacesScreen() {
     <div className="spaces-screen">
       <header className="screen-header spaces-header">
         <h1 className="screen-title">Spaces</h1>
-        <button className="icon-btn" aria-label="settings" onClick={() => navigate({ name: 'settings' })}>
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-            <circle cx="10" cy="10" r="2.6" stroke="currentColor" strokeWidth="1.5" />
-            <path
-              d="M10 1.6v2.2M10 16.2v2.2M18.4 10h-2.2M3.8 10H1.6M15.94 4.06l-1.56 1.56M5.62 14.38l-1.56 1.56M15.94 15.94l-1.56-1.56M5.62 5.62L4.06 4.06"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-            />
-          </svg>
-        </button>
       </header>
 
       <InstallHint />

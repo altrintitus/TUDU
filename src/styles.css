@@ -760,6 +760,16 @@ input[type='checkbox']:checked::after { transform: scale(1); }
 .hcell.heat-2 { opacity: 0.6; }
 .hcell.heat-3 { opacity: 1; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.progress-empty { text-align: center; color: var(--faint); font-size: 14px; line-height: 1.5; padding: var(--space-6) var(--space-4) var(--space-8); }
+.stat-grid { display: flex; gap: var(--space-2); }
+.stat {
+  flex: 1; display: flex; flex-direction: column; gap: 2px; align-items: center;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  box-shadow: var(--card-shadow); padding: var(--space-4) var(--space-2);
+}
+.stat-num { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.stat-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); }
+.progress-routine { width: 100%; text-align: left; cursor: pointer; }
 
 /* ---- water tracker ---- */
 .today-water { margin-bottom: var(--space-6); }

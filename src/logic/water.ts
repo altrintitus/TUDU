@@ -2,7 +2,7 @@
 import { todayStr } from './dates';
 
 export const GOAL_PRESETS = [2500, 3000, 3500, 4000]; // ml → 2.5 / 3 / 3.5 / 4 L
-export const DEFAULT_GOAL = 3000;
+export const DEFAULT_GOAL = 3500;
 export const STEP = 250; // ml per drag / keyboard increment
 const GOAL_KEY = 'tudu.water.goalMl';
 

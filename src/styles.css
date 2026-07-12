@@ -802,13 +802,19 @@ input[type='checkbox']:checked::after { transform: scale(1); }
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 .water-label svg { color: #fff; }
-.water-goals { display: flex; gap: var(--space-2); }
-.water-goal {
-  flex: 1; min-height: 36px; border-radius: 999px;
-  border: 1px solid var(--border); color: var(--muted);
-  font-weight: 600; font-size: 13px; font-variant-numeric: tabular-nums;
+/* set-once goal picker (in a sheet) + the small goal-edit control in the header */
+.goal-picker { display: flex; gap: var(--space-2); }
+.goal-opt {
+  flex: 1; min-height: 44px; border-radius: 999px;
+  border: 1px solid var(--border-strong); color: var(--muted);
+  font-weight: 600; font-size: 14px; font-variant-numeric: tabular-nums;
 }
-.water-goal.on { background: var(--water); color: #fff; border-color: var(--water); }
+.goal-opt.on { background: var(--water); color: #fff; border-color: var(--water); }
+.water-goal-edit {
+  font-size: 13px; font-weight: 600; color: var(--water);
+  font-variant-numeric: tabular-nums; padding: 4px 10px; border-radius: 999px;
+}
+.water-goal-edit:active { background: var(--accent-weak); }
 
 /* long-press rows: suppress iOS text selection + Copy/Look Up callout */
 .routine-row, .task-row, .today-row, .idea-row, .list-card {

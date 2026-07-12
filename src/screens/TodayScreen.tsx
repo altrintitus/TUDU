@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db, toggleTask, deleteTask, setRoutineDone, deleteRoutine, type Task, type Routine } from '../db';
 import { todayStr, taskGroup, type TaskGroupKey } from '../logic/dates';
@@ -8,6 +8,8 @@ import { TaskEditSheet } from '../components/TaskEditSheet';
 import { RoutineRow } from '../components/RoutineRow';
 import { RoutineEditorSheet } from '../components/RoutineEditorSheet';
 import { WaterMeter } from '../components/WaterMeter';
+import { WaterGoalSheet } from '../components/WaterGoalSheet';
+import { loadGoal, subscribeWaterGoal, formatL } from '../logic/water';
 import { CaptureSheet } from '../components/CaptureSheet';
 import { Fab } from '../components/Fab';
 import { Sheet } from '../components/Sheet';
@@ -25,6 +27,8 @@ export function TodayScreen() {
   const [capturing, setCapturing] = useState(false);
   const [addingRoutine, setAddingRoutine] = useState(false);
   const [editingRoutine, setEditingRoutine] = useState<Routine | null>(null);
+  const [editingWaterGoal, setEditingWaterGoal] = useState(false);
+  const waterGoal = useSyncExternalStore(subscribeWaterGoal, loadGoal);
 
   const data = useLiveQuery(async () => {
     const [tasks, lists] = await Promise.all([db.tasks.toArray(), db.lists.toArray()]);
@@ -90,7 +94,12 @@ export function TodayScreen() {
       </div>
 
       <div className="today-water">
-        <h2 className="section-label">Water</h2>
+        <div className="routines-header">
+          <h2 className="section-label">Water</h2>
+          <button className="water-goal-edit" aria-label="set water goal" onClick={() => setEditingWaterGoal(true)}>
+            {formatL(waterGoal)}
+          </button>
+        </div>
         <WaterMeter />
       </div>
 
@@ -123,6 +132,7 @@ export function TodayScreen() {
       {editingRoutine && (
         <RoutineEditorSheet key={editingRoutine.id} open routine={editingRoutine} onClose={() => setEditingRoutine(null)} />
       )}
+      {editingWaterGoal && <WaterGoalSheet open onClose={() => setEditingWaterGoal(false)} />}
 
       {editing && (
         <TaskEditSheet key={editing.id} open task={editing} onClose={() => setEditing(null)} />

@@ -2,7 +2,7 @@ import { useRef, useSyncExternalStore } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db, setWater } from '../db';
 import { todayStr } from '../logic/dates';
-import { loadGoal, formatL, fillFraction, snap, GOAL_PRESETS, STEP, setWaterGoal, subscribeWaterGoal } from '../logic/water';
+import { loadGoal, formatL, fillFraction, snap, STEP, subscribeWaterGoal } from '../logic/water';
 import { Droplet } from './icons';
 
 // Draggable daily water meter. Interactive on Today; pass readOnly for Progress.
@@ -64,21 +64,6 @@ export function WaterMeter({ readOnly = false }: { readOnly?: boolean }) {
         <div className="water-fill" style={{ width: `${pct}%` }} />
         <span className="water-label"><Droplet /> {formatL(ml)} / {formatL(goal)}</span>
       </div>
-      {!readOnly && (
-        <div className="water-goals" role="group" aria-label="Daily goal">
-          {GOAL_PRESETS.map((g) => (
-            <button
-              key={g}
-              type="button"
-              className={g === goal ? 'water-goal on' : 'water-goal'}
-              aria-pressed={g === goal}
-              onClick={() => setWaterGoal(g)}
-            >
-              {formatL(g)}
-            </button>
-          ))}
-        </div>
-      )}
     </div>
   );
 }

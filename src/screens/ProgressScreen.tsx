@@ -3,15 +3,18 @@ import { db } from '../db';
 import { todayStr } from '../logic/dates';
 import { streak, last7 } from '../logic/routines';
 import { activityByDay, overallStreak, activityWindow, heatLevel, taskStats } from '../logic/stats';
+import { goalMetDays, loadGoal } from '../logic/water';
 import { Flame } from '../components/icons';
+import { WaterMeter } from '../components/WaterMeter';
 
 export function ProgressScreen() {
   const today = todayStr();
   const data = useLiveQuery(async () => {
-    const [tasks, routines, routineDone] = await Promise.all([
+    const [tasks, routines, routineDone, water] = await Promise.all([
       db.tasks.toArray(),
       db.routines.orderBy('sortOrder').toArray(),
-      db.routineDone.toArray()
+      db.routineDone.toArray(),
+      db.water.toArray()
     ]);
     const byRoutine = new Map<string, Set<string>>();
     for (const r of routineDone) {
@@ -19,7 +22,7 @@ export function ProgressScreen() {
       if (!s) { s = new Set(); byRoutine.set(r.routineId, s); }
       s.add(r.date);
     }
-    return { tasks, routines, routineDone, byRoutine };
+    return { tasks, routines, routineDone, byRoutine, water };
   });
 
   const header = <header className="screen-header"><h1 className="screen-title">Progress</h1></header>;
@@ -29,6 +32,7 @@ export function ProgressScreen() {
   const { current, best } = overallStreak(activity, today);
   const window30 = activityWindow(activity, today, 30);
   const ts = taskStats(data.tasks, today);
+  const waterMet = goalMetDays(data.water, loadGoal(), today, 30);
   const noHistory = current === 0 && best === 0;
 
   // weekday-align the grid: leading blanks before the first cell's weekday (Sun=0)
@@ -89,6 +93,12 @@ export function ProgressScreen() {
         <div className="settings-row"><span>Done this week</span><span className="settings-value">{ts.doneWeek}</span></div>
         <div className="settings-row"><span>Kept up</span><span className="settings-value">{ts.keepUpRate === null ? '—' : `${ts.keepUpRate}%`}</span></div>
         <div className="settings-row"><span>Overdue</span><span className="settings-value">{ts.overdue}</span></div>
+      </section>
+
+      <section className="progress-section">
+        <h2 className="section-label">Water</h2>
+        <WaterMeter readOnly />
+        <div className="settings-row"><span>Goal met (30d)</span><span className="settings-value">{waterMet}</span></div>
       </section>
     </div>
   );

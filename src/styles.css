@@ -25,6 +25,8 @@
   --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
   --danger: #ff7a7a;
   --danger-weak: rgba(255, 122, 122, 0.14);
+  --flame: #ff6a1a;   /* ember — the one intentional accent (streak fire) */
+  --water: #3ba7ff;   /* water tracker */
   --radius: 14px;
   --radius-sm: 10px;
   --radius-lg: 22px;
@@ -54,6 +56,8 @@
     --card-shadow: 0 2px 20px rgba(0, 0, 0, 0.07), 0 0 0 1px rgba(0, 0, 0, 0.04);
     --danger: #e5484d;
     --danger-weak: rgba(229, 72, 77, 0.1);
+    --flame: #f2590c;   /* slightly deeper ember for contrast on paper */
+    --water: #1f8fe6;   /* deeper water blue on paper */
   }
 }
 
@@ -721,6 +725,45 @@ input[type='checkbox']:checked::after { transform: scale(1); }
 .hcell.heat-2 { opacity: 0.6; }
 .hcell.heat-3 { opacity: 1; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* ---- water tracker ---- */
+.today-water { margin-bottom: var(--space-6); }
+.water { display: flex; flex-direction: column; gap: var(--space-3); }
+.water-track {
+  position: relative;
+  height: 52px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+  touch-action: none; /* pointer-drag sets value without scrolling the pane */
+  cursor: pointer;
+}
+.water-track.readonly { cursor: default; }
+.water-track:focus-visible { outline: none; border-color: var(--water); }
+.water-fill {
+  position: absolute; top: 0; bottom: 0; left: 0;
+  background: var(--water);
+  opacity: 0.85;
+  transition: width 0.18s var(--ease);
+}
+.water-label {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  font-size: 14px; font-weight: 600; color: var(--text);
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+.water-label svg { color: #fff; }
+.water-goals { display: flex; gap: var(--space-2); }
+.water-goal {
+  flex: 1; min-height: 36px; border-radius: 999px;
+  border: 1px solid var(--border); color: var(--muted);
+  font-weight: 600; font-size: 13px; font-variant-numeric: tabular-nums;
+}
+.water-goal.on { background: var(--water); color: #fff; border-color: var(--water); }
 
 @keyframes toast-in { from { opacity: 0; transform: translate(-50%, 8px); } to { opacity: 1; transform: translate(-50%, 0); } }
 @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }

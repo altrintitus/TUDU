@@ -7,6 +7,7 @@ import { TaskListRow } from '../components/TaskListRow';
 import { TaskEditSheet } from '../components/TaskEditSheet';
 import { RoutineRow } from '../components/RoutineRow';
 import { RoutineEditorSheet } from '../components/RoutineEditorSheet';
+import { WaterMeter } from '../components/WaterMeter';
 import { CaptureSheet } from '../components/CaptureSheet';
 import { Fab } from '../components/Fab';
 import { Sheet } from '../components/Sheet';
@@ -84,6 +85,11 @@ export function TodayScreen() {
         {rdata && todaysRoutines.length === 0 && (
           <p className="routines-empty">No routines today — tap ＋ to add one</p>
         )}
+      </div>
+
+      <div className="today-water">
+        <h2 className="section-label">Water</h2>
+        <WaterMeter />
       </div>
 
       <div className="rows">

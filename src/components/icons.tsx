@@ -40,3 +40,12 @@ export function Flame({ filled = true, size = 16 }: { filled?: boolean; size?: n
     </svg>
   );
 }
+
+// Water droplet.
+export function Droplet({ size = 14 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+      <path d="M8 1.6c2.4 2.9 4.4 5.1 4.4 7.5a4.4 4.4 0 0 1-8.8 0c0-2.4 2-4.6 4.4-7.5z" />
+    </svg>
+  );
+}

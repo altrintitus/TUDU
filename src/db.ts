@@ -41,6 +41,11 @@ export interface RoutineDone {
   routineId: string;
   date: string; // 'YYYY-MM-DD' local
 }
+// Daily water intake in millilitres for one local date. id = date.
+export interface Water {
+  date: string; // 'YYYY-MM-DD' local
+  ml: number;
+}
 
 class TuduDB extends Dexie {
   lists!: Table<List, string>;
@@ -48,6 +53,7 @@ class TuduDB extends Dexie {
   ideas!: Table<Idea, string>;
   routines!: Table<Routine, string>;
   routineDone!: Table<RoutineDone, string>;
+  water!: Table<Water, string>;
   constructor() {
     super('tudu');
     this.version(1).stores({
@@ -62,6 +68,15 @@ class TuduDB extends Dexie {
       ideas: 'id, listId, updatedAt',
       routines: 'id, sortOrder',
       routineDone: 'id, routineId, date'
+    });
+    // v3 adds the water tracker (additive)
+    this.version(3).stores({
+      lists: 'id, sortOrder',
+      tasks: 'id, listId, dueDate',
+      ideas: 'id, listId, updatedAt',
+      routines: 'id, sortOrder',
+      routineDone: 'id, routineId, date',
+      water: 'date'
     });
   }
 }
@@ -176,4 +191,18 @@ export async function setRoutineDone(routineId: string, date: string, done: bool
 export async function getRoutineDoneDates(routineId: string): Promise<string[]> {
   const rows = await db.routineDone.where('routineId').equals(routineId).toArray();
   return rows.map((r) => r.date).sort();
+}
+
+export async function updateRoutine(id: string, patch: { title?: string; days?: number[] }): Promise<void> {
+  const upd: Partial<Routine> = {};
+  if (patch.title !== undefined) upd.title = patch.title;
+  if (patch.days !== undefined) upd.days = patch.days;
+  await db.routines.update(id, upd);
+}
+
+// ---- water ----
+
+export async function setWater(date: string, ml: number): Promise<void> {
+  if (ml <= 0) { await db.water.delete(date); return; }
+  await db.water.put({ date, ml });
 }

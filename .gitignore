@@ -10,3 +10,4 @@ design/
 .claude/settings.local.json
 .claude/hooks/.state/
 dev-dist/
+graphify-out/

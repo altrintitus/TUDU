@@ -504,7 +504,16 @@ input[type='checkbox']:checked::after { transform: scale(1); }
   text-align: left;
   min-height: var(--tap-target);
 }
-.task-title { flex: 1; font-weight: 500; }
+.task-title {
+  flex: 1;
+  min-width: 0;
+  font-weight: 500;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
 .task-row.done .task-title, .routine-row.done .routine-title { color: var(--muted); }
 .task-title, .routine-title { position: relative; }
 .task-row.done .task-title::after, .routine-row.done .routine-title::after {

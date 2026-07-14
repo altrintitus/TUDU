@@ -1,32 +1,32 @@
 # TUDU
 
-Capture **tasks** and **ideas** into **lists**. A tiny local-first PWA — no account, no server, your data never leaves your device.
+Capture **tasks** and **notes**, build **routines**, track your day. A tiny local-first PWA — no account, no server, your data never leaves your phone.
 
-<p align="center"><img src="docs/screenshot.png" alt="TUDU home screen" width="320"></p>
+<p align="center">
+  <img src="docs/today.png" alt="Today screen — routines, water meter, tasks" width="250">
+  &nbsp;&nbsp;
+  <img src="docs/progress.png" alt="Progress screen — streak, stats, activity heatmap" width="250">
+</p>
 
-**Use it:** https://altrintitus.github.io/TUDU/
+**Try it → https://altrintitus.github.io/TUDU/**
 
 ## Install on iPhone
 
-1. Open the link above in **Safari**.
-2. Tap **Share** → **Add to Home Screen**.
-3. Open TUDU from your home screen — it runs full-screen and works **offline** from then on.
+1. Open the link in **Safari**.
+2. **Share → Add to Home Screen**.
+3. Launch it from your home screen — full-screen, and works **offline** from then on.
 
-*(Android/desktop: Chrome offers "Install app" in the address bar.)*
+*(Android/desktop: Chrome shows "Install app" in the address bar.)*
 
-## What it does
+## Three swipeable pages
 
-Three swipeable pages — **Today · Spaces · Ideas** (minimal, lands on Today):
+- **Today** — check off your **routines** (each with a streak counter + 7-day history), drag the **water meter** toward your daily goal, and clear tasks grouped Overdue / Today / Upcoming.
+- **Spaces** — organise **tasks** (checkbox + due date) and **notes** (free-form text) into your own spaces.
+- **Progress** — current streak, a 30-day activity heatmap, and consistency stats across everything you do.
 
-- **Today** — your **routines** (recurring habits with a 🔥 streak + 7-day history) plus every open task across spaces, grouped Overdue / Today / Upcoming.
-- **Routines** keep you consistent: pick the weekdays (default Daily), check them off, watch the streak grow.
-- **Spaces** hold both **tasks** (checkbox + due date, defaulting to today) and **ideas** (free-form notes; first line = title).
-- **Ideas** page aggregates every idea across spaces, each tagged with its space.
-- ~3-second context-aware capture; full-screen autosaving idea editor.
-- JSON **export / import** backup (Settings) — replace-all with confirm.
-- Offline-first, installable; warm monochrome design, light + dark follow your system.
+Plus ~3-second capture from the **＋** button, JSON export/import backup, and a warm light/dark theme that follows your system.
 
-## What it deliberately doesn't do
+## Not included (by design)
 
 Notifications, sync, accounts, tags, repeats, subtasks, search — see [`SPEC.md`](SPEC.md) for the closed v1 scope.
 
@@ -34,15 +34,15 @@ Notifications, sync, accounts, tags, repeats, subtasks, search — see [`SPEC.md
 
 ```bash
 npm install
-npm run dev        # dev server
-npm run verify     # typecheck + lint + unit (vitest) + e2e (playwright)
+npm run dev       # dev server
+npm run verify    # typecheck · lint · vitest · playwright
 ```
 
-**Stack:** Vite · React · TypeScript · Dexie (IndexedDB) · vite-plugin-pwa · hash routing. Deployed to GitHub Pages by [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) on every push to `main`.
+**Stack:** Vite · React · TypeScript · Dexie (IndexedDB) · vite-plugin-pwa · hash routing. Auto-deployed to GitHub Pages on every push to `main`.
 
 ## Privacy
 
-Everything is stored in your browser's IndexedDB on your device. No servers, no accounts, no telemetry. Back up any time via **Settings → Export**.
+Everything lives in your browser's IndexedDB, on your device. No servers, no accounts, no telemetry. Back up anytime via **Settings → Export**.
 
 ## License
 

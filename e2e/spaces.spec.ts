@@ -23,24 +23,26 @@ test('create, rename, delete a space', async ({ page }) => {
   await page.getByRole('button', { name: /new space/i }).click();
   await page.getByRole('textbox', { name: /name/i }).fill('Work');
   await page.getByRole('button', { name: /save/i }).click();
-  await expect(page.getByText('Work')).toBeVisible();
+  // scope to the card name: the sheet's contenteditable Name field would also
+  // match a bare getByText while it's mounted.
+  await expect(page.locator('.list-card-name', { hasText: 'Work' })).toBeVisible();
 
   await page.getByRole('button', { name: /edit work/i }).click();
   await page.getByRole('textbox', { name: /name/i }).fill('Deriv');
   await page.getByRole('button', { name: /save/i }).click();
-  await expect(page.getByText('Deriv')).toBeVisible();
-  await expect(page.getByText('Work')).toHaveCount(0);
+  await expect(page.locator('.list-card-name', { hasText: 'Deriv' })).toBeVisible();
+  await expect(page.locator('.list-card-name', { hasText: 'Work' })).toHaveCount(0);
 
   await page.getByRole('button', { name: /edit deriv/i }).click();
   await page.getByRole('button', { name: /^delete/i }).click();
   await page.getByRole('button', { name: /confirm|yes/i }).click();
-  await expect(page.getByText('Deriv')).toHaveCount(0);
+  await expect(page.locator('.list-card-name', { hasText: 'Deriv' })).toHaveCount(0);
 });
 
 test('inbox stays hidden from Spaces after adding a space', async ({ page }) => {
   await page.getByRole('button', { name: /new space/i }).click();
   await page.getByRole('textbox', { name: /name/i }).fill('Work');
   await page.getByRole('button', { name: /save/i }).click();
-  await expect(page.getByText('Work')).toBeVisible();
+  await expect(page.locator('.list-card-name', { hasText: 'Work' })).toBeVisible();
   await expect(page.getByText('Inbox')).toHaveCount(0);
 });

@@ -40,7 +40,7 @@ test('capture an idea into a chosen space; sheet remembers it', async ({ page })
   await page.getByRole('button', { name: /save/i }).click();
 
   await page.getByRole('button', { name: /capture/i }).click();
-  await page.getByRole('button', { name: /idea/i }).click();
+  await page.getByRole('button', { name: /note/i }).click();
   // custom space picker: open it and choose Work
   await page.getByRole('button', { name: 'Space', exact: true }).click();
   await page.getByRole('option', { name: /Work/ }).click();
@@ -49,7 +49,7 @@ test('capture an idea into a chosen space; sheet remembers it', async ({ page })
 
   // reopen: defaults remembered (type=idea, space=Work on the chip)
   await page.getByRole('button', { name: /capture/i }).click();
-  await expect(page.getByRole('button', { name: /idea/i })).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.getByRole('button', { name: /note/i })).toHaveAttribute('aria-pressed', 'true');
   await expect(page.getByRole('button', { name: 'Space', exact: true })).toContainText('Work');
 });
 

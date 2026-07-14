@@ -20,7 +20,9 @@ test('create a routine → shows on Today → check → streak 1', async ({ page
 
   // Meditate also renders on the Progress pane (both mounted) — scope to Today.
   const today = page.locator('.today-screen');
-  await expect(today.getByText('Meditate')).toBeVisible();
+  // scope to the routine title span: the editor's contenteditable Name field
+  // would also match a bare getByText('Meditate') while the sheet is closing.
+  await expect(today.locator('.routine-title', { hasText: 'Meditate' })).toBeVisible();
   await expect(today.locator('.routine-streak')).toHaveText('0'); // flame is an svg; text is the count
 
   await page.getByRole('checkbox', { name: /meditate/i }).click();

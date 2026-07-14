@@ -42,11 +42,13 @@ test('edit task title and due via sheet', async ({ page }) => {
   await page.getByText('buy milk').click();
   await page.getByRole('textbox', { name: /title/i }).fill('buy oat milk');
   await page.getByRole('button', { name: /save/i }).click();
-  await expect(page.getByText('buy oat milk')).toBeVisible();
+  // scope to the row title: the edit sheet's contenteditable Title field would
+  // also match a bare getByText while the sheet is closing.
+  await expect(page.locator('.task-title', { hasText: 'buy oat milk' })).toBeVisible();
 });
 
 test('ideas tab shows first-line title; editor autosaves across reload', async ({ page }) => {
-  await page.getByRole('tab', { name: /ideas/i }).click();
+  await page.getByRole('tab', { name: /notes/i }).click();
   await expect(page.getByText('app idea')).toBeVisible();
   await expect(page.getByText('longer body text')).toHaveCount(0);
 
@@ -69,13 +71,13 @@ test('per-list add captures directly into this list', async ({ page }) => {
   // second textbox — target the capture field by name (see capture.spec.ts).
   await page.getByRole('textbox', { name: 'Capture text' }).fill('from inside list');
   await page.getByRole('button', { name: /save/i }).click();
-  await expect(page.getByText('from inside list')).toBeVisible();
+  await expect(page.locator('.task-title', { hasText: 'from inside list' })).toBeVisible();
 });
 
 test('delete an idea from its editor', async ({ page }) => {
-  await page.getByRole('tab', { name: /ideas/i }).click();
+  await page.getByRole('tab', { name: /notes/i }).click();
   await page.getByText('app idea').click();
-  await page.getByRole('button', { name: /delete idea/i }).click();
+  await page.getByRole('button', { name: /delete note/i }).click();
   await page.getByRole('button', { name: /confirm/i }).click();
   await expect(page.getByText('app idea')).toHaveCount(0);
 });

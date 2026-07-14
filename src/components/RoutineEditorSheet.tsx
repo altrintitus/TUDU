@@ -1,8 +1,12 @@
 import { useRef, useState } from 'react';
 import { Sheet } from './Sheet';
+import { EditableText } from './EditableText';
 import { createRoutine, updateRoutine, deleteRoutine, type Routine } from '../db';
 
 const LABELS = ['S', 'M', 'T', 'W', 'T', 'F', 'S']; // index = JS getDay (0=Sun)
+// Full names for screen readers — the visible S/M/T/W/T/F/S repeat, so the
+// single-letter labels are ambiguous when announced.
+const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const DAILY = [0, 1, 2, 3, 4, 5, 6];
 const WEEKDAYS = [1, 2, 3, 4, 5];
 
@@ -37,19 +41,11 @@ export function RoutineEditorSheet({ open, routine, onClose }: {
 
   return (
     <Sheet open={open} onClose={onClose} title={routine ? 'Edit routine' : 'New routine'}>
-      <label className="field">
+      <div className="field">
         <span className="field-label">Name</span>
-        <input
-          aria-label="Name"
-          value={title}
-          autoComplete="off"
-          autoCorrect="off"
-          data-1p-ignore
-          data-lpignore="true"
-          placeholder="Meditate"
-          onChange={(e) => setTitle(e.target.value)}
-        />
-      </label>
+        {/* contenteditable, not <input>: no iOS keyboard form-assistant bar */}
+        <EditableText className="capture-input" ariaLabel="Name" placeholder="Meditate" value={title} onChange={setTitle} autoFocus onEnter={save} />
+      </div>
       <div className="field">
         <span className="field-label">Repeat on</span>
         <div className="daychips" role="group" aria-label="Repeat days">
@@ -58,7 +54,7 @@ export function RoutineEditorSheet({ open, routine, onClose }: {
               key={d}
               type="button"
               aria-pressed={days.includes(d)}
-              aria-label={`day ${d}`}
+              aria-label={DAY_NAMES[d]}
               className={days.includes(d) ? 'daychip on' : 'daychip'}
               onClick={() => toggleDay(d)}
             >

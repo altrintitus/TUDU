@@ -1,12 +1,13 @@
 import type { List } from '../db';
 import { TasksIcon, IdeasIcon } from './icons';
 
-export function ListCard({ list, openTaskCount, ideaCount, onOpen, onEdit }: {
+export function ListCard({ list, openTaskCount, ideaCount, onOpen, onEdit, editable = true }: {
   list: List;
   openTaskCount: number;
   ideaCount: number;
   onOpen(): void;
   onEdit(): void;
+  editable?: boolean; // Inbox has nothing to edit — hide the ⋯ (no dead-end sheet)
 }) {
   return (
     <div className="list-card">
@@ -18,7 +19,9 @@ export function ListCard({ list, openTaskCount, ideaCount, onOpen, onEdit }: {
           <span>{ideaCount}<span className="ct-icon"><IdeasIcon /></span></span>
         </span>
       </button>
-      <button className="list-card-edit" aria-label={`edit ${list.name}`} onClick={onEdit}>⋯</button>
+      {editable && (
+        <button className="list-card-edit" aria-label={`edit ${list.name}`} onClick={onEdit}>⋯</button>
+      )}
     </div>
   );
 }

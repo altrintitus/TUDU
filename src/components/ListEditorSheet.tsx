@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { Sheet } from './Sheet';
+import { EditableText } from './EditableText';
 import { db, createList, renameList, deleteList, INBOX_ID, type List } from '../db';
 
 export function ListEditorSheet({ open, list, onClose }: {
@@ -40,34 +41,15 @@ export function ListEditorSheet({ open, list, onClose }: {
 
   return (
     <Sheet open={open} onClose={onClose} title={title}>
-      <label className="field">
+      <div className="field">
         <span className="field-label">Name</span>
-        <input
-          aria-label="Name"
-          value={name}
-          disabled={isInbox}
-          placeholder="Space name"
-          autoComplete="off"
-          autoCorrect="off"
-          autoCapitalize="words"
-          data-1p-ignore
-          data-lpignore="true"
-          onChange={(e) => setName(e.target.value)}
-        />
-      </label>
-      <label className="field">
+        {/* contenteditable, not <input>: no iOS keyboard form-assistant bar */}
+        <EditableText className="capture-input" ariaLabel="Name" placeholder="Space name" value={name} onChange={setName} autoFocus onEnter={save} />
+      </div>
+      <div className="field">
         <span className="field-label">Emoji</span>
-        <input
-          aria-label="Emoji"
-          value={emoji}
-          disabled={isInbox}
-          maxLength={2}
-          placeholder="Optional"
-          autoComplete="off"
-          autoCorrect="off"
-          onChange={(e) => setEmoji(e.target.value)}
-        />
-      </label>
+        <EditableText className="capture-input" ariaLabel="Emoji" placeholder="Optional" value={emoji} onChange={(v) => setEmoji([...v].slice(0, 2).join(''))} />
+      </div>
       <div className="sheet-actions">
         {list && !isInbox && !confirming && (
           <button className="btn-danger" onClick={() => setConfirming(true)}>Delete</button>

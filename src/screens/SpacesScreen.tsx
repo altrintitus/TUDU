@@ -56,6 +56,7 @@ export function SpacesScreen() {
               list={l}
               openTaskCount={model!.openTasks.get(l.id) ?? 0}
               ideaCount={model!.ideaCounts.get(l.id) ?? 0}
+              editable={l.id !== INBOX_ID}
               onOpen={() => navigate({ name: 'list', id: l.id })}
               onEdit={() => setEditing({ list: l })}
             />

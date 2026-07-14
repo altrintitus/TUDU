@@ -17,9 +17,11 @@ export default defineConfig(({ mode }) => ({
       // default globs omit ttf; add it so the bundled Comfortaa font precaches for offline
       workbox: { globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,woff,woff2,ttf}'] },
       manifest: {
+        // stable identity so installs survive start_url changes
+        id: '/TUDU/',
         name: 'TUDU',
         short_name: 'TUDU',
-        description: 'Capture tasks and ideas into lists. Local-first.',
+        description: 'Tasks, notes, routines, and water — captured into spaces. Local-first, on-device.',
         display: 'standalone',
         background_color: '#100f0e',
         theme_color: '#100f0e',

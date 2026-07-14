@@ -19,7 +19,14 @@ export function RoutineRow({ routine, doneDates, today, checked, onToggle, onEdi
   const dots = last7(routine.days, doneDates, today);
   return (
     <div className={checked ? 'routine-row done' : 'routine-row'} {...longPress} onPointerDownCapture={() => { fired.current = false; }}>
-      <input type="checkbox" aria-label={routine.title} checked={checked} onChange={onToggle} />
+      <input
+        type="checkbox"
+        aria-label={routine.title}
+        checked={checked}
+        onChange={onToggle}
+        onClick={(e) => e.stopPropagation()}
+        onPointerDown={(e) => e.stopPropagation()}
+      />
       <button type="button" className="routine-main" onClick={() => { if (!fired.current) onEdit(); }}>
         <div className="routine-top">
           <span className="routine-title">{routine.title}</span>

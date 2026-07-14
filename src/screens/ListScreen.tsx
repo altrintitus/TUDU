@@ -80,7 +80,7 @@ export function ListScreen({ listId }: { listId: string }) {
           onClick={() => selectTab('ideas')}
         >
           <IdeasIcon />
-          Ideas
+          Notes
         </button>
       </div>
 
@@ -135,7 +135,7 @@ export function ListScreen({ listId }: { listId: string }) {
               onDelete={() => confirmIdea(i)}
             />
           ))}
-          {sortedIdeas.length === 0 && <p className="empty-hint">No ideas yet</p>}
+          {sortedIdeas.length === 0 && <p className="empty-hint">No notes yet</p>}
         </div>
       )}
 

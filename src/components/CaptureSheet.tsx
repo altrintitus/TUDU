@@ -71,7 +71,7 @@ export function CaptureSheet({ open, onClose, fixedListId, defaultType, fixedTyp
         <EditableText
           className="capture-input"
           ariaLabel="Capture text"
-          placeholder={type === 'task' ? 'New task…' : 'New idea…'}
+          placeholder={type === 'task' ? 'New task…' : 'New note…'}
           value={text}
           onChange={setText}
           autoFocus
@@ -85,7 +85,7 @@ export function CaptureSheet({ open, onClose, fixedListId, defaultType, fixedTyp
               {/* preventDefault on pointer-down keeps focus on the text field so
                   the keyboard doesn't drop when switching type. */}
               <button aria-pressed={type === 'task'} onPointerDown={(e) => e.preventDefault()} onClick={() => setType('task')}>Task</button>
-              <button aria-pressed={type === 'idea'} onPointerDown={(e) => e.preventDefault()} onClick={() => setType('idea')}>Idea</button>
+              <button aria-pressed={type === 'idea'} onPointerDown={(e) => e.preventDefault()} onClick={() => setType('idea')}>Note</button>
             </div>
           )}
 

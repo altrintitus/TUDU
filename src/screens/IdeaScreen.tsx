@@ -91,7 +91,7 @@ function IdeaEditor({ idea, onDelete }: { idea: Idea; onDelete(): void }) {
         <button className="back-btn" aria-label="back" onClick={back}>
           ‹
         </button>
-        <button className="icon-btn danger" aria-label="delete idea" onClick={() => setConfirmDel(true)}>
+        <button className="icon-btn danger" aria-label="delete note" onClick={() => setConfirmDel(true)}>
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
             <path d="M3 5h12M7 5V3.6h4V5M6 5l.6 9h4.8L12 5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
@@ -100,7 +100,7 @@ function IdeaEditor({ idea, onDelete }: { idea: Idea; onDelete(): void }) {
       <textarea
         ref={taRef}
         className="idea-editor"
-        aria-label="Idea text"
+        aria-label="Note text"
         value={text}
         autoComplete="off"
         autoCorrect="off"

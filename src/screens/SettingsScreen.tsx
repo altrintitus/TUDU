@@ -122,7 +122,7 @@ export function SettingsScreen() {
           <span>Data</span>
           <span className="settings-value">
             {counts
-              ? `${plural(counts.spaces, 'space')} · ${plural(counts.tasks, 'task')} · ${plural(counts.ideas, 'idea')} · ${plural(counts.routines, 'routine')}`
+              ? `${plural(counts.spaces, 'space')} · ${plural(counts.tasks, 'task')} · ${plural(counts.ideas, 'note')} · ${plural(counts.routines, 'routine')}`
               : '—'}
           </span>
         </div>
@@ -144,7 +144,7 @@ export function SettingsScreen() {
         <Sheet open onClose={() => setPending(null)} title="Replace all data">
           <p className="confirm-text">
             Replace everything with {plural(pending.lists.length, 'space')} / {plural(pending.tasks.length, 'task')} /{' '}
-            {plural(pending.ideas.length, 'idea')} / {plural(pending.routines?.length ?? 0, 'routine')}? This can’t be undone.
+            {plural(pending.ideas.length, 'note')} / {plural(pending.routines?.length ?? 0, 'routine')}? This can’t be undone.
           </p>
           <div className="sheet-actions">
             <button className="btn-danger" onClick={confirmImport}>Replace everything</button>

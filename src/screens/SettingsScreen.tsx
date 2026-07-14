@@ -72,9 +72,14 @@ export function SettingsScreen() {
 
   const confirmImport = async () => {
     if (!pending) return;
-    await importData(pending);
-    setPending(null);
-    toast('Import complete');
+    try {
+      await importData(pending);
+      setPending(null);
+      toast('Import complete');
+    } catch {
+      setPending(null);
+      toast('Import failed — file may be corrupt');
+    }
   };
 
   return (

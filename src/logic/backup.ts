@@ -1,4 +1,5 @@
 import { db, ensureInbox, type List, type Task, type Idea, type Routine, type RoutineDone, type Water } from '../db';
+import { loadGoal, setWaterGoal } from './water';
 
 export interface BackupV1 {
   version: 1;
@@ -10,6 +11,9 @@ export interface BackupV1 {
   routines?: Routine[];
   routineDone?: RoutineDone[];
   water?: Water[];
+  // App prefs that live in localStorage, not Dexie. Optional so older backups
+  // still validate; the daily water goal is the only real-data pref here.
+  prefs?: { waterGoalMl?: number };
 }
 
 export async function exportData(): Promise<BackupV1> {
@@ -17,7 +21,11 @@ export async function exportData(): Promise<BackupV1> {
     db.lists.toArray(), db.tasks.toArray(), db.ideas.toArray(),
     db.routines.toArray(), db.routineDone.toArray(), db.water.toArray()
   ]);
-  return { version: 1, exportedAt: new Date().toISOString(), lists, tasks, ideas, routines, routineDone, water };
+  return {
+    version: 1, exportedAt: new Date().toISOString(),
+    lists, tasks, ideas, routines, routineDone, water,
+    prefs: { waterGoalMl: loadGoal() }
+  };
 }
 
 function isIdArray(arr: unknown): boolean {
@@ -43,18 +51,25 @@ export function validateBackup(x: unknown): x is BackupV1 {
     if (b[key] !== undefined && !isIdArray(b[key])) return false;
   }
   if (b.water !== undefined && !isDateArray(b.water)) return false;
+  if (b.prefs !== undefined && (typeof b.prefs !== 'object' || b.prefs === null)) return false;
   return true;
 }
 
 export async function importData(b: BackupV1): Promise<void> {
+  // bulkPut (upsert), not bulkAdd: a backup with a duplicate id would otherwise
+  // throw mid-transaction and leave the store half-cleared.
   await db.transaction('rw', [db.lists, db.tasks, db.ideas, db.routines, db.routineDone, db.water], async () => {
     await Promise.all([db.lists.clear(), db.tasks.clear(), db.ideas.clear(), db.routines.clear(), db.routineDone.clear(), db.water.clear()]);
-    await db.lists.bulkAdd(b.lists);
-    await db.tasks.bulkAdd(b.tasks);
-    await db.ideas.bulkAdd(b.ideas);
-    await db.routines.bulkAdd(b.routines ?? []);
-    await db.routineDone.bulkAdd(b.routineDone ?? []);
-    await db.water.bulkAdd(b.water ?? []);
+    await db.lists.bulkPut(b.lists);
+    await db.tasks.bulkPut(b.tasks);
+    await db.ideas.bulkPut(b.ideas);
+    await db.routines.bulkPut(b.routines ?? []);
+    await db.routineDone.bulkPut(b.routineDone ?? []);
+    await db.water.bulkPut(b.water ?? []);
   });
+  // restore the daily water goal (localStorage, outside Dexie) when present
+  if (typeof b.prefs?.waterGoalMl === 'number' && b.prefs.waterGoalMl > 0) {
+    setWaterGoal(b.prefs.waterGoalMl);
+  }
   await ensureInbox();
 }

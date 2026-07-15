@@ -3,6 +3,7 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { db, createTask, createIdea, INBOX_ID } from '../db';
 import { loadCaptureDefaults, saveCaptureDefaults, type CaptureType } from '../logic/captureDefaults';
 import { todayStr, formatDue, addDays } from '../logic/dates';
+import { Sheet, useSheetDismiss } from './Sheet';
 import { EditableText } from './EditableText';
 import { Calendar } from './icons';
 import { toast } from './Toast';
@@ -13,7 +14,7 @@ export function CaptureSheet({ open, onClose, fixedListId, defaultType, fixedTyp
   onClose(): void;
   fixedListId?: string;
   defaultType?: CaptureType;
-  fixedType?: CaptureType; // locks the type and hides the Task/Idea toggle
+  fixedType?: CaptureType; // locks the type and hides the Task/Note toggle
 }) {
   const lists = useLiveQuery(() => db.lists.orderBy('sortOrder').toArray(), []);
   const inboxHasContent = useLiveQuery(async () => {
@@ -30,6 +31,7 @@ export function CaptureSheet({ open, onClose, fixedListId, defaultType, fixedTyp
   const [due, setDue] = useState<string>(() => todayStr()); // new tasks default to today
   const [spaceOpen, setSpaceOpen] = useState(false);
   const [schedOpen, setSchedOpen] = useState(false);
+  const { closing, close } = useSheetDismiss(onClose);
 
   if (!open) return null;
 
@@ -55,79 +57,71 @@ export function CaptureSheet({ open, onClose, fixedListId, defaultType, fixedTyp
       saveCaptureDefaults({ type: fixedType ? loadCaptureDefaults().type : type, listId: targetList });
     }
     const name = lists?.find((l) => l.id === targetList)?.name ?? 'list';
-    onClose();
+    close();
     toast(`Saved to ${name}`);
   };
 
   return (
-    <div className="sheet-backdrop" onClick={onClose}>
-      <div
-        className="sheet-panel capture"
-        role="dialog"
-        aria-modal="true"
-        aria-label="Capture"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <EditableText
-          className="capture-input"
-          ariaLabel="Capture text"
-          placeholder={type === 'task' ? 'New task…' : 'New note…'}
-          value={text}
-          onChange={setText}
-          autoFocus
-          multiline={type === 'idea'}
-          onEnter={type === 'task' ? save : undefined}
-        />
+    <Sheet open={open} closing={closing} onClose={close} title="Capture" className="capture">
+      <EditableText
+        className="capture-input"
+        ariaLabel="Capture text"
+        placeholder={type === 'task' ? 'New task…' : 'New note…'}
+        value={text}
+        onChange={setText}
+        autoFocus
+        multiline={type === 'idea'}
+        onEnter={type === 'task' ? save : undefined}
+      />
 
-        <div className="capture-controls">
-          {!fixedType && (
-            <div className="segmented" role="group" aria-label="Type">
-              {/* preventDefault on pointer-down keeps focus on the text field so
-                  the keyboard doesn't drop when switching type. */}
-              <button aria-pressed={type === 'task'} onPointerDown={(e) => e.preventDefault()} onClick={() => setType('task')}>Task</button>
-              <button aria-pressed={type === 'idea'} onPointerDown={(e) => e.preventDefault()} onClick={() => setType('idea')}>Note</button>
-            </div>
-          )}
+      <div className="capture-controls">
+        {!fixedType && (
+          <div className="segmented" role="group" aria-label="Type" data-type={type}>
+            {/* preventDefault on pointer-down keeps focus on the text field so
+                the keyboard doesn't drop when switching type. */}
+            <button aria-pressed={type === 'task'} onPointerDown={(e) => e.preventDefault()} onClick={() => setType('task')}>Task</button>
+            <button aria-pressed={type === 'idea'} onPointerDown={(e) => e.preventDefault()} onClick={() => setType('idea')}>Note</button>
+          </div>
+        )}
 
-          {!fixedListId && (
-            <div className="capture-picker">
-              <button type="button" className="capture-chip" aria-label="Space" onClick={() => { setSpaceOpen((o) => !o); setSchedOpen(false); }}>
-                {spaceName} <span aria-hidden="true">▾</span>
-              </button>
-              {spaceOpen && (
-                <div className="picker-menu" role="listbox">
-                  {pickable.map((l) => (
-                    <button key={l.id} type="button" role="option" aria-selected={l.id === effectiveListId} onClick={() => { setListId(l.id); setSpaceOpen(false); }}>
-                      {l.emoji ? `${l.emoji} ` : ''}{l.name}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
+        {!fixedListId && (
+          <div className="capture-picker">
+            <button type="button" className="capture-chip" aria-label="Space" onClick={() => { setSpaceOpen((o) => !o); setSchedOpen(false); }}>
+              {spaceName} <span aria-hidden="true">▾</span>
+            </button>
+            {spaceOpen && (
+              <div className="picker-menu" role="listbox">
+                {pickable.map((l) => (
+                  <button key={l.id} type="button" role="option" aria-selected={l.id === effectiveListId} onClick={() => { setListId(l.id); setSpaceOpen(false); }}>
+                    {l.emoji ? `${l.emoji} ` : ''}{l.name}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
-          {type === 'task' && (
-            <div className="capture-picker">
-              <button type="button" className="capture-chip" aria-label="Schedule" onClick={() => { setSchedOpen((o) => !o); setSpaceOpen(false); }}>
-                <Calendar /> {due ? formatDue(due, today) : 'No date'}
-              </button>
-              {schedOpen && (
-                <div className="picker-menu sched">
-                  <button type="button" onClick={() => { setDue(today); setSchedOpen(false); }}>Today</button>
-                  <button type="button" onClick={() => { setDue(addDays(today, 1)); setSchedOpen(false); }}>Tomorrow</button>
-                  <button type="button" onClick={() => { setDue(''); setSchedOpen(false); }}>None</button>
-                  <input type="date" aria-label="Due date" value={due} onChange={(e) => setDue(e.target.value)} />
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-
-        <div className="sheet-actions capture-actions">
-          <button className="btn-ghost" onClick={onClose}>Cancel</button>
-          <button className="btn-primary" onClick={save} disabled={!canSave}>Save</button>
-        </div>
+        {type === 'task' && (
+          <div className="capture-picker">
+            <button type="button" className="capture-chip" aria-label="Schedule" onClick={() => { setSchedOpen((o) => !o); setSpaceOpen(false); }}>
+              <Calendar /> {due ? formatDue(due, today) : 'No date'}
+            </button>
+            {schedOpen && (
+              <div className="picker-menu sched">
+                <button type="button" onClick={() => { setDue(today); setSchedOpen(false); }}>Today</button>
+                <button type="button" onClick={() => { setDue(addDays(today, 1)); setSchedOpen(false); }}>Tomorrow</button>
+                <button type="button" onClick={() => { setDue(''); setSchedOpen(false); }}>None</button>
+                <input type="date" aria-label="Due date" value={due} onChange={(e) => setDue(e.target.value)} />
+              </div>
+            )}
+          </div>
+        )}
       </div>
-    </div>
+
+      <div className="sheet-actions capture-actions">
+        <button className="btn-ghost" onClick={close}>Cancel</button>
+        <button className="btn-primary" onClick={save} disabled={!canSave}>Save</button>
+      </div>
+    </Sheet>
   );
 }

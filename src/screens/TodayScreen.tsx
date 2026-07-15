@@ -12,7 +12,7 @@ import { WaterGoalSheet } from '../components/WaterGoalSheet';
 import { loadGoal, subscribeWaterGoal, formatL } from '../logic/water';
 import { CaptureSheet } from '../components/CaptureSheet';
 import { Fab } from '../components/Fab';
-import { Sheet } from '../components/Sheet';
+import { Sheet, useSheetDismiss } from '../components/Sheet';
 
 const GROUPS: { key: TaskGroupKey; label: string }[] = [
   { key: 'overdue', label: 'Overdue' },
@@ -29,6 +29,7 @@ export function TodayScreen() {
   const [editingRoutine, setEditingRoutine] = useState<Routine | null>(null);
   const [editingWaterGoal, setEditingWaterGoal] = useState(false);
   const waterGoal = useSyncExternalStore(subscribeWaterGoal, loadGoal);
+  const confirmDismiss = useSheetDismiss(() => setPending(null));
 
   const data = useLiveQuery(async () => {
     const [tasks, lists] = await Promise.all([db.tasks.toArray(), db.lists.toArray()]);
@@ -65,7 +66,12 @@ export function TodayScreen() {
 
   return (
     <div className="today-screen">
-      <header className="screen-header"><h1 className="screen-title">Today</h1></header>
+      <header className="screen-header screen-header-stacked">
+        <h1 className="screen-title">Today</h1>
+        <p className="screen-sub">
+          {new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+        </p>
+      </header>
 
       <div className="today-routines">
         <div className="routines-header">
@@ -139,13 +145,13 @@ export function TodayScreen() {
       )}
 
       {pending && (
-        <Sheet open onClose={() => setPending(null)}>
+        <Sheet open closing={confirmDismiss.closing} onClose={confirmDismiss.close}>
           <p className="confirm-text">Delete “{pending.label}”?</p>
           <div className="sheet-actions">
-            <button className="btn-danger" onClick={() => { pending.run(); setPending(null); }}>
+            <button className="btn-danger" onClick={() => { pending.run(); confirmDismiss.close(); }}>
               Confirm — delete
             </button>
-            <button className="btn-ghost" onClick={() => setPending(null)}>Cancel</button>
+            <button className="btn-ghost" onClick={confirmDismiss.close}>Cancel</button>
           </div>
         </Sheet>
       )}

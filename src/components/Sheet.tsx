@@ -1,10 +1,31 @@
-import { useEffect, useLayoutEffect, useRef, type ReactNode } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 
-export function Sheet({ open, onClose, title, children }: {
+// Animated dismiss for sheets: plays a short 'closing' phase (backdrop fades,
+// panel sinks) before the parent unmounts the sheet via onClose. Use the
+// returned `close` everywhere the sheet should go away; pass `closing` to Sheet.
+export function useSheetDismiss(onClose: () => void, ms = 180) {
+  const [closing, setClosing] = useState(false);
+  const onCloseRef = useRef(onClose);
+  useEffect(() => { onCloseRef.current = onClose; }, [onClose]);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => { if (timer.current !== null) clearTimeout(timer.current); }, []);
+  const close = () => {
+    if (closing) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { onCloseRef.current(); return; }
+    setClosing(true);
+    // reset after firing so a screen-level hook can serve the next open too
+    timer.current = setTimeout(() => { onCloseRef.current(); setClosing(false); }, ms);
+  };
+  return { closing, close };
+}
+
+export function Sheet({ open, onClose, title, children, closing = false, className }: {
   open: boolean;
   onClose(): void;
   title?: string;
   children: ReactNode;
+  closing?: boolean; // from useSheetDismiss — plays the sink-out animation
+  className?: string; // extra panel class (e.g. capture)
 }) {
   const panelRef = useRef<HTMLDivElement>(null);
 
@@ -52,9 +73,9 @@ export function Sheet({ open, onClose, title, children }: {
   if (!open) return null;
 
   return (
-    <div className="sheet-backdrop" onClick={onClose}>
+    <div className={closing ? 'sheet-backdrop closing' : 'sheet-backdrop'} onClick={onClose}>
       <div
-        className="sheet-panel"
+        className={`sheet-panel${className ? ` ${className}` : ''}`}
         ref={panelRef}
         role="dialog"
         aria-modal="true"

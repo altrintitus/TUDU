@@ -43,11 +43,13 @@ export function WaterMeter({ readOnly = false }: { readOnly?: boolean }) {
   };
 
   const pct = fillFraction(ml, goal) * 100;
+  const met = ml >= goal;
 
   return (
     <div className="water">
       <div
         className={readOnly ? 'water-track readonly' : 'water-track'}
+        style={{ '--fill': `${pct}%` } as React.CSSProperties}
         ref={trackRef}
         role="slider"
         aria-label="Water intake"
@@ -61,8 +63,11 @@ export function WaterMeter({ readOnly = false }: { readOnly?: boolean }) {
         onPointerUp={onPointerUp}
         onKeyDown={onKeyDown}
       >
-        <div className="water-fill" style={{ width: `${pct}%` }} />
+        <div className={met ? 'water-fill met' : 'water-fill'} style={{ width: `${pct}%` }} />
+        {/* two-layer label: ink over paper, paper-white clipped to the fill —
+            readable at every fill level in both themes */}
         <span className="water-label"><Droplet /> {formatL(ml)} / {formatL(goal)}</span>
+        <span className="water-label water-label-fill" aria-hidden="true"><Droplet /> {formatL(ml)} / {formatL(goal)}</span>
       </div>
     </div>
   );

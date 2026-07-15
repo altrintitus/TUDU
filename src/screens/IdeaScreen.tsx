@@ -2,7 +2,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db, updateIdea, deleteIdea, type Idea } from '../db';
 import { navigate } from '../hooks/useHashRoute';
-import { Sheet } from '../components/Sheet';
+import { Sheet, useSheetDismiss } from '../components/Sheet';
 import { firstLine } from '../logic/text';
 
 export function IdeaScreen({ ideaId }: { ideaId: string }) {
@@ -25,6 +25,7 @@ export function IdeaScreen({ ideaId }: { ideaId: string }) {
 function IdeaEditor({ idea, onDelete }: { idea: Idea; onDelete(): void }) {
   const [text, setText] = useState(idea.text);
   const [confirmDel, setConfirmDel] = useState(false);
+  const confirmDismiss = useSheetDismiss(() => setConfirmDel(false));
   const textRef = useRef(text);
   const savedRef = useRef(idea.text);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -109,11 +110,11 @@ function IdeaEditor({ idea, onDelete }: { idea: Idea; onDelete(): void }) {
       />
 
       {confirmDel && (
-        <Sheet open onClose={() => setConfirmDel(false)} title="Delete">
+        <Sheet open closing={confirmDismiss.closing} onClose={confirmDismiss.close} title="Delete">
           <p className="confirm-text">Delete “{firstLine(idea.text)}”?</p>
           <div className="sheet-actions">
             <button className="btn-danger" onClick={remove}>Confirm — delete</button>
-            <button className="btn-ghost" onClick={() => setConfirmDel(false)}>Cancel</button>
+            <button className="btn-ghost" onClick={confirmDismiss.close}>Cancel</button>
           </div>
         </Sheet>
       )}

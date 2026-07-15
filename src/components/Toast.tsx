@@ -8,22 +8,31 @@ export function toast(msg: string): void {
   emit(msg);
 }
 
+const SHOW_MS = 1550; // visible time before the exit animation
+const OUT_MS = 250; // matches @keyframes toast-out
+
 export function ToastHost() {
   const [msg, setMsg] = useState<string | null>(null);
+  const [out, setOut] = useState(false);
 
   useEffect(() => {
-    let timer: ReturnType<typeof setTimeout>;
+    let hide: ReturnType<typeof setTimeout>;
+    let gone: ReturnType<typeof setTimeout>;
     emit = (m: string) => {
+      clearTimeout(hide);
+      clearTimeout(gone);
+      setOut(false);
       setMsg(m);
-      clearTimeout(timer);
-      timer = setTimeout(() => setMsg(null), 1800);
+      hide = setTimeout(() => setOut(true), SHOW_MS);
+      gone = setTimeout(() => setMsg(null), SHOW_MS + OUT_MS);
     };
     return () => {
       emit = () => {};
-      clearTimeout(timer);
+      clearTimeout(hide);
+      clearTimeout(gone);
     };
   }, []);
 
   if (!msg) return null;
-  return <div className="toast" role="status">{msg}</div>;
+  return <div className={out ? 'toast out' : 'toast'} role="status">{msg}</div>;
 }

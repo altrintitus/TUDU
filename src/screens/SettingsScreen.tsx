@@ -5,7 +5,7 @@ import { exportData, validateBackup, importData, type BackupV1 } from '../logic/
 import { navigate } from '../hooks/useHashRoute';
 import { todayStr } from '../logic/dates';
 import { toast } from '../components/Toast';
-import { Sheet } from '../components/Sheet';
+import { Sheet, useSheetDismiss } from '../components/Sheet';
 
 const REPO_URL = 'https://github.com/altrintitus/TUDU';
 const plural = (n: number, one: string) => `${n} ${n === 1 ? one : one + 's'}`;
@@ -15,6 +15,7 @@ export function SettingsScreen() {
   const [pending, setPending] = useState<BackupV1 | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [persisted, setPersisted] = useState<boolean | null>(null);
+  const confirmDismiss = useSheetDismiss(() => setPending(null));
 
   useEffect(() => {
     navigator.storage?.persisted?.().then(setPersisted, () => setPersisted(null));
@@ -74,10 +75,10 @@ export function SettingsScreen() {
     if (!pending) return;
     try {
       await importData(pending);
-      setPending(null);
+      confirmDismiss.close();
       toast('Import complete');
     } catch {
-      setPending(null);
+      confirmDismiss.close();
       toast('Import failed — file may be corrupt');
     }
   };
@@ -141,14 +142,14 @@ export function SettingsScreen() {
       </section>
 
       {pending && (
-        <Sheet open onClose={() => setPending(null)} title="Replace all data">
+        <Sheet open closing={confirmDismiss.closing} onClose={confirmDismiss.close} title="Replace all data">
           <p className="confirm-text">
             Replace everything with {plural(pending.lists.length, 'space')} / {plural(pending.tasks.length, 'task')} /{' '}
             {plural(pending.ideas.length, 'note')} / {plural(pending.routines?.length ?? 0, 'routine')}? This can’t be undone.
           </p>
           <div className="sheet-actions">
             <button className="btn-danger" onClick={confirmImport}>Replace everything</button>
-            <button className="btn-ghost" onClick={() => setPending(null)}>Cancel</button>
+            <button className="btn-ghost" onClick={confirmDismiss.close}>Cancel</button>
           </div>
         </Sheet>
       )}

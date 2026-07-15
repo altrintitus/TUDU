@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { Sheet } from './Sheet';
+import { Sheet, useSheetDismiss } from './Sheet';
 import { db, updateTask, deleteTask, INBOX_ID, type Task } from '../db';
 import { todayStr, formatDue, addDays } from '../logic/dates';
 import { EditableText } from './EditableText';
@@ -26,6 +26,7 @@ export function TaskEditSheet({ open, task, onClose }: {
   const [confirming, setConfirming] = useState(false);
   const [spaceOpen, setSpaceOpen] = useState(false);
   const [schedOpen, setSchedOpen] = useState(false);
+  const { closing, close } = useSheetDismiss(onClose);
 
   if (!open || !task) return null;
 
@@ -42,16 +43,16 @@ export function TaskEditSheet({ open, task, onClose }: {
     if (!t || savingRef.current) return;
     savingRef.current = true;
     await updateTask(task.id, { title: t, dueDate: due || null, listId });
-    onClose();
+    close();
   };
 
   const remove = async () => {
     await deleteTask(task.id);
-    onClose();
+    close();
   };
 
   return (
-    <Sheet open={open} onClose={onClose} title="Edit task">
+    <Sheet open={open} closing={closing} onClose={close} title="Edit task">
       <div className="field">
         <span className="field-label">Title</span>
         {/* contenteditable, not <input>: no iOS keyboard form-assistant bar */}

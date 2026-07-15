@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { Sheet } from './Sheet';
+import { Sheet, useSheetDismiss } from './Sheet';
 import { EditableText } from './EditableText';
 import { createRoutine, updateRoutine, deleteRoutine, type Routine } from '../db';
 
@@ -20,6 +20,7 @@ export function RoutineEditorSheet({ open, routine, onClose }: {
   const [days, setDays] = useState<number[]>(routine?.days ?? DAILY);
   const [confirming, setConfirming] = useState(false);
   const savingRef = useRef(false);
+  const { closing, close } = useSheetDismiss(onClose);
 
   const toggleDay = (d: number) =>
     setDays((cur) => (cur.includes(d) ? cur.filter((x) => x !== d) : [...cur, d].sort((a, b) => a - b)));
@@ -30,17 +31,17 @@ export function RoutineEditorSheet({ open, routine, onClose }: {
     savingRef.current = true;
     if (routine) await updateRoutine(routine.id, { title: t, days });
     else await createRoutine(t, days);
-    onClose();
+    close();
   };
 
   const remove = async () => {
     if (!routine) return;
     await deleteRoutine(routine.id);
-    onClose();
+    close();
   };
 
   return (
-    <Sheet open={open} onClose={onClose} title={routine ? 'Edit routine' : 'New routine'}>
+    <Sheet open={open} closing={closing} onClose={close} title={routine ? 'Edit routine' : 'New routine'}>
       <div className="field">
         <span className="field-label">Name</span>
         {/* contenteditable, not <input>: no iOS keyboard form-assistant bar */}

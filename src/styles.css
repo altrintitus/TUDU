@@ -33,7 +33,13 @@
   --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
   --space-5: 20px; --space-6: 24px; --space-8: 32px;
   --tap-target: 44px;
-  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  /* motion vocabulary — one system app-wide */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);          /* decisive ease-out: enters */
+  --ease-spring: cubic-bezier(0.34, 1.45, 0.64, 1); /* playful overshoot: ticks, FAB */
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);            /* accelerating: exits */
+  --t-fast: 140ms;
+  --t: 240ms;
+  --t-slow: 340ms;
 }
 @media (prefers-color-scheme: light) {
   :root {
@@ -112,7 +118,8 @@ input[type='checkbox']::after {
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='7' viewBox='0 0 9 7'%3E%3Cpath d='M1 3.5L3.2 6L8 1' fill='none' stroke='%23000' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='7' viewBox='0 0 9 7'%3E%3Cpath d='M1 3.5L3.2 6L8 1' fill='none' stroke='%23000' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;
   transform: scale(0);
-  transition: transform 0.15s var(--ease);
+  /* the tick pops with a small overshoot — ink landing on paper */
+  transition: transform var(--t) var(--ease-spring);
 }
 input[type='checkbox']:checked::after { transform: scale(1); }
 
@@ -124,8 +131,6 @@ input[type='checkbox']:checked::after { transform: scale(1); }
   max-width: 640px;
   margin: 0 auto;
 }
-.placeholder { padding: var(--space-6); color: var(--muted); }
-
 /* ---- section micro-label ---- */
 .section-label {
   font-size: 11px;
@@ -142,47 +147,6 @@ input[type='checkbox']:checked::after { transform: scale(1); }
   padding: calc(env(safe-area-inset-top) + var(--space-8)) var(--space-4) calc(env(safe-area-inset-bottom) + 96px);
 }
 .spaces-header { justify-content: space-between; }
-.home-header {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  padding: var(--space-2) var(--space-1) var(--space-6);
-}
-.wordmark { line-height: 0; }
-.wordmark-logo {
-  display: block;
-  height: 30px;
-  width: auto;
-  color: var(--text);
-}
-
-/* ---- today strip ---- */
-.today { margin-bottom: var(--space-8); }
-.today-list { list-style: none; display: flex; flex-direction: column; gap: var(--space-2); }
-.today-row {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--card-shadow);
-  padding: var(--space-3) var(--space-4);
-  min-height: var(--tap-target);
-  animation: rise 0.34s var(--ease) both;
-}
-.today-row.overdue { border-left: 3px solid var(--danger); }
-.today-title { flex: 1; font-weight: 500; }
-.today-due {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--danger);
-  background: var(--danger-weak);
-  padding: 2px var(--space-2);
-  border-radius: 999px;
-  white-space: nowrap;
-}
-.today-listname { font-size: 12px; color: var(--muted); white-space: nowrap; }
 
 /* ---- lists ---- */
 .list-grid { display: flex; flex-direction: column; gap: var(--space-2); }
@@ -194,9 +158,9 @@ input[type='checkbox']:checked::after { transform: scale(1); }
   border-radius: var(--radius);
   box-shadow: var(--card-shadow);
   overflow: hidden;
-  transition: border-color 0.15s, background 0.15s;
+  transition: border-color 0.15s, background 0.15s, transform var(--t-fast) var(--ease);
 }
-.list-card:active { background: var(--surface-press); border-color: var(--border-strong); }
+.list-card:active { background: var(--surface-press); border-color: var(--border-strong); transform: scale(0.98); }
 .list-card-main {
   flex: 1;
   display: flex;
@@ -236,7 +200,14 @@ input[type='checkbox']:checked::after { transform: scale(1); }
   transition: color 0.15s, border-color 0.15s;
 }
 .list-add:active { color: var(--accent); border-color: var(--accent); }
-.empty-hint { margin-top: var(--space-5); text-align: center; color: var(--faint); font-size: 14px; }
+.empty-hint {
+  margin-top: var(--space-6);
+  padding: var(--space-5) var(--space-4);
+  text-align: center;
+  color: var(--faint);
+  font-size: 14px;
+  line-height: 1.6;
+}
 
 /* ---- sheet ---- */
 .sheet-backdrop {
@@ -258,10 +229,17 @@ input[type='checkbox']:checked::after { transform: scale(1); }
   border-bottom: none;
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
   padding: var(--space-5) var(--space-5) calc(env(safe-area-inset-bottom) + var(--space-5));
-  animation: rise-sheet 0.3s var(--ease) both;
-  /* lift above the iOS on-screen keyboard (see --kb-inset in App.tsx) */
+  animation: rise-sheet 0.32s var(--ease) both;
+  /* lift above the iOS on-screen keyboard (see --kb-inset in App.tsx);
+     transition so the sheet glides up with the keyboard instead of teleporting */
   margin-bottom: var(--kb-inset, 0px);
+  transition: margin-bottom var(--t) var(--ease);
 }
+/* animated dismiss (useSheetDismiss): backdrop fades, panel sinks. It stays
+   modal while closing (~180ms) so a tap can't reach — and race — the page
+   behind it; re-taps on the backdrop are no-ops (close() is guarded). */
+.sheet-backdrop.closing { animation: fade-out 0.18s ease both; }
+.sheet-backdrop.closing .sheet-panel { animation: sink-sheet 0.18s var(--ease-in) both; }
 .sheet-panel::before {
   content: '';
   display: block;
@@ -299,8 +277,9 @@ input[type='checkbox']:checked::after { transform: scale(1); }
   min-height: var(--tap-target);
   border-radius: var(--radius-sm);
   font-weight: 600;
-  transition: opacity 0.15s, background 0.15s;
+  transition: opacity 0.15s, background 0.15s, transform var(--t-fast) var(--ease);
 }
+.btn-primary:active, .btn-danger:active, .btn-ghost:active { transform: scale(0.97); }
 .btn-primary { background: var(--accent); color: var(--accent-ink); }
 .btn-primary:disabled { opacity: 0.4; }
 .btn-danger { background: var(--danger-weak); color: var(--danger); }
@@ -354,23 +333,40 @@ input[type='checkbox']:checked::after { transform: scale(1); }
   gap: var(--space-2);
   margin-top: var(--space-4);
 }
+/* segmented Task|Note toggle — equal halves + one sliding ink thumb */
 .segmented {
+  position: relative;
   display: inline-flex;
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 999px;
   padding: 3px;
 }
+.segmented::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  left: 3px;
+  width: calc(50% - 3px);
+  border-radius: 999px;
+  background: var(--accent-weak);
+  transition: transform var(--t) var(--ease-spring);
+}
+.segmented[data-type='idea']::before { transform: translateX(100%); }
 .segmented button {
+  position: relative;
+  flex: 1 1 0;
   min-height: 36px;
+  min-width: 72px;
   padding: 0 var(--space-4);
   border-radius: 999px;
   color: var(--muted);
   font-weight: 600;
   font-size: 14px;
-  transition: background 0.15s, color 0.15s;
+  transition: color 0.15s;
 }
-.segmented button[aria-pressed='true'] { background: var(--accent-weak); color: var(--accent); }
+.segmented button[aria-pressed='true'] { color: var(--accent); }
 /* custom non-focusable pickers (space + schedule) — no native form field, so
    iOS shows no keyboard form-assistant bar while typing */
 .capture-picker { position: relative; }
@@ -387,6 +383,8 @@ input[type='checkbox']:checked::after { transform: scale(1); }
   display: flex; flex-direction: column;
   background: var(--surface-2); border: 1px solid var(--border-strong);
   border-radius: var(--radius-sm); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4); padding: 4px;
+  transform-origin: bottom left;
+  animation: pop-menu var(--t-fast) var(--ease) both;
 }
 .picker-menu button {
   text-align: left; padding: var(--space-3); min-height: 40px;
@@ -455,10 +453,14 @@ input[type='checkbox']:checked::after { transform: scale(1); }
 }
 .back-btn:active { color: var(--text); background: var(--surface-press); }
 .screen-emoji { font-size: 22px; }
-.screen-title { font-size: 24px; font-weight: 700; letter-spacing: -0.02em; }
+.screen-title { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; }
+/* stacked pane header: big title + a quiet context line (Today's date) */
+.screen-header-stacked { flex-direction: column; align-items: flex-start; gap: 2px; }
+.screen-sub { font-size: 13px; font-weight: 500; color: var(--faint); letter-spacing: 0.02em; }
 
-/* ---- tabs (reference: icon + label, underline active) ---- */
+/* ---- tabs (reference: icon + label, sliding ink underline) ---- */
 .tabs {
+  position: relative;
   display: flex;
   border-bottom: 1px solid var(--border);
   margin-bottom: var(--space-5);
@@ -474,12 +476,21 @@ input[type='checkbox']:checked::after { transform: scale(1); }
   font-weight: 400;
   font-size: 14px;
   letter-spacing: 0.02em;
-  border-bottom: 1.5px solid transparent;
-  margin-bottom: -1px;
   transition: color 0.15s;
 }
 .tab svg { display: block; }
-.tab.active { color: var(--text); font-weight: 600; border-bottom-color: var(--text); }
+.tab.active { color: var(--text); font-weight: 600; }
+/* the underline is one bar that slides between the two halves */
+.tab-ink {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 50%;
+  height: 1.5px;
+  background: var(--text);
+  transition: transform var(--t) var(--ease);
+  pointer-events: none;
+}
 
 /* ---- rows ---- */
 .rows { display: flex; flex-direction: column; gap: var(--space-2); }
@@ -494,8 +505,36 @@ input[type='checkbox']:checked::after { transform: scale(1); }
   box-shadow: var(--card-shadow);
   padding: var(--space-2) var(--space-4);
   min-height: var(--tap-target);
+  transition: transform var(--t-fast) var(--ease);
 }
 .task-row.overdue { border-left: 3px solid var(--danger); }
+/* rows arrive like slips of paper — plays on mount (app open, tab switch, and
+   every freshly captured item), staggered for the first few children */
+.task-row, .routine-row, .idea-row, .list-card {
+  animation: row-in var(--t-slow) var(--ease) both;
+}
+.rows > :nth-child(2), .today-group > :nth-child(3), .list-grid > :nth-child(2) { animation-delay: 26ms; }
+.rows > :nth-child(3), .today-group > :nth-child(4), .list-grid > :nth-child(3) { animation-delay: 52ms; }
+.rows > :nth-child(4), .list-grid > :nth-child(4) { animation-delay: 78ms; }
+.rows > :nth-child(5), .list-grid > :nth-child(5) { animation-delay: 104ms; }
+.rows > :nth-child(6), .list-grid > :nth-child(6) { animation-delay: 130ms; }
+.rows > :nth-child(7) { animation-delay: 156ms; }
+.rows > :nth-child(8) { animation-delay: 182ms; }
+.task-row:active, .routine-row:active, .idea-row:active { transform: scale(0.98); }
+/* checked-on-Today exit, phase 2: the row folds shut before the DB commit
+   removes it (max-height is generous headroom for a 2-line title) */
+.task-row.collapsing {
+  max-height: 0;
+  opacity: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  border-width: 0;
+  overflow: hidden;
+  transition: max-height 0.22s var(--ease-in), opacity 0.18s var(--ease-in),
+    padding 0.22s var(--ease-in), border-width 0.22s var(--ease-in);
+}
+/* headroom the collapse animates down from (set once the strike phase begins) */
+.task-row.done { max-height: 120px; }
 .task-main {
   flex: 1;
   display: flex;
@@ -618,7 +657,6 @@ input[type='checkbox']:checked::after { transform: scale(1); }
 }
 .idea-icon { flex: 0 0 auto; display: flex; color: var(--muted); }
 .idea-title { flex: 1; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.idea-space { font-size: 12px; color: var(--muted); white-space: nowrap; }
 .idea-time { font-size: 12px; color: var(--faint); white-space: nowrap; }
 
 /* ---- idea editor ---- */
@@ -734,6 +772,8 @@ input[type='checkbox']:checked::after { transform: scale(1); }
 /* a pane's position:fixed children (FAB) escape the scroll — hide them unless
    the pane is the active one, so only the current page's FAB shows */
 .pager-pane:not(.pager-pane-active) .fab { display: none; }
+/* pop in whenever a pane's FAB becomes the active one */
+.pager-pane-active .fab { animation: fab-in 0.26s var(--ease-spring) both; }
 .pager-dots {
   position: fixed;
   top: calc(env(safe-area-inset-top) + var(--space-3));
@@ -746,11 +786,12 @@ input[type='checkbox']:checked::after { transform: scale(1); }
 .pager-dot {
   width: 7px;
   height: 7px;
-  border-radius: 50%;
+  border-radius: 999px;
   background: var(--border-strong);
-  transition: background 0.2s, transform 0.2s;
+  transition: background 0.2s, width var(--t) var(--ease);
 }
-.pager-dot.active { background: var(--accent); transform: scale(1.25); }
+/* the active dot stretches into an ink pill — "you are here" */
+.pager-dot.active { background: var(--accent); width: 18px; }
 
 /* ---- progress ---- */
 .progress-section { margin-bottom: var(--space-6); }
@@ -801,17 +842,26 @@ input[type='checkbox']:checked::after { transform: scale(1); }
   position: absolute; top: 0; bottom: 0; left: 0;
   background: var(--water);
   opacity: 0.85;
-  transition: width 0.18s var(--ease);
+  transition: width 0.18s var(--ease), opacity 0.3s;
 }
+/* the day's goal just landed — fill saturates and gives one soft pulse */
+.water-fill.met { opacity: 1; animation: met-pulse 0.6s var(--ease) 1; }
+/* two-layer label: ink where the card shows, paper-white clipped to the fill
+   (--fill set inline by WaterMeter) — readable at every level, both themes */
 .water-label {
   position: absolute; inset: 0;
   display: flex; align-items: center; justify-content: center; gap: 6px;
   font-size: 14px; font-weight: 600; color: var(--text);
   font-variant-numeric: tabular-nums;
   pointer-events: none;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
-.water-label svg { color: #fff; }
+.water-label svg { color: var(--water); }
+.water-label-fill {
+  color: #fff;
+  clip-path: inset(0 calc(100% - var(--fill, 0%)) 0 0);
+  transition: clip-path 0.18s var(--ease);
+}
+.water-label-fill svg { color: #fff; }
 /* set-once goal picker (in a sheet) + the small goal-edit control in the header */
 .goal-picker { display: flex; gap: var(--space-2); }
 .goal-opt {
@@ -827,17 +877,26 @@ input[type='checkbox']:checked::after { transform: scale(1); }
 .water-goal-edit:active { background: var(--accent-weak); }
 
 /* long-press rows: suppress iOS text selection + Copy/Look Up callout */
-.routine-row, .task-row, .today-row, .idea-row, .list-card {
+.routine-row, .task-row, .idea-row, .list-card {
   -webkit-user-select: none;
   user-select: none;
   -webkit-touch-callout: none;
 }
 
 @keyframes toast-in { from { opacity: 0; transform: translate(-50%, 8px); } to { opacity: 1; transform: translate(-50%, 0); } }
-@keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes toast-out { from { opacity: 1; transform: translate(-50%, 0); } to { opacity: 0; transform: translate(-50%, 8px); } }
+@keyframes row-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 @keyframes rise-sheet { from { transform: translateY(100%); } to { transform: none; } }
+@keyframes sink-sheet { from { transform: none; } to { transform: translateY(100%); } }
 @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fade-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes pop-menu { from { opacity: 0; transform: scale(0.96) translateY(4px); } to { opacity: 1; transform: none; } }
+@keyframes fab-in { from { opacity: 0; transform: scale(0.5); } to { opacity: 1; transform: none; } }
+@keyframes met-pulse { 50% { filter: brightness(1.18); } }
 @media (prefers-reduced-motion: reduce) {
-  .today-row, .sheet-panel, .sheet-backdrop, .toast { animation: none; }
+  .sheet-panel, .sheet-backdrop, .toast,
+  .task-row, .routine-row, .idea-row, .list-card,
+  .picker-menu, .pager-pane-active .fab, .water-fill.met { animation: none; }
   .task-row.done .task-title::after, .routine-row.done .routine-title::after { animation: none; transform: scaleX(1); }
+  .tab-ink, .segmented::before, .pager-dot, .sheet-panel { transition: none; }
 }

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { Sheet } from './Sheet';
+import { Sheet, useSheetDismiss } from './Sheet';
 import { EditableText } from './EditableText';
 import { db, createList, renameList, deleteList, INBOX_ID, type List } from '../db';
 
@@ -13,6 +13,7 @@ export function ListEditorSheet({ open, list, onClose }: {
   const [name, setName] = useState(list?.name ?? '');
   const [emoji, setEmoji] = useState(list?.emoji ?? '');
   const [confirming, setConfirming] = useState(false);
+  const { closing, close } = useSheetDismiss(onClose);
 
   const counts = useLiveQuery(async () => {
     if (!list) return { t: 0, i: 0 };
@@ -28,19 +29,19 @@ export function ListEditorSheet({ open, list, onClose }: {
     if (!n || isInbox) return;
     if (list) await renameList(list.id, n, emoji.trim() || undefined);
     else await createList(n, emoji.trim() || undefined);
-    onClose();
+    close();
   };
 
   const del = async () => {
     if (!list || isInbox) return;
     await deleteList(list.id);
-    onClose();
+    close();
   };
 
   const title = list ? (isInbox ? 'Inbox' : 'Edit space') : 'New space';
 
   return (
-    <Sheet open={open} onClose={onClose} title={title}>
+    <Sheet open={open} closing={closing} onClose={close} title={title}>
       <div className="field">
         <span className="field-label">Name</span>
         {/* contenteditable, not <input>: no iOS keyboard form-assistant bar */}

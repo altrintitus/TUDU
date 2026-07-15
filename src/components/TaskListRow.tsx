@@ -3,9 +3,10 @@ import type { Task } from '../db';
 import { useLongPress } from '../hooks/useLongPress';
 import { isOverdue, formatDue, todayStr } from '../logic/dates';
 
-// Matches @keyframes strike (styles.css) — hold the row this long after a check
-// so the strike-through can play before Today filters the task out.
+// Exit choreography after a check (Today filters the row out on toggle):
+// strike plays, the row collapses shut, then the DB toggle commits.
 const STRIKE_MS = 280;
+const COLLAPSE_MS = 220; // matches the .task-row.collapsing transition
 
 // Task row for the Today page: like TaskRow but shows the source space label.
 export function TaskListRow({ task, spaceName, onToggle, onEdit, onDelete }: {
@@ -17,21 +18,25 @@ export function TaskListRow({ task, spaceName, onToggle, onEdit, onDelete }: {
 }) {
   const fired = useRef(false);
   const [leaving, setLeaving] = useState(false);
+  const [collapsing, setCollapsing] = useState(false);
   const longPress = useLongPress(() => { fired.current = true; onDelete(); });
   const onClick = () => { if (fired.current) { fired.current = false; return; } onEdit(); };
   const today = todayStr();
   const overdue = isOverdue(task, today);
 
   // A checked Today task is filtered out and unmounts on the next liveQuery tick
-  // — too fast for the strike. Optimistically mark it done (class + checkbox),
-  // let the animation run, then commit the toggle so the row drops.
+  // — too fast for any animation. Optimistically mark it done (class + checkbox),
+  // play strike → collapse, then commit the toggle on an already-hidden row.
   const check = () => {
     if (leaving) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { onToggle(); return; }
     setLeaving(true);
-    setTimeout(onToggle, STRIKE_MS);
+    setTimeout(() => setCollapsing(true), STRIKE_MS);
+    setTimeout(onToggle, STRIKE_MS + COLLAPSE_MS);
   };
 
-  const cls = ['task-row', overdue && 'overdue', leaving && 'done'].filter(Boolean).join(' ');
+  const cls = ['task-row', overdue && 'overdue', leaving && 'done', collapsing && 'collapsing']
+    .filter(Boolean).join(' ');
   return (
     <div className={cls} {...longPress} onPointerDownCapture={() => { fired.current = false; }}>
       <input

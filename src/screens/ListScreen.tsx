@@ -8,7 +8,7 @@ import { TaskRow } from '../components/TaskRow';
 import { IdeaRow } from '../components/IdeaRow';
 import { TaskEditSheet } from '../components/TaskEditSheet';
 import { CaptureSheet } from '../components/CaptureSheet';
-import { Sheet } from '../components/Sheet';
+import { Sheet, useSheetDismiss } from '../components/Sheet';
 import { TasksIcon, IdeasIcon } from '../components/icons';
 
 type Tab = 'tasks' | 'ideas';
@@ -29,6 +29,7 @@ export function ListScreen({ listId }: { listId: string }) {
   const [editing, setEditing] = useState<Task | null>(null);
   const [doneOpen, setDoneOpen] = useState(false);
   const [pending, setPending] = useState<Pending | null>(null);
+  const confirmDismiss = useSheetDismiss(() => setPending(null));
 
   // Unknown list id (bad URL or deleted list) → home.
   const missing = data !== undefined && !data.list;
@@ -82,13 +83,16 @@ export function ListScreen({ listId }: { listId: string }) {
           <IdeasIcon />
           Notes
         </button>
+        {/* sliding ink underline — translates between the two halves */}
+        <span className="tab-ink" aria-hidden="true" style={{ transform: `translateX(${tab === 'tasks' ? 0 : 100}%)` }} />
       </div>
 
       {tab === 'tasks' && (
         // Open + done rows share ONE container so toggling `done` repositions a
         // row's DOM node (React keys) instead of unmounting it — the checkbox
         // stays attached across the toggle. Done rows hide via CSS when collapsed.
-        <div className={doneOpen ? 'rows' : 'rows done-collapsed'}>
+        // Keyed by tab so switching re-runs the row entrance stagger.
+        <div key="tab-tasks" className={doneOpen ? 'rows' : 'rows done-collapsed'}>
           {open.map((t) => (
             <TaskRow
               key={t.id}
@@ -166,19 +170,19 @@ export function ListScreen({ listId }: { listId: string }) {
       )}
 
       {pending && (
-        <Sheet open onClose={() => setPending(null)} title="Delete">
+        <Sheet open closing={confirmDismiss.closing} onClose={confirmDismiss.close} title="Delete">
           <p className="confirm-text">Delete “{pending.label}”?</p>
           <div className="sheet-actions">
             <button
               className="btn-danger"
               onClick={() => {
                 pending.run();
-                setPending(null);
+                confirmDismiss.close();
               }}
             >
               Confirm — delete
             </button>
-            <button className="btn-ghost" onClick={() => setPending(null)}>
+            <button className="btn-ghost" onClick={confirmDismiss.close}>
               Cancel
             </button>
           </div>

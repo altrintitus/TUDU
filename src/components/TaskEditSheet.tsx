@@ -59,44 +59,48 @@ export function TaskEditSheet({ open, task, onClose }: {
         <EditableText className="capture-input" ariaLabel="Title" value={title} onChange={setTitle} autoFocus onEnter={save} />
       </div>
 
-      <div className="field">
-        <span className="field-label">Space</span>
-        <div className="capture-picker">
-          <button type="button" className="capture-chip" aria-label="Space" onClick={() => { setSpaceOpen((o) => !o); setSchedOpen(false); }}>
-            {spaceName} <span aria-hidden="true">▾</span>
-          </button>
-          {spaceOpen && (
-            <div className="picker-menu" role="listbox">
-              {pickable.map((l) => (
-                <button key={l.id} type="button" role="option" aria-selected={l.id === listId} onClick={() => { setListId(l.id); setSpaceOpen(false); }}>
-                  {l.emoji ? `${l.emoji} ` : ''}{l.name}
-                </button>
-              ))}
-            </div>
-          )}
+      {/* Space + Due share one row; actions share one row — with the keyboard
+          up the whole sheet fits on screen (no scrolling to reach Save) */}
+      <div className="field-row">
+        <div className="field">
+          <span className="field-label">Space</span>
+          <div className="capture-picker">
+            <button type="button" className="capture-chip" aria-label="Space" onClick={() => { setSpaceOpen((o) => !o); setSchedOpen(false); }}>
+              {spaceName} <span aria-hidden="true">▾</span>
+            </button>
+            {spaceOpen && (
+              <div className="picker-menu" role="listbox">
+                {pickable.map((l) => (
+                  <button key={l.id} type="button" role="option" aria-selected={l.id === listId} onClick={() => { setListId(l.id); setSpaceOpen(false); }}>
+                    {l.emoji ? `${l.emoji} ` : ''}{l.name}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="field">
+          <span className="field-label">Due</span>
+          <div className="capture-picker">
+            <button type="button" className="capture-chip" aria-label="Schedule" onClick={() => { setSchedOpen((o) => !o); setSpaceOpen(false); }}>
+              <Calendar /> {due ? formatDue(due, today) : 'No date'}
+            </button>
+            {schedOpen && (
+              <div className="picker-menu sched">
+                <button type="button" onClick={() => { setDue(today); setSchedOpen(false); }}>Today</button>
+                <button type="button" onClick={() => { setDue(addDays(today, 1)); setSchedOpen(false); }}>Tomorrow</button>
+                <button type="button" onClick={() => { setDue(''); setSchedOpen(false); }}>None</button>
+                <input type="date" aria-label="Due date" value={due} onChange={(e) => setDue(e.target.value)} />
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
-      <div className="field">
-        <span className="field-label">Due</span>
-        <div className="capture-picker">
-          <button type="button" className="capture-chip" aria-label="Schedule" onClick={() => { setSchedOpen((o) => !o); setSpaceOpen(false); }}>
-            <Calendar /> {due ? formatDue(due, today) : 'No date'}
-          </button>
-          {schedOpen && (
-            <div className="picker-menu sched">
-              <button type="button" onClick={() => { setDue(today); setSchedOpen(false); }}>Today</button>
-              <button type="button" onClick={() => { setDue(addDays(today, 1)); setSchedOpen(false); }}>Tomorrow</button>
-              <button type="button" onClick={() => { setDue(''); setSchedOpen(false); }}>None</button>
-              <input type="date" aria-label="Due date" value={due} onChange={(e) => setDue(e.target.value)} />
-            </div>
-          )}
-        </div>
-      </div>
-
-      <div className="sheet-actions">
+      <div className="sheet-actions row">
         {!confirming && <button className="btn-danger" onClick={() => setConfirming(true)}>Delete</button>}
-        {confirming && <button className="btn-danger" onClick={remove}>Confirm — delete task</button>}
+        {confirming && <button className="btn-danger" onClick={remove}>Confirm delete</button>}
         <button className="btn-primary" onClick={save} disabled={!title.trim()}>Save</button>
       </div>
     </Sheet>

@@ -230,8 +230,8 @@ input[type='checkbox']:checked::after { transform: scale(1); }
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
   /* the safe-area part of the bottom padding is only needed while the home bar
      is visible — subtract the keyboard inset so no dead gap opens above the keys */
-  padding: var(--space-5) var(--space-5)
-    calc(max(env(safe-area-inset-bottom, 0px) - var(--kb-inset, 0px), 0px) + var(--space-5));
+  padding: var(--space-4) var(--space-5)
+    calc(max(env(safe-area-inset-bottom, 0px) - var(--kb-inset, 0px), 0px) + var(--space-4));
   animation: rise-sheet 0.32s var(--ease) both;
   /* lift above the iOS on-screen keyboard (see --kb-inset in App.tsx);
      transition so the sheet glides up with the keyboard instead of teleporting */
@@ -254,18 +254,21 @@ input[type='checkbox']:checked::after { transform: scale(1); }
   height: 4px;
   border-radius: 999px;
   background: var(--border-strong);
-  margin: 0 auto var(--space-5);
+  margin: 0 auto var(--space-3);
 }
-.sheet-title { font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: var(--space-4); }
+.sheet-title { font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: var(--space-3); }
 
-.field { display: block; margin-bottom: var(--space-4); }
+.field { display: block; margin-bottom: var(--space-3); }
+/* two compact fields sharing one row (Space | Due on the task editor) */
+.field-row { display: flex; gap: var(--space-3); }
+.field-row .field { flex: 1; min-width: 0; }
 .field-label {
   display: block;
   font-size: 11px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--faint);
-  margin-bottom: var(--space-2);
+  margin-bottom: 6px;
 }
 .field input, .field select {
   width: 100%;
@@ -279,7 +282,10 @@ input[type='checkbox']:checked::after { transform: scale(1); }
 .field input:focus, .field select:focus { outline: none; border-color: var(--accent); }
 .field input:disabled, .field select:disabled { opacity: 0.5; }
 
-.sheet-actions { display: flex; flex-direction: column; gap: var(--space-2); margin-top: var(--space-5); }
+.sheet-actions { display: flex; flex-direction: column; gap: var(--space-2); margin-top: var(--space-4); }
+/* editor sheets: actions share one row so the sheet fits above the keyboard */
+.sheet-actions.row { flex-direction: row; }
+.sheet-actions.row > * { flex: 1; }
 .btn-primary, .btn-danger {
   min-height: var(--tap-target);
   border-radius: var(--radius-sm);
@@ -318,6 +324,10 @@ input[type='checkbox']:checked::after { transform: scale(1); }
 .capture-input {
   width: 100%;
   min-height: 56px;
+  /* long text scrolls inside the field — the sheet itself must stay one page.
+     The cap shrinks as the keyboard rises so Save never leaves the screen. */
+  max-height: clamp(68px, calc(100dvh - var(--kb-inset, 0px) - 258px), 120px);
+  overflow-y: auto;
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);

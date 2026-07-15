@@ -68,12 +68,12 @@ export function RoutineEditorSheet({ open, routine, onClose }: {
           <button type="button" onClick={() => setDays(WEEKDAYS)}>Weekdays</button>
         </div>
       </div>
-      <div className="sheet-actions">
+      <div className="sheet-actions row">
         {routine && !confirming && (
           <button className="btn-danger" onClick={() => setConfirming(true)}>Delete</button>
         )}
         {routine && confirming && (
-          <button className="btn-danger" onClick={remove}>Confirm — delete routine</button>
+          <button className="btn-danger" onClick={remove}>Confirm delete</button>
         )}
         <button className="btn-primary" onClick={save} disabled={!title.trim() || days.length === 0}>
           Save

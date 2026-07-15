@@ -29,6 +29,17 @@ export default defineConfig(({ mode }) => ({
           { src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png' },
           { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png' },
           { src: 'icons/icon-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' }
+        ],
+        // long-press app icon → quick capture (Android/desktop; iOS ignores).
+        // relative URL so it resolves under both the /TUDU/ base and test builds
+        shortcuts: [
+          {
+            name: 'New task',
+            short_name: 'New task',
+            description: 'Capture a task',
+            url: './#/capture',
+            icons: [{ src: 'icons/icon-192.png', sizes: '192x192' }]
+          }
         ]
       }
     })

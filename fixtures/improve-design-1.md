@@ -87,6 +87,12 @@ All new motion is `transform`/`opacity` only (60 fps on iPhone) and every animat
 
 ---
 
+## Follow-up (user device report, 2026-07-15 evening)
+
+20. **Edit sheet unusable under the iOS keyboard.** With the keyboard up, a tall sheet (multi-line title) was pushed past the top of the screen — the focused title field invisible — and a dead gap opened between Save and the keys (safe-area padding doubling under the raised sheet). Root cause: `.sheet-panel` had no height cap and its bottom padding always included `env(safe-area-inset-bottom)`.
+    → `max-height: calc(100dvh − --kb-inset − safe-top)` + `overflow-y:auto` (sheet scrolls inside; title always reachable), and the safe-area share of the padding is subtracted while the keyboard is up. Verified by simulating a 336 px inset: panel top 16 px, bottom flush above the keys. The `∧∨✓` assistant pill on contenteditable is iOS-owned — not reliably removable.
+21. **`#/capture` deep link + manifest shortcut** ("add button on the home screen"): true iOS widgets are native-only, but the app now opens straight into capture from any launcher URL; Android/desktop get a long-press "New task" icon shortcut.
+
 ## Verified-clean during the scan (no action)
 
 - Long-title clamp (2-line ellipsis) working in every row context, both themes.

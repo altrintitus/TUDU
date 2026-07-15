@@ -72,3 +72,13 @@ test('save disabled on empty text; dismiss writes nothing', async ({ page }) => 
   await page.getByRole('button', { name: /cancel/i }).click();
   await expect(page.getByRole('textbox', { name: 'Capture text' })).toHaveCount(0);
 });
+
+test('#/capture deep link opens the capture sheet; closing lands home', async ({ page }) => {
+  // set the hash in-app (webkit: goto that only adds a fragment fires no hashchange)
+  await page.evaluate(() => { window.location.hash = '#/capture'; });
+  await page.getByRole('textbox', { name: 'Capture text' }).fill('from the widget link');
+  await page.getByRole('button', { name: /save/i }).click();
+  await expect(page).toHaveURL(/#\/$/);
+  await page.getByRole('tab', { name: 'Today' }).click();
+  await expect(page.locator('.today-screen .task-title', { hasText: 'from the widget link' })).toBeVisible();
+});

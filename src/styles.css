@@ -228,12 +228,19 @@ input[type='checkbox']:checked::after { transform: scale(1); }
   border: 1px solid var(--border);
   border-bottom: none;
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-  padding: var(--space-5) var(--space-5) calc(env(safe-area-inset-bottom) + var(--space-5));
+  /* the safe-area part of the bottom padding is only needed while the home bar
+     is visible — subtract the keyboard inset so no dead gap opens above the keys */
+  padding: var(--space-5) var(--space-5)
+    calc(max(env(safe-area-inset-bottom, 0px) - var(--kb-inset, 0px), 0px) + var(--space-5));
   animation: rise-sheet 0.32s var(--ease) both;
   /* lift above the iOS on-screen keyboard (see --kb-inset in App.tsx);
      transition so the sheet glides up with the keyboard instead of teleporting */
   margin-bottom: var(--kb-inset, 0px);
   transition: margin-bottom var(--t) var(--ease);
+  /* never taller than the space above the keyboard: scroll inside instead of
+     pushing the title field off the top of the screen */
+  max-height: calc(100dvh - var(--kb-inset, 0px) - env(safe-area-inset-top, 0px) - var(--space-4));
+  overflow-y: auto;
 }
 /* animated dismiss (useSheetDismiss): backdrop fades, panel sinks. It stays
    modal while closing (~180ms) so a tap can't reach — and race — the page

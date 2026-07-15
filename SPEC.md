@@ -106,6 +106,7 @@ Three horizontally-swipeable top-level pages (minimal 3-dot indicator, lands on 
 
 ### Capture (context-aware `[+]`)
 - Today `+` → new **task** (no type toggle); Space detail `+` → task/note into that space; Spaces `+` → task/note (Task/Note toggle). Routines are created from the Today ⊕.
+- **`#/capture` deep link** opens the app straight into the capture sheet (closing lands on Today). Exposed as a manifest `shortcut` ("New task") for Android/desktop long-press; on iOS it can back an Apple-Shortcuts launcher. True home-screen *widgets* are native-app-only — out of PWA reach, same class as notifications.
 - Bottom sheet, text auto-focused. Controls: `Task | Note` toggle **only when the page doesn't fix the type** (persists last freely-chosen type), space chip (defaults last-used, falls back Inbox), due-date field when Task. New tasks default `dueDate = today`. Empty text = disabled save. State (last type, last space) in `localStorage`. Capture **and** the edit sheets use a contenteditable field + custom tap-menus (no native form controls) so iOS shows no keyboard assistant bar.
 
 ### Routine editor

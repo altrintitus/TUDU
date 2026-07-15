@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useHashRoute } from './hooks/useHashRoute';
+import { useHashRoute, navigate } from './hooks/useHashRoute';
 import { ensureInbox } from './db';
 import { Pager } from './components/Pager';
+import { CaptureSheet } from './components/CaptureSheet';
 import { TodayScreen } from './screens/TodayScreen';
 import { SpacesScreen } from './screens/SpacesScreen';
 import { ProgressScreen } from './screens/ProgressScreen';
@@ -48,7 +49,7 @@ export default function App() {
   return (
     <div className="app">
       {dbError && <DbErrorBanner />}
-      {route.name === 'home' && (
+      {(route.name === 'home' || route.name === 'capture') && (
         <Pager
           initial={0}
           panes={[
@@ -58,6 +59,9 @@ export default function App() {
           ]}
         />
       )}
+      {/* deep link (#/capture): straight into the capture sheet — for iOS
+          Shortcuts / Android app shortcuts / bookmarks */}
+      {route.name === 'capture' && <CaptureSheet open onClose={() => navigate({ name: 'home' })} />}
       {route.name === 'list' && <ListScreen key={route.id} listId={route.id} />}
       {route.name === 'idea' && <IdeaScreen key={route.id} ideaId={route.id} />}
       {route.name === 'settings' && <SettingsScreen />}
